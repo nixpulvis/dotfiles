@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+require "dotfiles"
+
+# sexy symlinking
+Dotfiles::Symlink.link_all
+
+# sexy brewing
+if Dotfiles::Sanity.has_brew?
+  Dotfiles::Sanity.brew_all
+else
+  puts ".:. Install homebrew".red
+  puts "ruby -e \"$(curl -fsSkL raw.github.com/mxcl/homebrew/go)\""
+end
