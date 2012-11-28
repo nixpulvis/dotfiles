@@ -4,7 +4,7 @@
 export DOTFILES=$HOME/.dotfiles
 
 # source priorities
-for priority ($DOTFILES/**/*.zsh_priority) source $priority
+for priority ($DOTFILES/zsh/*.zsh_priority) source $priority
 
 # source all .zsh files
-for source ($DOTFILES/**/*.zsh) source $source
+for source ($DOTFILES/zsh/*.zsh) source $source
