@@ -1,3 +1,5 @@
 ack
 git
 libyaml
+rbenv
+ruby-build
