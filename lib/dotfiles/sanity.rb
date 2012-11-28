@@ -12,7 +12,7 @@ module Dotfiles::Sanity
   # Returns a merged array of all brews from `.brews` files.
   def self.brews
     arr = []
-    Dir.glob("#{Dotfiles::PATH}/**/*.brews") do |file|
+    Dir.glob("#{Dotfiles::PATH}/brews/*") do |file|
       arr = arr.concat IO.readlines(file).map { |l| l.gsub("\n","") }
     end
     return arr.uniq
@@ -20,12 +20,13 @@ module Dotfiles::Sanity
 
   def self.brew_all
     # update brew
-    dot_puts "updating brew"
+    dot_puts "Updating Brew"
     `brew update`
 
+    dot_puts "Brewing:"
     # install each brew in every category
     brews.each do |brew|
-      dot_puts "brewing up:\t #{brew}"
+      dot_puts "\t #{brew}"
 
       # create tempfile for output of brew install
       stdout = Tempfile.new('STDOUT')
@@ -45,16 +46,17 @@ module Dotfiles::Sanity
   # Returns a merged array of all gems from `.gems` files.
   def self.gems
     arr = []
-    Dir.glob("#{Dotfiles::PATH}/**/*.gems") do |file|
+    Dir.glob("#{Dotfiles::PATH}/gems/*") do |file|
       arr = arr.concat IO.readlines(file).map { |l| l.gsub("\n","") }
     end
     return arr.uniq
   end
 
   def self.gem_all
+    dot_puts "Gem Install:"
     # install each brew in every category
     gems.each do |g|
-      dot_puts "gem install:\t #{g}"
+      dot_puts "\t #{g}"
       system "gem install #{g}"
     end
   end
