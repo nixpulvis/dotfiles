@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 require "dotfiles"
+extend Dotfiles
 
 # sexy symlinking
 Dotfiles::Symlink.link_all
@@ -13,4 +14,9 @@ if Dotfiles::OS.is_mac?
     puts ".:. Install homebrew".red
     puts "ruby -e \"$(curl -fsSkL raw.github.com/mxcl/homebrew/go)\""
   end
+end
+
+# REMINDERS:
+if RUBY_VERSION >= "1.9.3"
+  dot_warning "Check your version of ruby `rbenv version`"
 end

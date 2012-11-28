@@ -6,6 +6,14 @@ module Dotfiles
     puts ".:. ".magenta + s
   end
 
+  def dot_warning( s )
+    dot_puts "WARNING: #{s}".yellow
+  end
+
+  def dot_error( s )
+    dot_puts "ERROR: #{s}".red
+  end
+
 end
 
 require 'dotfiles/colorize'

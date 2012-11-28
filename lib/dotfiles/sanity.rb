@@ -1,4 +1,5 @@
 require "yaml"
+require "tempfile"
 
 module Dotfiles::Sanity
   extend Dotfiles
@@ -18,10 +19,22 @@ module Dotfiles::Sanity
   end
 
   def self.brew_all
+
+    # update brew
+    dot_puts "updating brew"
+    `brew update`
+
     # install each brew in every category
     brews.each do |brew|
-      dot_puts "dotfiles are brewing up: #{brew}"
-      system "brew install #{brew}"
+      dot_puts "brewing up:\t #{brew}"
+
+      # create tempfile for output of brew install
+      stdout = Tempfile.new('STDOUT')
+      system "brew install #{brew} > #{stdout.path} 2>&1"
+      stdout = File.open(stdout.path, "r").read
+      unless stdout =~ /already installed/
+        puts stdout.red
+      end
     end
   end
 end
