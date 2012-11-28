@@ -9,5 +9,6 @@ module Dotfiles
 end
 
 require 'dotfiles/colorize'
+require 'dotfiles/os'
 require 'dotfiles/symlink'
 require 'dotfiles/sanity'
