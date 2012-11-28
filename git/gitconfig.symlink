@@ -41,3 +41,5 @@
 	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
 [merge]
 	tool = Kaleidoscope
+[push]
+	default = simple
