@@ -11,12 +11,19 @@ if Dotfiles::OS.is_mac?
   if Dotfiles::Sanity.has_brew?
     Dotfiles::Sanity.brew_all
   else
-    puts ".:. Install homebrew".red
+    puts ".:. ERROR: Install homebrew".red
     puts "ruby -e \"$(curl -fsSkL raw.github.com/mxcl/homebrew/go)\""
   end
 end
 
+# sexy gemming
+if Dotfiles::Sanity.has_gem?
+  Dotfiles::Sanity.gem_all
+else
+  dot_error "Install a reasonable version of ruby with `gem`"
+end
+
 # REMINDERS:
-if RUBY_VERSION >= "1.9.3"
+unless RUBY_VERSION >= "1.9.3"
   dot_warning "Check your version of ruby `rbenv version`"
 end

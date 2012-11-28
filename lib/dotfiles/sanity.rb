@@ -9,17 +9,16 @@ module Dotfiles::Sanity
     return $?.success?
   end
 
-  # Returns a merged array of all brews from `.brew` files.
+  # Returns a merged array of all brews from `.brews` files.
   def self.brews
     arr = []
-    Dir.glob("#{Dotfiles::PATH}/**/*.brew") do |file|
+    Dir.glob("#{Dotfiles::PATH}/**/*.brews") do |file|
       arr = arr.concat IO.readlines(file).map { |l| l.gsub("\n","") }
     end
     return arr.uniq
   end
 
   def self.brew_all
-
     # update brew
     dot_puts "updating brew"
     `brew update`
@@ -35,6 +34,28 @@ module Dotfiles::Sanity
       unless stdout =~ /already installed/
         puts stdout.red
       end
+    end
+  end
+
+  def self.has_gem?
+    `which gem`
+    return $?.success?
+  end
+
+  # Returns a merged array of all gems from `.gems` files.
+  def self.gems
+    arr = []
+    Dir.glob("#{Dotfiles::PATH}/**/*.gems") do |file|
+      arr = arr.concat IO.readlines(file).map { |l| l.gsub("\n","") }
+    end
+    return arr.uniq
+  end
+
+  def self.gem_all
+    # install each brew in every category
+    gems.each do |g|
+      dot_puts "gem install:\t #{g}"
+      system "gem install #{g}"
     end
   end
 end
