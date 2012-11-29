@@ -14,7 +14,7 @@
 #
 
 # only run on mac.
-exit unless RUBY_PLATFORM.downcase.include?("darwin")
+exit(1) unless RUBY_PLATFORM.downcase.include?("darwin")
 
 WIDTH = 10
 LIT_RED_BLOCK    = "\e[31m▐\e[0m"
