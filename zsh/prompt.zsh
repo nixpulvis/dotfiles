@@ -9,6 +9,4 @@ setopt prompt_subst
 PROMPT='${MAGENTA}%n${RESET} at ${ORANGE}%m${RESET} in ${GREEN}%c${RESET} ${vcs_info_msg_0_}
 $ '
 
-if [ -e battery ]; then
-  RPROMPT='%10{$(battery)%}'
-fi
+RPROMPT='%10{$(battery)%}'

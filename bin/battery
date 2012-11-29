@@ -13,9 +13,6 @@
 # the computer's current battery state, and if it's plugged in.
 #
 
-# only run on mac.
-exit(1) unless RUBY_PLATFORM.downcase.include?("darwin")
-
 WIDTH = 10
 LIT_RED_BLOCK    = "\e[31m▐\e[0m"
 LIT_YELLOW_BLOCK = "\e[33m▐\e[0m"
