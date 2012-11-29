@@ -1,5 +1,5 @@
 function battery_charge {
-    echo `batcharge` 2>/dev/null
+    echo `battery`
 }
 
 # Allow expansion inside PROMPT
@@ -9,4 +9,4 @@ setopt prompt_subst
 PROMPT='${MAGENTA}%n${RESET} at ${ORANGE}%m${RESET} in ${GREEN}%c${RESET} ${vcs_info_msg_0_}
 $ '
 
-RPROMPT='$(battery_charge)'
+RPROMPT='%10{$(battery)%}'
