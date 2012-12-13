@@ -7,7 +7,7 @@ alias .....="cd ../../../.."
 # Places I like to travel
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
-alias gh="cd ~/Documents/github"
+alias code="cd ~/Code"
 alias sublp="cd ~/Library/Application\ Support/Sublime\ Text\ 2/Packages"
 alias dots="cd ~/.dotfiles"
 
