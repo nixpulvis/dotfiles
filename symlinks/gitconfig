@@ -3,36 +3,36 @@
 # You probably want to change the [user] section here since you are not me.
 
 [hub]
-        protocol = https
+  protocol = https
 [credential]
-        helper = osxkeychain
+  helper = osxkeychain
 [alias]
-        st = status -sb
-        ci = commit
-        co = checkout
-        lg = log -p
+  st = status -s
+  ci = commit
+  co = checkout
+  lg = log -p
 [color]
-        diff = auto
-        status = auto
-        branch = auto
-        ui = true
+  diff = auto
+  status = auto
+  branch = auto
+  ui = true
 [core]
-        excludesfile = ~/.gitignore
-        editor = vim
+  excludesfile = ~/.gitignore
+  editor = vim
 [apply]
-        whitespace = nowarn
+  whitespace = nowarn
 [mergetool]
-        keepBackup = false
+  keepBackup = false
 	prompt = false
 [difftool]
 	prompt = false
 [help]
-        autocorrect = 1
+  autocorrect = 1
 [user]
-        email = nathanlil13@me.com
-        name = Nathan Lilienthal
+  email = nathanlil13@me.com
+  name = Nathan Lilienthal
 [branch]
-        autosetuprebase = always
+  autosetuprebase = always
 [difftool "Kaleidoscope"]
 	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
 [diff]
@@ -42,4 +42,4 @@
 [merge]
 	tool = Kaleidoscope
 [push]
-	default = simple
+	default = matching
