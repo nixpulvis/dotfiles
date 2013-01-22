@@ -65,3 +65,10 @@ Just like `brews`. Runs `gem install #{line}`
 #### zsh
 
 All files in this directory get sourced in every shell.
+
+## Todo
+These dotfiles currently work well on my mac, and work (not as well) on a fedora box I use at school.
+I'd like to make them more portable, so on as many systems as possable I can install git,
+`git clone https://github.com/nathan/dotfiles.git`, run the bootstrap and be off and running.
+
+Currently I'm working on making this work with a raw debian (wheezy) install, with squeeze comming next.
