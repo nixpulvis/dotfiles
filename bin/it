@@ -51,8 +51,10 @@ while [ $# -gt 0 ]; do
             osascript -e 'tell application "iTunes" to pause';
             break ;;
 
-        "next"    ) echo "Going to next track." ;
-            osascript -e 'tell application "iTunes" to next track';
+        "next"    ) osascript -e 'tell application "iTunes" to next track';
+            artist=`osascript -e 'tell application "iTunes" to artist of current track as string'`;
+            track=`osascript -e 'tell application "iTunes" to name of current track as string'`;
+            echo "Now playing $artist:  $track";
             break ;;
 
         "prev"    ) echo "Going to previous track.";

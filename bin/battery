@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 # encoding: utf-8
 
 # Mac OS X Battery Display
@@ -12,6 +12,8 @@
 # Running this command will output a 10 segmented bar indicating
 # the computer's current battery state, and if it's plugged in.
 #
+# Requires Ruby 1.9.3
+#
 
 WIDTH = 10
 LIT_RED_BLOCK    = "\e[31m▐\e[0m"
@@ -19,7 +21,7 @@ LIT_YELLOW_BLOCK = "\e[33m▐\e[0m"
 LIT_GREEN_BLOCK  = "\e[32m▐\e[0m"
 UNCHARGED_BLOCK  = "\e[2m\e[37m▐\e[0m"
 
-def get_battery
+def battery
   hash = { }
   data = IO.popen("ioreg -rc AppleSmartBattery").readlines()
   data.select { |l| l =~ /=/ }.map{ |l| l.strip.gsub("\"", "") }.each do |l|
@@ -54,9 +56,6 @@ def bar( charge, charging )
   end
   "#{b}\n"
 end
-
-# Get a hash of info about the battery
-battery = get_battery
 
 # Current charge of computer (%)
 charge = 100 * (battery['CurrentCapacity'].to_f / battery['MaxCapacity'].to_f)
