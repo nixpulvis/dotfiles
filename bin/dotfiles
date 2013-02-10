@@ -17,4 +17,4 @@ add_loadpath File.expand_path('../../lib', __FILE__)
 require "dotfiles"
 
 dotfiles = Dir["#{Dotfiles::SYMLINK_PATH}/**/{*,.*}"].select {|p| File.file? p}
-symlink dotfiles, Dir.home, force: true
+symlink dotfiles, Dikjr.home, force: true
