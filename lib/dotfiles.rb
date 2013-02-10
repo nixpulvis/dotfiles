@@ -1,22 +1,37 @@
 module Dotfiles
 
+  # Path to the dotfiles top level directory.
   PATH = File.expand_path File.join(File.dirname(__FILE__), "..")
 
-  def dot_puts( s )
-    puts ".:. ".magenta + s
+  # Prefix to be printed before every message.
+  PREFIX = ".:."
+
+
+  # Printing methods: 
+  # * inform : info about the build.
+  # * warn   : non critical errors.
+  # * error  : blocking errors.
+  #
+  # Use these methods for interacting with STDOUT exclusively,
+  # to help keep the build process feel uniform.
+  #
+  def inform(string)
+    puts "#{PREFIX.magenta} #{string}"
   end
 
-  def dot_warning( s )
-    dot_puts "WARNING: #{s}".yellow
+  def warn(string)
+    puts "#{PREFIX.magenta} WARNING: #{string}".yellow
   end
 
-  def dot_error( s )
-    dot_puts "ERROR: #{s}".red
+  def error(string)
+    puts "#{PREFIX.magenta} ERROR: #{string}".red
   end
 
 end
 
-require 'dotfiles/colorize'
-require 'dotfiles/os'
-require 'dotfiles/symlink'
-require 'dotfiles/sanity'
+require "dotfiles/ext"
+require "dotfiles/symlink"
+require "dotfiles/version"
+
+# Add Dotfiles into main :)
+include Dotfiles
