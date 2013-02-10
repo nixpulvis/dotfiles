@@ -1,5 +1,7 @@
 # . : . dotfiles
 
+[![Build Status](https://travis-ci.org/nathan/dotfiles.png)](https://travis-ci.org/nathan/dotfiles)
+
 I wanted to write my own dotfiles to allow myself some freedom of implementation
 I like a lot of what I've seen out there, but none of them are quite the way
 I'd do it. Due to the nature of dotfiles, these are a compilation of a lot of
