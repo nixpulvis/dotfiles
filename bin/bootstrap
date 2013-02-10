@@ -52,4 +52,4 @@ fi
 git clone git://github.com/nathan/dotfiles.git ~/.dotfiles
 
 # Pass along the responsibility to the dotfile ruby installer.
-$HOME/.rbenv/versions/1.9.3-p385/bin/ruby ~/.dotfiles/bin/install
+$HOME/.rbenv/versions/1.9.3-p385/bin/ruby ~/.dotfiles/bin/dotfiles
