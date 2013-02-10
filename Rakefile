@@ -6,5 +6,5 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 task :default => :spec do
-  system 'bin/dotfiles'
+  fail unless system 'bin/dotfiles'
 end
