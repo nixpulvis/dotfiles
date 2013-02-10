@@ -8,7 +8,7 @@ alias .....="cd ../../../.."
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 alias code="cd ~/Code"
-alias sublp="cd ~/Library/Application\ Support/Sublime\ Text\ 2/Packages"
+alias sublp="cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages"
 alias dots="cd ~/.dotfiles"
 
 # Detect which `ls` flavor is in use

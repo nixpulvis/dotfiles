@@ -6,6 +6,6 @@ PROMPT='${MAGENTA}%n${RESET} at ${ORANGE}%m${RESET} in ${GREEN}%c${RESET} ${vcs_
 $ '
 
 # Only show battery if we have ioreg, used to get battery info.
-if which ioreg &> /dev/null; then
+if [ `command -v ioreg` ]; then
   RPROMPT='%10{$(echo `battery`)%}'
 fi

@@ -1,29 +1,55 @@
-#!/usr/bin/env ruby
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__), "lib"))
-require "dotfiles"
-extend Dotfiles
+#!/bin/sh
+#      __         ____                __       __
+#    _/ /       _/_/ /_  ____  ____  / /______/ /__________ _____
+#   / __/     _/_// __ \/ __ \/ __ \/ __/ ___/ __/ ___/ __ `/ __ \
+#  (_  )  _ _/_/ / /_/ / /_/ / /_/ / /_(__  ) /_/ /  / /_/ / /_/ /
+# /  _/  (_)_/  /_.___/\____/\____/\__/____/\__/_/   \__,_/ .___/
+# /_/                                                    /_/
+#
+# This script does the bare minimum to get rbenv onto the computer.
+# Requirements:
+# * git (through brew on mac)
+# * rbenv
+# * ruby-build (as plugin to rbenv)
+#
 
-# sexy symlinking
-Dotfiles::Symlink.link_all
+set -e
 
-# sexy brewing
-if Dotfiles::OS.is_mac?
-  if Dotfiles::Sanity.has_brew?
-    Dotfiles::Sanity.brew_all
-  else
-    puts ".:. ERROR: Install homebrew".red
-    puts "ruby -e \"$(curl -fsSkL raw.github.com/mxcl/homebrew/go)\""
-  end
-end
+# Make sure we have a C compiler
+if [[ `uname` == "Linux" ]]; then
+  sudo apt-get install -qqy build-essential
+fi
 
-# sexy gemming
-if Dotfiles::Sanity.has_gem?
-  Dotfiles::Sanity.gem_all
-else
-  dot_error "Install a reasonable version of ruby with `gem`"
-end
+# Nothing can be done without git. Like for real
+# Commands installed: git, brew (mac only)
+if [[ ! `command -v git` ]]; then
+  if [[ `uname` == "Linux" ]]; then
+    sudo apt-get install -qqy git-core
+  elif [[ `uname` == "Darwin" ]]; then
+    # make sure we have homebrew
+    if [[ ! `command -v brew` ]]; then
+      ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+    fi
+    brew install "git"
+  fi
+fi
 
-# REMINDERS:
-unless RUBY_VERSION >= "1.9.3"
-  dot_warning "Check your version of ruby `rbenv version`"
-end
+# Installing these dotfiles needs ruby, we'll get rbenv and ruby-build
+# here.
+if [[ ! -d "$HOME/.rbenv" ]]; then
+  git clone git://github.com/sstephenson/rbenv.git ~/.rbenv
+  git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+fi
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# Install ruby
+if [[ ! `rbenv versions` =~ 1.9.3-p385 ]]; then
+  rbenv install 1.9.3-p385
+fi
+
+# Checkout the dotfiles from github
+git checkout git://github.com/nathan/dotfiles.git ~/.dotfiles
+
+# Pass along the responsibility to the dotfile ruby installer.
+$HOME/.rbenv/versions/1.9.3-p385/bin/ruby ~/.dotfiles/install
