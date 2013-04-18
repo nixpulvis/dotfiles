@@ -16,7 +16,7 @@ chmod +x $hooks/post-merge $hooks/post-rewrite
 
 # Ensure that we are work within the acceptable working directory.
 if [[ $PWD != $DOTFILES ]]; then
-  echo "Must be inside $DOTFILES"
+  echo "Must be innside $DOTFILES"
   exit 1
 fi
 
