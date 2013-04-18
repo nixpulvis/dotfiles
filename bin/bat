@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+# Mac OS X Battery Display
+#
+# ▐▐▐▐▐▐▐▐▐▐
+#
+# by Nathan Lilienthal <nathanl@ccs.neu.edu> 2012
+# Distributed under the GNU General Public License, version 3.0.
+#
+#
+# Running this command will output a 10 segmented bar indicating
+# the computer's current battery state, and if it's plugged in.
+#
+# Requires Ruby 1.9.3
+#
+
+WIDTH = 10
+LIT_RED_BLOCK    = "\e[31m▐\e[0m"
+LIT_YELLOW_BLOCK = "\e[33m▐\e[0m"
+LIT_GREEN_BLOCK  = "\e[32m▐\e[0m"
+UNCHARGED_BLOCK  = "\e[2m\e[37m▐\e[0m"
+
+def battery
+  hash = { }
+  data = IO.popen("ioreg -rc AppleSmartBattery").readlines()
+  data.select { |l| l =~ /=/ }.map{ |l| l.strip.gsub("\"", "") }.each do |l|
+    key, value   = l.split " = "
+    hash[key] = value
+  end
+  return hash
+end
+
+def block( i, dim )
+  if i / WIDTH.to_f >= 3.0/5.0
+    b = LIT_GREEN_BLOCK
+  elsif i / WIDTH.to_f >= 1.0/5.0
+    b = LIT_YELLOW_BLOCK
+  else
+    b = LIT_RED_BLOCK
+  end
+
+  # append dimming escape
+  b = "\e[2m" + b if dim
+  return b
+end
+
+def bar( charge, charging )
+  b = ""
+  WIDTH.times do |i|
+    if (charge / 100 * WIDTH).round >= i
+      b += block(i, false)
+    else
+      b += charging ? block(i, true) : UNCHARGED_BLOCK
+    end
+  end
+  "#{b}\n"
+end
+
+# Current charge of computer (%)
+charge = 100 * (battery['CurrentCapacity'].to_f / battery['MaxCapacity'].to_f)
+
+# Print this bitch
+print bar(charge, battery['IsCharging'] == "Yes")
