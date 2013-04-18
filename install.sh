@@ -5,6 +5,9 @@ echo "Installing .:. dotfiles"
 
 dotfiles=$HOME/.dotfiles
 
+# Move dotfiles to the proper dotfiles path if they are not there already.
+#TODO
+
 # Ensure that we are work within the acceptable working directory.
 if [[ $PWD != $dotfiles ]]; then
   echo "Must be inside $dotfiles"
