@@ -1,0 +1,51 @@
+#=>~/.gitconfig
+
+[hub]
+  protocol = https
+
+[credential]
+  helper = osxkeychain
+
+[alias]
+  st = status -s
+  ci = commit
+  co = checkout
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  ui = true
+
+[core]
+  excludesfile = ~/.gitignore
+  editor = vim
+
+[apply]
+  whitespace = nowarn
+
+[user]
+  email = nathan@nixpulvis.com
+  name = Nathan Lilienthal
+
+[branch]
+  autosetuprebase = always
+
+[push]
+  default = matching
+
+[difftool]
+  prompt = false
+[difftool "Kaleidoscope"]
+  cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[diff]
+  tool = Kaleidoscope
+[mergetool]
+  keepBackup = false
+  prompt = false
+[mergetool "Kaleidoscope"]
+  cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+  trustExitCode = true
+[merge]
+  tool = Kaleidoscope
