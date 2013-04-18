@@ -1,0 +1,4 @@
+#!/bin/sh
+cd $DOTFILES
+git pull
+./install
