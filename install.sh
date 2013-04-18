@@ -12,6 +12,6 @@ fi
 # Symlink ".link" files.
 for file ($dotfiles/**/*.link) do
   line=$(head -n 1 $file)
-  eval destination=${line//\#=>/}
+  eval destination=${line//(\#|\")=>/}
   ln -fs $file $destination
 done
