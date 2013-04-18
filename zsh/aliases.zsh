@@ -9,7 +9,6 @@ alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 alias code="cd ~/Code"
 alias sublp="cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages"
-alias dots="cd ~/.dotfiles"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
