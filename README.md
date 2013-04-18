@@ -10,4 +10,4 @@ cd ~/.dotfiles
 ./install.sh
 ```
 
-After that changes can be applied as easily as `git pull`. This is possible due to a `post-merge` hook in git that runs `install.sh`.
+After that changes can be applied as easily as `git pull`. This is possible due to `post-merge` and `post-rewrite` hooks in git that run `install.sh`.
