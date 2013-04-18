@@ -13,5 +13,5 @@ fi
 for file ($dotfiles/**/*.link) do
   line=$(head -n 1 $file)
   eval destination=${line//\#=>/}
-  ln -s $file $destination
+  ln -fs $file $destination
 done
