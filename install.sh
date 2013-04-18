@@ -1,6 +1,8 @@
 #!/bin/zsh
 # Don't be a fool.
 
+echo "Installing .:. dotfiles"
+
 dotfiles=$HOME/.dotfiles
 
 # Ensure that we are work within the acceptable working directory.
