@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 cd $DOTFILES
 git pull
-./install
+./install.sh
