@@ -1,7 +1,7 @@
 #!/bin/zsh
 # Don't be a fool.
 
-echo "Installing .:. dotfiles"
+echo -n ".:. Installing dotfiles... "
 
 DOTFILES=$HOME/.dotfiles
 
@@ -17,3 +17,6 @@ for file ($DOTFILES/**/*.link) do
   eval destination=${line//(\#|\")=>/}
   ln -fs $file $destination
 done
+
+echo "done"
+echo ".:. Please run \"exec \$SHELL\" in current shells."
