@@ -1,7 +1,7 @@
 #=>~/.gitconfig
 
 [hub]
-  protocol = https
+	protocol = https
 
 [credential]
   helper = osxkeychain
