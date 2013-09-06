@@ -25,8 +25,9 @@ alias la="ls -la ${colorflag}"
 alias lsd='ls -l ${colorflag} | grep "^d"'
 
 # SSH into school quickly
-alias mrdo='ssh nathanl@mrdo.ccs.neu.edu'
+alias ccs='ssh nathanl@kingofdragons.ccs.neu.edu'
 alias acm='ssh nixpulvis@acm.ccs.neu.edu'
+alias acm-staging='ssh nuacm@acm-staging.ccs.neu.edu'
 
 # Empty all trashes and Apple system logs
 alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
