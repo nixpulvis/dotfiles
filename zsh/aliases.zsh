@@ -8,6 +8,7 @@ alias .....="cd ../../../.."
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 alias code="cd ~/Code"
+alias eui="cd /Applications/World\ of\ Warcraft/Interface/AddOns/EUI"
 alias sublp="cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages"
 
 # Detect which `ls` flavor is in use
