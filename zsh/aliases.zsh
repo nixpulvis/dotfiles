@@ -30,6 +30,8 @@ alias ccs='ssh nathanl@kingofdragons.ccs.neu.edu'
 alias acm='ssh nixpulvis@acm.ccs.neu.edu'
 alias acm-staging='ssh nuacm@acm-staging.ccs.neu.edu'
 
+alias snowcloud='ssh nixpulvis@162.243.33.86'
+
 # Empty all trashes and Apple system logs
 alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
 # STFU
