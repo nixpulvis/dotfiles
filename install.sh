@@ -7,9 +7,12 @@ DOTFILES=$HOME/.dotfiles
 
 # Ensure that we are work within the acceptable working directory.
 if [[ $PWD != $DOTFILES ]]; then
-  echo "Must be innside $DOTFILES"
+  echo "Must be inside $DOTFILES"
   exit 1
 fi
+
+# Make needed directories.
+mkdir -p $HOME/.vim/colors
 
 # Symlink ".link" files.
 for file ($DOTFILES/**/*.link) do
