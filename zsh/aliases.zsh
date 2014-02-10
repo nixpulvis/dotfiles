@@ -11,6 +11,9 @@ alias code="cd ~/Code"
 alias eui="cd /Applications/World\ of\ Warcraft/Interface/AddOns/EUI"
 alias sublp="cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages"
 
+# g
+alias g="git"
+
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
   colorflag="--color"

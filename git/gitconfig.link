@@ -7,10 +7,29 @@
   helper = osxkeychain
 
 [alias]
-  st = status -s
-  ci = commit
-  co = checkout
-  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  a = add
+  b = branch
+  c = clean
+  d = diff
+  f = fetch
+  g = clone
+  h = show
+  i = commit
+  l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  m = merge
+  n = init
+  o = remote
+  p = pull
+  r = rebase
+  s = status -s
+  t = tag
+  u = reset
+  x = checkout
+  z = stash
+
+  cp = cherry-pick
+  dt = difftool
+  mt = mergetool
 
 [color]
   diff = auto

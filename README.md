@@ -13,3 +13,33 @@ cd ~/.dotfiles
 If this is a new setup, make sure `zsh` is the default login shell with `chsh`.
 
 After that changes can be applied as easily as running `dots`.
+
+## Git
+
+```
+g == hub -> git
+
+# These are the following aliases, flags omitted.
+a = add
+b = branch
+c = clean
+d = diff
+f = fetch
+g = clone
+h = show
+i = commit
+l = log
+m = merge
+n = init
+o = remote
+p = pull
+r = rebase
+s = status
+t = tag
+u = reset
+x = checkout
+z = stash
+
+cp = cherry-pick
+dt = difftool
+mt = mergetool
