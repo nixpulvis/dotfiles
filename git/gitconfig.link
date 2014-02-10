@@ -19,11 +19,12 @@
   m = merge
   n = init
   o = remote
-  p = pull
+  p = push
   r = rebase
   s = status -s
   t = tag
   u = reset
+  v = pull
   x = checkout
   z = stash
 
