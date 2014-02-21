@@ -1,0 +1,4 @@
+if [[ -d "/usr/texbin" ]]; then
+  export PATH="/usr/texbin:$PATH"
+  export MANPATH="/Library/TeX/Distributions/.DefaultTeX/Contents/Man:$MANPATH"
+fi
