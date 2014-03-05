@@ -11,13 +11,11 @@ if [[ $PWD != $DOTFILES ]]; then
   exit 1
 fi
 
-# Make needed directories.
-mkdir -p $HOME/.vim/colors
-
 # Symlink ".link" files.
 for file ($DOTFILES/**/*.link) do
   line=$(head -n 1 $file)
   eval destination=${line//(\#|\"|\/\/)=>/}
+  mkdir -p `dirname $destination`
   ln -fs $file $destination
 done
 

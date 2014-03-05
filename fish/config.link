@@ -1,0 +1,8 @@
+#=>~/.config/fish/config.fish
+# This file is just here to source other files, that actually do work,
+# it's super lazy and should move out of it's mother's basement.
+
+set dotfiles $HOME/.dotfiles
+
+# Source all .fish files.
+for source in $dotfiles/**/*.fish; source $source; end
