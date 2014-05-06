@@ -1,0 +1,1 @@
+set PATH ./bin $PATH
