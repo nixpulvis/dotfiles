@@ -20,4 +20,4 @@ for file ($DOTFILES/**/*.link) do
 done
 
 echo "done"
-echo ".:. Please run \"exec \$SHELL\" in current shells."
+echo ".:. Please run \"exec fish\" in current shells."
