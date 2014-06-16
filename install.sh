@@ -1,7 +1,7 @@
 #!/bin/sh
 # Don't be a fool.
 
-echo -n ".:. Installing dotfiles... "
+echo ".:. Installing dotfiles... "
 
 DOTFILES=$HOME/.dotfiles
 
@@ -14,9 +14,9 @@ fi
 # Symlink ".link" files.
 for file in $DOTFILES/**/*.link; do
   destination=$(head -n 1 $file | sed "s/[#|\"|;|//]*=>//")
-  echo "Linking $file to $destination"
-  mkdir -p `dirname $destination`
-  ln -fs $file $destination
+  echo ".:. $file -> $destination"
+  eval mkdir -p `dirname $destination`
+  eval ln -fs $file $destination
 done
 
-echo ".:. Please run \"exec fish\" in current shells."
+echo ".:. Please run \"exec $SHELL\" in current shells."
