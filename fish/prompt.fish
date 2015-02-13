@@ -42,8 +42,8 @@ function fish_prompt --description 'Write out the prompt'
     end
 
     # rbenv
-    if type rbenv > /dev/null 2>&1
-      section ruby (rbenv version | cut -d' ' -f 1)
+    if type ruby > /dev/null 2>&1
+      section ruby (ruby --version | cut -d' ' -f 2)
     end
 
     if is_git_repo
