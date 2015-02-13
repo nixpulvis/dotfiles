@@ -1,1 +1,1 @@
-set PATH /Users/nixpulvis/.dotfiles/bin $PATH
+set PATH "$DOTFILES/bin" $PATH

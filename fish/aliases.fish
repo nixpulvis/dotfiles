@@ -8,7 +8,6 @@ alias ..... "cd ../../../.."
 alias dl "cd ~/Downloads"
 alias dt "cd ~/Desktop"
 alias code "cd ~/Code"
-alias sublp "cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1 # GNU `ls`
@@ -31,9 +30,3 @@ alias acm 'ssh nixpulvis@acm.ccs.neu.edu'
 
 # SSH into my cloud quickly
 alias snowcloud 'ssh nixpulvis@162.243.33.86'
-
-# Empty all trashes and Apple system logs
-alias emptytrash "sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
-
-# STFU
-alias stfu "osascript -e 'set volume output muted true'"

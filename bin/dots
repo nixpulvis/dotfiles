@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/usr/bin/env fish
 cd $DOTFILES
 git pull
 ./install.sh

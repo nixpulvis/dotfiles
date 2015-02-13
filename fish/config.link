@@ -6,3 +6,10 @@ set -x DOTFILES $HOME/.dotfiles
 
 # Source all .fish files.
 for source in $DOTFILES/**/*.fish; source $source; end
+
+# If we are a login shell start the WM.
+if status --is-login
+  if test -z "$DISPLAY" -a $XDG_VTNR = 1
+    exec startx
+  end
+end

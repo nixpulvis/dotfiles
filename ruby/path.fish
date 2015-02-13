@@ -1,1 +1,3 @@
-set PATH /Users/nixpulvis/.rbenv/shims $PATH
+if [ -d "$HOME/.rbenv" ]
+  set PATH "$HOME/.rbenv/shims" $PATH
+end
