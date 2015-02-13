@@ -13,7 +13,7 @@ fi
 
 # Symlink ".link" files.
 for file in $DOTFILES/**/*.link; do
-  destination=$(head -n 1 $file | sed "s/[\!|#|\"|;|//]*=>//")
+  destination=$(head -n 1 $file | sed "s/[\!|#|\"|;|//|\-\-]*=>//")
   echo ".:. $file -> $destination"
   eval mkdir -p `dirname $destination`
   eval ln -fs $file $destination
