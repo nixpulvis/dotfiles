@@ -1,0 +1,9 @@
+#=>~/.tmux.conf
+
+# Full color.
+set -g default-terminal "screen-256color"
+
+# use C-a as prefix (like GNU screen).
+unbind C-b
+set -g prefix C-a
+bind C-a send-prefix
