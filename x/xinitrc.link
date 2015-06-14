@@ -9,6 +9,4 @@ fi
 
 xrdb -merge "${HOME}/.Xresources"
 
-urxvt -T Terminal &
-
-exec awesome
+exec i3
