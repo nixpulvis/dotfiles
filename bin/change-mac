@@ -1,0 +1,7 @@
+#!/bin/bash
+
+ssid=$(networksetup -getairportnetwork en0 | cut -d ":" -f 2 | sed "s/^[ \t]*//")
+sudo airport -z
+sleep 1
+sudo ifconfig en0 ether $(openssl rand -hex 6 | sed "s/\(..\)/\1:/g; s/.\$//")
+networksetup -setairportnetwork en0 "$ssid"
