@@ -8,8 +8,10 @@ set -x DOTFILES $HOME/.dotfiles
 for source in $DOTFILES/**/*.fish; source $source; end
 
 # If we are a login shell start the WM.
-if status --is-login
-  if test -z "$DISPLAY" -a "$XDG_VTNR = 1"
-    exec startx
+if test (uname) = Linux
+  if status --is-login
+    if test -z "$DISPLAY" -a "$XDG_VTNR = 1"
+      exec startx
+    end
   end
 end
