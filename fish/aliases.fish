@@ -7,7 +7,7 @@ alias ..... "cd ../../../.."
 # Places I like to travel
 alias dl "cd ~/Downloads"
 alias dt "cd ~/Desktop"
-alias code "cd ~/Code"
+alias unix "cd ~/unix"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1 # GNU `ls`
