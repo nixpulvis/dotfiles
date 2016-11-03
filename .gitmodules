@@ -1,0 +1,6 @@
+[submodule ".3rd/atom-one-dark-terminal"]
+	path = .3rd/atom-one-dark-terminal
+	url = https://github.com/nathanbuchar/atom-one-dark-terminal.git
+[submodule ".3rd/Fira"]
+	path = .3rd/Fira
+	url = https://github.com/mozilla/Fira.git

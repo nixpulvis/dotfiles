@@ -1,5 +1,3 @@
-#=>~/.gitconfig
-
 [hub]
 	protocol = ssh
 

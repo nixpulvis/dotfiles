@@ -1,3 +1,2 @@
-;=>~/.racketrc
 ; The following line loads `xrepl' support
 (require xrepl)

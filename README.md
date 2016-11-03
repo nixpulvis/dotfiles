@@ -1,45 +1,28 @@
-# .:. nixpulvis/dotfiles
+# My Dotfiles
 
-Dotfiles should be simple and painless to maintain between computers. Doing a git pull should be enough to update the whole system instantly. Symlinks and shell functions should be grouped by task.
-
-This should be all it takes to install these dotfiles on any computer, with `git`, `zsh` and an internet connection.
-
-``` bash
-git clone git://github.com/nixpulvis/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
-./install.sh
-```
-
-If this is a new setup, make sure `zsh` is the default login shell with `chsh`.
-
-After that changes can be applied as easily as running `dots`.
-
-## Git
+## Install
+To install from a system without `fish`, first you need to get a
+little fishy. Run the following command to get with the times:
 
 ```
-g == hub -> git
+./fishup
+```
 
-# These are the following aliases, flags omitted.
-a = add
-b = branch
-c = clean
-d = diff
-f = fetch
-g = clone
-h = show
-i = commit
-l = log
-m = merge
-n = init
-o = remote
-p = pull
-r = rebase
-s = status
-t = tag
-u = reset
-x = checkout
-z = stash
+Once you have `fish`, installing for the first, second, third or even forth time can be done with the following command:
 
-cp = cherry-pick
-dt = difftool
-mt = mergetool
+```
+./install
+```
+
+Make sure you read the output of these commands, there are still a
+few manual steps, though I'd like to get rid of them.
+
+## Under the Hood
+
+The dotfiles are a set of "packages" which are managed with [GNU `stow`][stow].
+Each package can be installed and *uninstalled* with `stow`. A package is simply
+a directory tree that will be linked to the appropriate locations.
+
+### GNU Stow
+
+[stow]: https://www.gnu.org/software/stow/ "GNU stow"
