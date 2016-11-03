@@ -1,1 +1,6 @@
+atom/.atom/.apm
+atom/.atom/.node-gyp
+atom/.atom/packages
+atom/.atom/storage
+atom/.atom/recovery
 target/

@@ -1,6 +1,7 @@
 #!/usr/bin/env fish
 
 # Ensure we're in a good state with git.
+git submodule init
 git submodule update --recursive --remote
 
 # TODO: copy SSH identity from flashdrive.
@@ -26,8 +27,9 @@ case Darwin
 end
 
 # Install the atom package.
+rm -rf ~/.atom
 stow atom
-source $HOME/.atom/install.fish
+source $HOME/.config/atom/install.fish
 
 stow racket
 source $HOME/.config/racket/install.fish
