@@ -8,6 +8,8 @@ brew 'tldr'
 brew 'tree'
 brew 'zmq'
 
+cask 'istat-menus'
+
 # Languages
 brew 'rbenv'
 brew 'ruby-build'

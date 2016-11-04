@@ -18,15 +18,19 @@ switch (uname)
 case Linux
   stow linux
 case Darwin
-  stow macos
   # Homebrew
   ##########
 
   # Install fonts.
-  cp $HOME/.dotfiles/.3rd/Fira/ttf/*.ttf /Library/Fonts/
+  cp $HOME/.dotfiles/fonts/*.ttf /Library/Fonts/
 
   # Install homebrew (without prompt).
   /usr/bin/ruby -e (curl -fsSL "https://raw.githubusercontent.com/Homebrew/install/master/install") </dev/null
+
+  # We need stow first and foremost.
+  brew install stow
+
+  stow macos 
 
   # Install Homebrew bundle.
   brew bundle --global
