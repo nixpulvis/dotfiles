@@ -4,6 +4,7 @@ brew 'htop'
 brew 'hub'
 brew 'nmap'
 brew 'stow'
+brew 'tldr'
 brew 'tree'
 brew 'zmq'
 

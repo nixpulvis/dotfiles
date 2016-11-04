@@ -1,1 +1,0 @@
-set PATH "$DOTFILES/bin" $PATH
