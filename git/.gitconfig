@@ -1,0 +1,52 @@
+[hub]
+	protocol = ssh
+
+[alias]
+  up = !git remote update -p; git merge --ff-only @{u}
+  a = add
+  b = branch
+  c = clean
+  d = diff
+  f = fetch
+  g = clone
+  h = show
+  i = commit
+  l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  m = merge
+  n = init
+  o = remote
+  p = push
+  r = rebase
+  s = status -s
+  t = tag
+  u = reset
+  v = pull
+  x = checkout
+  z = stash
+
+  cp = cherry-pick
+  dt = difftool
+  mt = mergetool
+
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  ui = true
+
+[core]
+  excludesfile = ~/.gitignore
+  editor = vim
+
+[apply]
+  whitespace = nowarn
+
+[user]
+  email = nathan@nixpulvis.com
+  name = Nathan Lilienthal
+
+[branch]
+  autosetuprebase = always
+
+[push]
+  default = matching
