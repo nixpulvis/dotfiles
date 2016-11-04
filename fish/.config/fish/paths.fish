@@ -4,3 +4,4 @@ function add_to_path --description 'Persistently prepends paths to your PATH'
 end
 
 add_to_path $HOME/.bin
+add_to_path $HOME/.cargo/bin

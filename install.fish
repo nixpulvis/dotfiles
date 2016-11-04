@@ -46,18 +46,31 @@ end
 # Install some packages.
 stow fish bin git
 
-# Install the atom package.
+# Atom
+######
+
 rm -rf ~/.atom
 stow atom
 if [ "$SKIP_APM_STARS_INSTALL" != "1" ]
   apm stars --install
 end
 
+# Racket
+########
+
 stow racket
 # FIXME: This is currently throwing an error, but still works.
 raco pkg install --batch --deps search-auto xrepl
 
+# Ruby
+######
+
 stow ruby
+
+# Rust
+######
+
+curl https://sh.rustup.rs -sSf | sh
 
 # Finally, change the shell.
 if not grep fish /etc/shells >/dev/null
