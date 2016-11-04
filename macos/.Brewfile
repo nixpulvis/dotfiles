@@ -9,6 +9,7 @@ brew 'tree'
 brew 'zmq'
 
 cask 'istat-menus'
+cask 'kap'
 
 # Languages
 brew 'rbenv'
