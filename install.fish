@@ -1,26 +1,57 @@
 #!/usr/bin/env fish
 
-# Ensure we're in a good state with git.
-git submodule init
-git submodule update --recursive --remote
+# Self
 
-# TODO: copy SSH identity from flashdrive.
-# ```bash
-# cp -r /Volumes/BLACKSNOW/.ssh ~/.ssh
-# ```
+function self.update -d "Make sure we're on the latest code from the Git remote."
+  git pull
+  git submodule init
+  git submodule update --recursive --remote
+end
 
-# TODO: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#adding-your-ssh-key-to-the-ssh-agent
+function install.name -d "Set the name of this computer."
+  # TODO: Update computer name
+end
 
-# TODO: Update computer name
+function install.shell -d "Set the default shell."
+  if not grep fish /etc/shells >/dev/null
+    echo 'Adding `/usr/local/bin/fish` to /etc/shells.'
+    sudo sh -c 'echo "/usr/local/bin/fish" >> /etc/shells'
+  end
+  if [ $SHELL != '/usr/local/bin/fish' ]
+    echo 'Changing the user shell to /usr/local/bin/fish.'
+    chsh -s /usr/local/bin/fish
+  end
+end
 
-# OS specific installation.
-switch (uname)
-case Linux
-  stow linux
-case Darwin
-  # Homebrew
-  ##########
+function install.ssh -d "Install the SSH identity from flash media."
+  # TODO: copy SSH identity from flashdrive.
+  # ```bash
+  # cp -r /Volumes/BLACKSNOW/.ssh ~/.ssh
+  # ```
+  # TODO: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#adding-your-ssh-key-to-the-ssh-agent
+end
 
+function install.arch
+  switch (uname)
+  case Darwin
+    install.package macos
+  case Linux
+    install.package linux
+  end
+end
+
+function install.rust -d "Install rustup for managing the Rust life."
+  curl https://sh.rustup.rs -sSf | sh
+end
+
+function install.package
+  echo "TRACE: install.package($argv)"
+  emit preinstall:package:$argv
+  stow $argv
+  emit postinstall:package:$argv
+end
+
+function _preinstall.package.macos -e preinstall:package:macos
   # Install fonts.
   cp $HOME/.dotfiles/fonts/*.ttf /Library/Fonts/
 
@@ -29,10 +60,9 @@ case Darwin
 
   # We need stow first and foremost.
   brew install stow
+end
 
-  # Put macos files in place.
-  stow macos
-
+function _postinstall.package.macos -e postinstall:package:macos
   # Install Homebrew bundle.
   brew bundle --global
 
@@ -46,44 +76,27 @@ case Darwin
   # TODO: High contrast.
 end
 
-# Install some packages.
-stow fish bin git
-
-# Atom
-######
-
-rm -rf ~/.atom
-stow atom
-if [ "$SKIP_APM_STARS_INSTALL" != "1" ]
-  pip install jupyter
-  apm stars --install
+function _preinstall.package.atom -e preinstall:package:atom
+  rm -rf ~/.atom
 end
 
-# Racket
-########
-
-stow racket
-# FIXME: This is currently throwing an error, but still works.
-raco pkg install --batch --deps search-auto xrepl
-
-# Ruby
-######
-
-stow ruby
-
-# Rust
-######
-
-curl https://sh.rustup.rs -sSf | sh
-
-# Finally, change the shell.
-if not grep fish /etc/shells >/dev/null
-  echo 'Adding `/usr/local/bin/fish` to /etc/shells.'
-  sudo sh -c 'echo "/usr/local/bin/fish" >> /etc/shells'
-end
-if [ $SHELL != '/usr/local/bin/fish' ]
-  echo 'Changing the user shell to /usr/local/bin/fish.'
-  chsh -s /usr/local/bin/fish
+function _postinstall.package.atom -e postinstall:package:atom
+  if [ "$SKIP_APM_STARS_INSTALL" != "1" ]
+    pip install jupyter
+    apm stars --install
+  end
 end
 
-echo 'Done!'
+function _postinstall.package.racket -e postinstall.package:racket
+  # FIXME: This is currently throwing an error, but still works.
+  raco pkg install --batch --deps search-auto xrepl
+end
+
+install.arch
+install.package atom
+install.package fish
+install.package bin
+install.package git
+install.package racket
+install.package ruby
+install.shell
