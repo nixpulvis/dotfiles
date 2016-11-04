@@ -7,5 +7,7 @@
   term3:
     colors:
       background: "#282c34"
+    fontFamily: "Fira Mono"
+    fontSize: "14"
   welcome:
     showOnStartup: false
