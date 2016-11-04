@@ -36,6 +36,9 @@ case Darwin
   # Install Homebrew bundle.
   brew bundle --global
 
+  # Start all the installed services.
+  brew services start --all
+
   # UX
   ####
 

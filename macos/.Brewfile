@@ -22,6 +22,7 @@ cask 'atom'
 
 # Databases
 brew 'postgresql'
+brew 'redis'
 
 # Virtualization
 cask 'vagrant'
