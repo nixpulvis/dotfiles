@@ -30,16 +30,11 @@ case Darwin
   # We need stow first and foremost.
   brew install stow
 
-  stow macos 
+  # Put macos files in place.
+  stow macos
 
   # Install Homebrew bundle.
   brew bundle --global
-
-  # Install the One Dark terminal theme.
-  # TODO: Automate this?
-  echo "TODO: Open the following theme and make it (One Dark) the default."
-  echo "`open $HOME/.dotfiles/.3rd/atom-one-dark-terminal/scheme/terminal/One\ Dark.terminal`"
-  echo "TODO: Set the font to Fira Mono 14px."
 
   # UX
   ####
