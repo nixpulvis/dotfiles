@@ -55,6 +55,7 @@ stow fish bin git
 rm -rf ~/.atom
 stow atom
 if [ "$SKIP_APM_STARS_INSTALL" != "1" ]
+  pip install jupyter
   apm stars --install
 end
 
