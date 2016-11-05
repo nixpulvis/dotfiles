@@ -1,3 +1,3 @@
-function fish_greeting
+function fish_greeting -d "TODO"
   fortune
 end

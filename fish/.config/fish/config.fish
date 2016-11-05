@@ -1,7 +1,8 @@
-source $HOME/.config/fish/aliases.fish
-source $HOME/.config/fish/greeting.fish
-source $HOME/.config/fish/paths.fish
-source $HOME/.config/fish/prompt.fish
+# Wishlist:
+# - `suppress` hides lines of stdout that match a regex.
+# - `run` wraps a system call into a read call to a unix pipe, that only prints
+#   on error, or in grey in verbose mode.
+
 
 # TODO: Revisit in fish.
 # # If we are a login shell start the WM.
