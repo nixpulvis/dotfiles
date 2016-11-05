@@ -1,4 +1,4 @@
-function alias.cd -d "TODO"
+function dotfiles.alias.cd -d "TODO"
   # Get back
   alias .. "cd .."
   alias ... "cd ../.."
@@ -11,7 +11,7 @@ function alias.cd -d "TODO"
   alias unix "cd ~/unix"
 end
 
-function alias.ls -d "TODO"
+function dotfiles.alias.ls -d "TODO"
   # Detect which `ls` flavor is in use
   if ls --color > /dev/null 2>&1 # GNU `ls`
     set colorflag "--color"

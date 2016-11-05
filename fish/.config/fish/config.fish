@@ -17,8 +17,8 @@
 set -x DOTFILES $HOME/.dotfiles
 set -x LIB      $DOTFILES/fish/.config/fish
 
+source $LIB/env/lib.fish
+source $LIB/ext/lib.fish
+source $LIB/hooks/lib.fish
 source $LIB/alias.fish
-source $LIB/greeting.fish
 source $LIB/install.fish
-source $LIB/paths.fish
-source $LIB/prompt.fish
