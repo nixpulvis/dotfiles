@@ -5,5 +5,4 @@ function dotfiles.install -d "TODO"
   emit postinstall:package:$argv
 end
 
-source $LIB/install/hooks/lib.fish
-source $LIB/install/system.fish
+source $LIB/hooks/lib.fish
