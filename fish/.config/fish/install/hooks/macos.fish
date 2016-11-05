@@ -1,7 +1,4 @@
 function _preinstall.package.macos -e preinstall:package:macos
-  # Install fonts.
-  cp $HOME/.dotfiles/fonts/*.ttf /Library/Fonts/
-
   # Install homebrew (without prompt).
   /usr/bin/ruby -e (curl -fsSL "https://raw.githubusercontent.com/Homebrew/install/master/install") </dev/null
 

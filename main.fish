@@ -13,15 +13,15 @@ git submodule update --recursive --remote
 # matters quite a lot, and can be tricky.
 switch (uname)
 case Darwin
-  dotfiles.install.package macos
+  dotfiles.install macos
 case Linux
-  dotfiles.install.package linux
+  dotfiles.install linux
 end
 # TODO: Make a package as well, allowing install package to be simply install.
 dotfiles.install.system
-dotfiles.install.package atom
-dotfiles.install.package fish
-dotfiles.install.package bin
-dotfiles.install.package git
-dotfiles.install.package racket
-dotfiles.install.package ruby
+dotfiles.install atom
+dotfiles.install fish
+dotfiles.install bin
+dotfiles.install git
+dotfiles.install racket
+dotfiles.install ruby
