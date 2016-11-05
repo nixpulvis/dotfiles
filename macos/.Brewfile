@@ -7,6 +7,7 @@ brew 'stow'
 brew 'tldr'
 brew 'tree'
 brew 'zmq'
+brew 'pass'
 
 cask 'istat-menus'
 cask 'kap'
