@@ -12,3 +12,12 @@ source $HOME/.config/fish/prompt.fish
 #     end
 #   end
 # end
+
+set -x DOTFILES $HOME/.dotfiles
+
+set LIB $DOTFILES/fish/.config/fish
+source $LIB/alias.fish
+source $LIB/greeting.fish
+source $LIB/install.fish
+source $LIB/paths.fish
+source $LIB/prompt.fish
