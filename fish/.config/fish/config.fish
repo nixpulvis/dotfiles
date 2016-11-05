@@ -15,10 +15,10 @@
 # end
 
 set -x DOTFILES $HOME/.dotfiles
+set -x LIB      $DOTFILES/fish/.config/fish
 
-set LIB $DOTFILES/fish/.config/fish
 source $LIB/alias.fish
 source $LIB/greeting.fish
-source $LIB/install.fish
+source $LIB/install/lib.fish
 source $LIB/paths.fish
 source $LIB/prompt.fish
