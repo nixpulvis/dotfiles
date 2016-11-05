@@ -1,12 +1,7 @@
-#!/usr/bin/env fish
-
-# Self
-
-function self.update -d "Make sure we're on the latest code from the Git remote."
-  git pull
-  git submodule init
-  git submodule update --recursive --remote
-end
+# Wishlist:
+# - `suppress` hides lines of stdout that match a regex.
+# - `run` wraps a system call into a read call to a unix pipe, that only prints
+#   on error, or in grey in verbose mode.
 
 function install.name -d "Set the name of this computer."
   # TODO: Update computer name
@@ -92,12 +87,3 @@ function _postinstall.package.racket -e postinstall.package:racket
   # FIXME: This is currently throwing an error, but still works.
   raco pkg install --batch --deps search-auto xrepl
 end
-
-install.arch
-install.package atom
-install.package fish
-install.package bin
-install.package git
-install.package racket
-install.package ruby
-install.shell
