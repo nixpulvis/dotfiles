@@ -10,5 +10,7 @@
       background: "#282c34"
     fontFamily: "Fira Mono"
     fontSize: "14"
+  "tree-view":
+    squashDirectoryNames: true
   welcome:
     showOnStartup: false
