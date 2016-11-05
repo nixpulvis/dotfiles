@@ -74,6 +74,7 @@ function _postinstall.package.macos -e postinstall:package:macos
 
   # TODO: Turn off all options in Keyboard/Text.
   # TODO: High contrast.
+  # TODO: Disable autocomplete and the like.
 end
 
 function _preinstall.package.atom -e preinstall:package:atom
