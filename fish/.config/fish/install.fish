@@ -19,7 +19,7 @@ function dotfiles.install -d "TODO"
       dotfiles.install linux
     end
     # TODO: Make a package as well, allowing install package to be simply install.
-    dotfiles.install.system
+    dotfiles.install system
     dotfiles.install atom
     dotfiles.install fish
     dotfiles.install bin
