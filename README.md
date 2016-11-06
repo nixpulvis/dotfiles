@@ -5,7 +5,7 @@ To install from a system without `fish`, first you need to get a
 little fishy. Run the following command to get with the times:
 
 ```
-./fishup
+./bootstrap.sh
 ```
 
 Once you have `fish`, installing for the first, second, third or even forth
