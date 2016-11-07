@@ -27,9 +27,15 @@ function dotfiles.install -d "TODO"
     dotfiles.install racket
     dotfiles.install ruby
   case 1
-    emit preinstall:package:$argv
+    if functions | grep dotfiles.install.pre.$argv
+      eval dotfiles.install.pre.$argv
+    end
+
     stow $argv
-    emit postinstall:package:$argv
+
+    if functions | grep dotfiles.install.post.$argv
+      eval dotfiles.install.post.$argv
+    end
   end
 end
 

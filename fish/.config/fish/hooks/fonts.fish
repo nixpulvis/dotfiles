@@ -1,4 +1,4 @@
-function _postinstall.package.fonts -e postinstall:package:fonts
+function dotfiles.install.pre.fonts
   # Install fonts.
   cp $HOME/.dotfiles/fonts/*.ttf /Library/Fonts/
 end

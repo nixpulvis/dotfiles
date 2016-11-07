@@ -1,4 +1,4 @@
-function _postinstall.package.system -e postinstall:package:system
+function dotfiles.install.pre.system
   # TODO: Update computer name
 
   if not grep fish /etc/shells >/dev/null

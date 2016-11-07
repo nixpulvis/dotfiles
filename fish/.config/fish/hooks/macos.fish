@@ -1,4 +1,4 @@
-function _preinstall.package.macos -e preinstall:package:macos
+function dotfiles.install.pre.macos
   # Install homebrew (without prompt).
   /usr/bin/ruby -e (curl -fsSL "https://raw.githubusercontent.com/Homebrew/install/master/install") </dev/null
 
@@ -6,7 +6,7 @@ function _preinstall.package.macos -e preinstall:package:macos
   brew install stow
 end
 
-function _postinstall.package.macos -e postinstall:package:macos
+function dotfiles.install.post.macos
   # Install Homebrew bundle.
   brew bundle --global
 

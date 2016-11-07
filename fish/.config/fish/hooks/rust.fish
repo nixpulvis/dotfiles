@@ -1,3 +1,3 @@
-function __ -e postinstall.package:racket -d "Install rustup for managing the Rust life."
+function dotfiles.install.pre.rust
   curl https://sh.rustup.rs -sSf | sh
 end
