@@ -1,0 +1,1 @@
+/Users/apple/.config/fisherman/bass/functions/bass.fish

@@ -1,0 +1,8 @@
+auto-save-list/
+ido.last
+smex-items
+projectile-bookmarks.eld
+*.elc
+.mc-lists.el
+elpa/*
+el-get/*

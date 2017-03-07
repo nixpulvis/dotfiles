@@ -1,0 +1,1 @@
+/Users/apple/.config/fisherman/get/completions/get.fish
