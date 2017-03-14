@@ -1,1 +1,0 @@
-/Users/apple/.config/fisherman/bass/functions/__bass.py

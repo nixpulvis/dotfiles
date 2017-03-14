@@ -1,1 +1,0 @@
-/Users/apple/.config/fisherman/thefuck/functions/fuck.fish

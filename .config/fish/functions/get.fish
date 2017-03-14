@@ -1,1 +1,0 @@
-/Users/apple/.config/fisherman/get/functions/get.fish
