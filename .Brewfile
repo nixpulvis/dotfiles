@@ -1,3 +1,4 @@
+brew 'fish'
 brew 'ack'
 brew 'fortune'
 brew 'htop'
