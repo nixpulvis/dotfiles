@@ -10,6 +10,7 @@
 !.gitconfig
 !.gitignore
 !.ssh/id_rsa.pub
+!.colors.clr
 
 # Reignore emacs' fucking backup files for now.
 *\~
