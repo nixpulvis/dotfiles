@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require "benchmark"
+
+time = Benchmark.realtime do
+  ARGV.shift.to_i.times { system(*ARGV) }
+end
+puts "\nTime elapsed #{time} seconds"
