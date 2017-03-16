@@ -1,1 +1,1 @@
-/Users/apple/.config/fisherman/git_util/git_ahead.fish
+/Users/nixpulvis/.config/fisherman/git_util/git_ahead.fish

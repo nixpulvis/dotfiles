@@ -1,1 +1,1 @@
-/Users/apple/.config/fisherman/boss/fish_prompt.fish
+/Users/nixpulvis/.config/fisherman/boss/fish_prompt.fish

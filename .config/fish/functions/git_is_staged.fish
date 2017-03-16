@@ -1,1 +1,1 @@
-/Users/apple/.config/fisherman/git_util/git_is_staged.fish
+/Users/nixpulvis/.config/fisherman/git_util/git_is_staged.fish

@@ -1,1 +1,1 @@
-/Users/apple/.config/fisherman/humanize_duration/humanize_duration.fish
+/Users/nixpulvis/.config/fisherman/humanize_duration/humanize_duration.fish

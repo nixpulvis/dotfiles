@@ -1,1 +1,1 @@
-/Users/apple/.config/fisherman/git_util/git_is_stashed.fish
+/Users/nixpulvis/.config/fisherman/git_util/git_is_stashed.fish
