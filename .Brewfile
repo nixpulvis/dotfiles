@@ -24,6 +24,7 @@ brew 'rbenv'
 brew 'ruby-build'
 brew 'pyenv'
 brew 'racket'
+brew 'node'
 
 # Editors
 brew 'vim'
