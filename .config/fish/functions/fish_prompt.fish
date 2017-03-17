@@ -1,1 +1,0 @@
-/Users/nixpulvis/.config/fisherman/boss/fish_prompt.fish
