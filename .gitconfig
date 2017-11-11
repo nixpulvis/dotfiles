@@ -1,0 +1,35 @@
+[user]
+	name = Nathan Lilienthal
+    email = nathan@nixpulvis.com
+
+[alias]
+    up = !git remote update -p; git merge --ff-only @{u}
+    a = add
+    b = branch
+    c = clean
+    d = diff
+    f = fetch
+    h = show
+    i = commit
+    l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    m = merge
+    n = init
+    o = remote
+    p = push
+    r = rebase
+    s = status -s
+    t = tag
+    u = reset
+    v = pull
+    x = checkout
+    z = stash
+    cp = cherry-pick
+
+[branch]
+    autosetuprebase = always
+
+[apply]
+    whitespace = warn
+
+[url "ssh://git@heroku.com/"]
+	insteadOf = https://git.heroku.com/

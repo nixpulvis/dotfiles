@@ -1,0 +1,175 @@
+########
+# Font #
+########
+
+# Use Mozilla's fantasic Fira font.
+set $font Fira Mono 13
+font pango: $font
+
+##########
+# Colors #
+##########
+
+set $black #111111
+set $darkgray #444444
+set $lightgray #aaaaaa
+set $white #eeeeee
+set $red #ff0a0a
+set $green #00ff0a
+set $blue #00a0ff
+set $orange #ff7d0a
+
+# border fill title splitting
+client.focused $black $orange $white $darkgray
+client.focused_inactive $black $darkgray $white $darkgray
+client.unfocused $black $darkgray $white $darkgray
+client.urgent $black $red $white $red
+
+###############
+# Keybindings #
+###############
+
+# Use the OS key for i3's modifier.
+set $mod Mod4
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# Start a terminal, see $TERMINAL for the executable.
+bindsym $mod+Return exec i3-sensible-terminal
+
+# Kill currently focused window.
+bindsym $mod+Shift+q kill
+
+# start `dmenu` in app launching mode.
+#bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -fn 'Fira Mono-16' -nb '$darkgray' -nf '$orange' -sb '$orange' -sf '$white' -i -l 10 -w"
+
+# TODO: Theme not working atm
+bindsym $mod+d exec --no-startup-id "rofi -show drun -modi drun -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -seperator-style none -font 'Fira Mono 13' -columns 9 -bw 0 disable-history -hide-scrollbar -color-window $red $red $red -color-normal $green $green $green $green $green -color-active $orange $orange $orange $orange $orange -color-urgent $red $red $red $red $red -kb-row-select 'Tab' -kb-row-tab ''"
+
+# Change current focus.
+bindsym $mod+h focus left
+bindsym $mod+l focus right
+bindsym $mod+k focus up
+bindsym $mod+j focus down
+bindsym $mod+Left focus left
+bindsym $mod+Right focus right
+bindsym $mod+Up focus up
+bindsym $mod+Down focus down
+bindsym $mod+space focus mode_toggle
+
+# Move focused window.
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Set split direction.
+bindsym $mod+> split >
+bindsym $mod+v split v
+
+# Set view modes
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+
+# Focus parent and child.
+bindsym $mod+p focus parent
+bindsym $mod+c focus child
+
+# Switch workspace.
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# Move focused container to workspace.
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+# Reload the configuration file.
+bindsym $mod+Shift+c reload
+# Restart i3 inplace.
+bindsym $mod+Shift+r restart
+
+# Exit i3.
+bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
+
+# Resize window.
+mode "resize" {
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Up resize grow height 10 px or 10 ppt
+    bindsym Down resize shrink height 10 px or 10 ppt
+
+    # Exit resize mode.
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+# Enter resize mode.
+bindsym $mod+r mode "resize"
+
+# Audio media keys.
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
+
+# Brightness media keys.
+bindsym XF86MonBrightnessUp exec calc $(cat /sys/class/backlight/intel_backlight/brightness) + 53 | sed "s/\s*//" | sudo tee /sys/class/backlight/intel_backlight/brightness
+bindsym XF86MonBrightnessDown exec calc $(cat /sys/class/backlight/intel_backlight/brightness) - 53 | sed "s/\s*//" | sudo tee /sys/class/backlight/intel_backlight/brightness
+
+# TODO: Scratchpad Terminal
+#exec --no-startup-id alacritty --title visor --dimensions 100 100
+#for_window [class="visor"] move scratchpad, fullscreen toggle
+#bindsym F12 [class="visor"] scratchpad show, fullscreen toggle
+
+# Move windows into scratchpad.
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+##############
+# Status Bar #
+##############
+
+bar {
+    status_command i3status
+	position top
+    font pango:Fira Mono, 13
+
+	colors {
+        background $darkgray
+        separator $white
+        statusline $white
+        focused_workspace $black $orange $white
+        # TODO: Differentiate active and focused workspaces.
+       	active_workspace $black $orange $white
+        inactive_workspace $black $darkgray $white
+        urgent_workspace $black $red $white
+	}
+}
+
+#############
+# Wallpaper #
+#############
+exec --no-startup-id feh --bg-scale $HOME/.X/backdrop3.png
