@@ -4,7 +4,6 @@ call plug#begin()
 Plug 'jiangmiao/auto-pairs'
 Plug 'airblade/vim-gitgutter'
 Plug 'mattn/webapi-vim'
-Plug 'vim-syntastic/syntastic'
 Plug 'gabrielelana/vim-markdown'
 Plug 'vim-latex/vim-latex'
 Plug 'rust-lang/rust.vim'
@@ -83,15 +82,6 @@ set mouse=a
 set wildmode=longest,list,full
 set wildmenu
 
-" Syntax checking.
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-"let g:syntastic_always_populate_loc_list=1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-
 " Spell checking.
 :map <F5> :setlocal spell! spelllang=en_us<CR>
 
@@ -102,10 +92,6 @@ let g:vim_markdown_math = 1
 
 " Rust configuration.
 let g:ycm_rust_src_path = '$HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
-let g:syntastic_rust_rustc_exe = 'cargo check'
-let g:syntastic_rust_rustc_fname = ''
-let g:syntastic_rust_rustc_args = '--'
-let g:syntastic_rust_checkers = ['rustc']
 autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
 autocmd BufWrite *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" <bar> redraw!
 
