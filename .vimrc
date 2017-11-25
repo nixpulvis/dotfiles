@@ -94,6 +94,7 @@ set wildmenu
 :map <F5> :setlocal spell! spelllang=en_us<CR>
 
 " Markdown
+let g:vim_markdown_conceal = 0
 let g:tex_conceal = 0
 let g:vim_markdown_math = 1
 
