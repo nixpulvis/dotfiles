@@ -52,7 +52,7 @@ set textwidth=80
 
 " Unbind the cursor keys in insert, normal and visual modes.
 for prefix in ['i', 'n', 'v']
-  for key in ['<Up>', '<Down>', '<Left>', '<Right>']
+  for key in ['<up>', '<down>', '<left>', '<right>']
     exe prefix . "noremap " . key . " <Nop>"
   endfor
 endfor
