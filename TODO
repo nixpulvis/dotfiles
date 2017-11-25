@@ -1,3 +1,4 @@
 - DBUS / JOURNAL running logger, access with hotkey.
 - Research `xxkb` on the AUR.
 - Time of last command in prompt.
+- Newline at end of every file.
