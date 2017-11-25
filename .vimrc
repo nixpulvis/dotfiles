@@ -48,6 +48,9 @@ let g:lightline = {
 :hi cursorlinenr ctermfg=red
 :hi LineNr ctermbg=236
 
+" Clipboard support
+set clipboard=unnamed
+
 " Folding
 set nofoldenable
 
