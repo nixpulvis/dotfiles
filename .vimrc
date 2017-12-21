@@ -8,7 +8,7 @@ Plug 'gabrielelana/vim-markdown'
 Plug 'vim-latex/vim-latex'
 Plug 'rust-lang/rust.vim'
 Plug 'timonv/vim-cargo'
-Plug 'Valloric/YouCompleteMe'
+"Plug 'Valloric/YouCompleteMe'
 Plug 'cespare/vim-toml'
 Plug 'tpope/vim-commentary'
 Plug 'ctrlpvim/ctrlp.vim'
@@ -33,7 +33,7 @@ set undodir=$HOME/.vim/undo
 set undofile
 
 syntax enable
-colorscheme onedark
+"colorscheme onedark
 
 set noshowmode
 set laststatus=2
@@ -91,7 +91,7 @@ let g:tex_conceal = 0
 let g:vim_markdown_math = 1
 
 " Rust configuration.
-let g:ycm_rust_src_path = '$HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
-autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-autocmd BufWrite *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" <bar> redraw!
+"let g:ycm_rust_src_path = '$HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
+"autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
+"autocmd BufWrite *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" <bar> redraw!
 
