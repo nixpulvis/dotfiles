@@ -41,11 +41,10 @@ bindsym $mod+Return exec i3-sensible-terminal
 # Kill currently focused window.
 bindsym $mod+Shift+q kill
 
-# start `dmenu` in app launching mode.
-#bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -fn 'Fira Mono-16' -nb '$darkgray' -nf '$orange' -sb '$orange' -sf '$white' -i -l 10 -w"
+bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -fn 'Fira Mono-16' -nb '$darkgray' -nf '$orange' -sb '$orange' -sf '$white' -i -l 10"
 
 # TODO: Theme not working atm
-bindsym $mod+d exec --no-startup-id "rofi -show drun -modi drun -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -seperator-style none -font 'Fira Mono 13' -columns 9 -bw 0 disable-history -hide-scrollbar -color-window $red $red $red -color-normal $green $green $green $green $green -color-active $orange $orange $orange $orange $orange -color-urgent $red $red $red $red $red -kb-row-select 'Tab' -kb-row-tab ''"
+#bindsym $mod+d exec --no-startup-id "rofi -show drun -modi drun -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -seperator-style none -font 'Fira Mono 13' -columns 9 -bw 0 disable-history -hide-scrollbar -color-window $red $red $red -color-normal $green $green $green $green $green -color-active $orange $orange $orange $orange $orange -color-urgent $red $red $red $red $red -kb-row-select 'Tab' -kb-row-tab ''"
 
 # Change current focus.
 bindsym $mod+h focus left
