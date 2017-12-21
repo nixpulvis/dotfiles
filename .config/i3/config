@@ -111,8 +111,11 @@ bindsym $mod+Shift+c reload
 # Restart i3 inplace.
 bindsym $mod+Shift+r restart
 
+# TODO: Figure out a way to make the exit script work in sway.
+#bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
+
 # Exit i3.
-bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
+bindsym $mod+Shift+e exit
 
 # Resize window.
 mode "resize" {
