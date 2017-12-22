@@ -3,7 +3,7 @@
 ########
 
 # Use Mozilla's fantasic Fira font.
-set $font Fira Mono 13
+set $font Fira Mono 10
 font pango: $font
 
 ##########
@@ -152,9 +152,9 @@ bindsym $mod+minus scratchpad show
 ##############
 
 bar {
-    status_command i3status
+    status_command i3blocks
 	position top
-    font pango:Fira Mono, 13
+    font pango: $font
 
 	colors {
         background $darkgray

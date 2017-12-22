@@ -1,0 +1,55 @@
+# TODO: Incorperate some of the blocks from
+# https://github.com/Anachron/i3blocks
+
+separator_block_width=20
+interval=5
+
+[wifi]
+instance=wlp4s0
+command=/usr/lib/i3blocks/wifi
+separator=false
+
+[wireless]
+command=/usr/lib/i3blocks/iface
+separator=false
+
+[bandwidth]
+command=/usr/lib/i3blocks/bandwidth
+interval=1
+
+[disk]
+command=/usr/lib/i3blocks/disk
+
+[cpu]
+command=/usr/lib/i3blocks/cpu_usage
+separator=false
+
+[load]
+command=/usr/lib/i3blocks/load_average
+separator=false
+
+[temp]
+command=/usr/lib/i3blocks/temperature
+
+[memory]
+command=/usr/lib/i3blocks/memory
+
+[media]
+instance=cmus
+command=/usr/lib/i3blocks/mediaplayer
+interval=1
+separator=false
+
+[volume]
+command=/usr/lib/i3blocks/volume
+interval=1
+# TODO: Use signals to update.
+# signal=...
+# interval=once
+
+[battery]
+command=/usr/lib/i3blocks/battery
+
+[time]
+command=date '+%D %T'
+interval=1
