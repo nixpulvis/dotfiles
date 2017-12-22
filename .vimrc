@@ -54,7 +54,9 @@ let g:lightline = {
 :hi cursorlinenr ctermfg=red
 :hi LineNr ctermbg=236
 
-set textwidth=80
+set colorcolumn=80
+set textwidth=0
+set wrap
 
 " Unbind the cursor keys in insert, normal and visual modes.
 for prefix in ['i', 'n', 'v']
