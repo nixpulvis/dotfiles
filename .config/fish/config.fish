@@ -18,6 +18,10 @@ function fish_prompt
   printf '%s%s%s on %s%s%s at %s%s $%s ' (set_color red) (whoami) (set_color normal) (set_color green) (hostname) (set_color normal) (set_color $fish_color_cwd) (prompt_pwd) (set_color normal)
 end
 
+function fish_right_prompt
+  printf '%s%s' (set_color -d white) (date)
+end
+
 # Print a hand rolled fortune.
 fortune
 echo
