@@ -144,6 +144,7 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
 
 # Brightness media keys.
+# TODO: Support other forms of backlights (like my desktop).
 bindsym XF86MonBrightnessUp exec calc $(cat /sys/class/backlight/intel_backlight/brightness) + 53 | sed "s/\s*//" | sudo tee /sys/class/backlight/intel_backlight/brightness
 bindsym XF86MonBrightnessDown exec calc $(cat /sys/class/backlight/intel_backlight/brightness) - 53 | sed "s/\s*//" | sudo tee /sys/class/backlight/intel_backlight/brightness
 
@@ -182,3 +183,4 @@ bar {
 # Wallpaper #
 #############
 exec --no-startup-id feh --bg-scale $HOME/.X/backdrop3.png
+
