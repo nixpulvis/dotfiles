@@ -10,30 +10,27 @@ font pango: $font
 # Colors #
 ##########
 
-set $base00 #061229
-set $base01 #2a3448
-set $base02 #4d5666
-set $base03 #717885
-set $base04 #9a99a3
-set $base05 #b8bbc2
-set $base06 #dbdde0
-set $base07 #ffffff
-set $base08 #d07346
-set $base09 #f0a000
-set $base0A #fbd461
-set $base0B #99bf52
-set $base0C #72b9bf
-set $base0D #5299bf
-set $base0E #9989cc
-set $base0F #b08060
+# One dark, from the one vim theme.
+set $foreground #abb2bf
+set $background #282c34
+set $black      #131613
+set $red        #e06c75
+set $green      #98c379
+set $yellow     #d19a66
+set $blue       #61afef
+set $magenta    #c678dd
+set $cyan       #56b6c2
+set $white      #abb2bf
 
 # Basic color configuration.
-client.focused          $base05 $base0D $base00 $base0D $base0D
-client.focused_inactive $base01 $base01 $base05 $base03 $base01
-client.unfocused        $base01 $base00 $base05 $base01 $base01
-client.urgent           $base08 $base08 $base00 $base08 $base08
-client.placeholder      $base00 $base00 $base05 $base00 $base00
-client.background       $base07
+client.focused          $yellow $yellow     $background $red        $yellow
+client.focused_inactive $yellow $background $foreground $background $background
+client.unfocused        $yellow $background $foreground $background $background
+client.urgent           $red    $red        $background $red        $red
+# TODO: We need to learn more about layout saving I think.
+client.placeholder      $red $red $red $red $red
+# TODO: What exactly does this do?
+client.background       $background
 
 ###############
 # Keybindings #
@@ -165,15 +162,15 @@ bar {
     font pango: $font
 
 	colors {
-        background $base00
-        separator  $base01
-        statusline $base04
+        background $background
+        separator  $foreground
+        statusline $foreground
 
-        focused_workspace   $base05 $base0D $base00
-        active_workspace    $base05 $base03 $base00
-        inactive_workspace  $base03 $base01 $base05
-        urgent_workspace    $base08 $base08 $base00
-        binding_mode        $base00 $base0A $base00
+        focused_workspace   $yellow     $yellow     $background
+        active_workspace    $yellow     $background $foreground
+        inactive_workspace  $background $background $foreground
+        urgent_workspace    $red        $red        $background
+        binding_mode        $background $background $foreground
 	}
 }
 
