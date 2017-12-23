@@ -19,7 +19,11 @@ set __fish_git_prompt_showstashstate 'yes'
 set __fish_git_prompt_showcolorhints
 
 function fish_prompt
-  printf '%s%s%s@%s%s%s:%s%s%s $%s ' (set_color red) (whoami) (set_color normal) (set_color blue) (hostname) (set_color normal) (set_color green) (prompt_pwd) (set_color normal) (__fish_git_prompt)
+  printf '%s%s%s@%s%s%s:%s%s%s%s $ ' \
+  (set_color red) (whoami) (set_color normal) \
+  (set_color blue) (hostname) (set_color normal) \
+  (set_color green) (prompt_pwd) (set_color normal) \
+  (__fish_git_prompt)
 end
 
 function fish_right_prompt
