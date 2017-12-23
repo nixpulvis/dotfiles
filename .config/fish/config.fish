@@ -14,8 +14,12 @@ set -x RUST_SRC_PATH $HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/l
 alias git hub
 alias l "ls -l"
 
+set __fish_git_prompt_showdirtystate 'yes'
+set __fish_git_prompt_showstashstate 'yes'
+set __fish_git_prompt_showcolorhints
+
 function fish_prompt
-  printf '%s%s%s on %s%s%s at %s%s $%s ' (set_color red) (whoami) (set_color normal) (set_color green) (hostname) (set_color normal) (set_color $fish_color_cwd) (prompt_pwd) (set_color normal)
+  printf '%s%s%s@%s%s%s:%s%s%s $%s ' (set_color red) (whoami) (set_color normal) (set_color blue) (hostname) (set_color normal) (set_color green) (prompt_pwd) (set_color normal) (__fish_git_prompt)
 end
 
 function fish_right_prompt
