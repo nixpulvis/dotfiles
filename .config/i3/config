@@ -73,7 +73,7 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # Set split direction.
-bindsym $mod+> split >
+bindsym $mod+b split h
 bindsym $mod+v split v
 
 # Set view modes
