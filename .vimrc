@@ -40,20 +40,22 @@ set undodir=$HOME/.vim/undo
 set undofile
 
 syntax enable
-"colorscheme onedark
+colorscheme onedark
 
+" Configure lightline to always show.
+" TODO: Git information in lightline.
 set noshowmode
 set laststatus=2
-let g:lightline = {
- \   'colorscheme': 'onedark',
- \ }
+let g:lightline = { 'colorscheme': 'onedark' }
 
-:set number
-:set cursorline
-:hi cursorline cterm=none
-:hi cursorlinenr ctermfg=red
-:hi LineNr ctermbg=236
+" :set number
+" :set cursorline
+" :hi cursorline cterm=none
+" :hi cursorlinenr ctermfg=red
+" :hi LineNr ctermbg=236
 
+" Editor width configuration.
+" TODO: Reconsider sidescroll.
 set colorcolumn=80
 set textwidth=0
 set wrap
