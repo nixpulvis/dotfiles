@@ -21,8 +21,6 @@ Plug 'tpope/vim-commentary'  " TODO
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'sheerun/vim-polyglot'  " TODO
-Plug 'tomasr/molokai'  " TODO
-Plug 'sickill/vim-monokai'  " TODO
 Plug 'rakr/vim-one'
 Plug 'terryma/vim-multiple-cursors'  " TODO
 Plug 'ntpeters/vim-better-whitespace'  " TODO
