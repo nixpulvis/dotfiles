@@ -1,4 +1,8 @@
-set -x TERMINAL alacritty
+if type -q alacritty
+    set -x TERMINAL alacritty
+else if type -q termite
+    set -x TERMINAL termite
+end
 
 set -x EDITOR vim
 
