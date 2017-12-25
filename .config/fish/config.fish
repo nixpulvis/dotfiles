@@ -8,7 +8,6 @@ set -x EDITOR vim
 
 set -x PATH /usr/local/bin $PATH
 
-set -x PATH $HOME/.gem/ruby/2.4.0/bin $PATH
 set -x PATH $HOME/.rbenv/bin $PATH
 status --is-interactive; and source (rbenv init -|psub)
 
