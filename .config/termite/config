@@ -1,0 +1,48 @@
+[options]
+font = Fira Mono 13
+mouse_autohide = true
+# Length of the scrollback buffer, 0 disabled the scrollback buffer
+# and setting it to a negative value means "infinite scrollback"
+scrollback_lines = 10000
+
+[colors]
+foreground = #abb2bf
+background = #282c34
+
+# If unset, will reverse foreground and background
+# TODO: Test correct value.
+highlight = #2f2f2f
+
+# Black
+color0 = #131613
+# Red
+color1 = #e06c75
+# Green
+color2 = #98c379
+# Yellow
+color3 = #d19a66
+# Blue
+color4 = #61afef
+# Magenta
+color5 = #c678dd
+# Cyan
+color6 = #56b6c2
+# White
+color7 = #abb2bf
+# Black (bright)
+color8 = #5c6370
+# Red (bright)
+color9 = #e06c75
+# Green (bright)
+color10 = #98c379
+# Yellow (bright)
+color11 = #d19a66
+# Blue (bright)
+color12 = #61afef
+# Magenta (bright)
+color13 = #c678dd
+# Cyan (bright)
+color14 = #56b6c2
+# White (bright)
+color15 = #ffffff
+
