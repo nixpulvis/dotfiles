@@ -38,7 +38,11 @@ function fish_prompt
 end
 
 function fish_right_prompt
-  printf '%s%s' (set_color -d white) (date)
+    set last_status $status
+    if test $last_status -ne 0
+        echo -n '('(set_color red)$last_status(set_color normal)') '
+    end
+    printf '%s%s' (set_color -d white) (date)
 end
 
 # Print a hand rolled fortune.
