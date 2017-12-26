@@ -1,5 +1,10 @@
 #!/bin/bash
 
 # TODO: Build our theme.
-rofi -show drun -location 1 -width 100 -theme $HOME/.config/rofi/onedark.rasi
-#rofi -show drun -modi drun -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -seperator-style none -font 'Fira Mono 13' -columns 9 -bw 0 disable-history -hide-scrollbar -kb-row-select 'Tab' -kb-row-tab ''
+rofi \
+    -show drun \
+    -location 1 -width 100 \
+    -lines 5 -columns 5 \
+    -hide-scrollbar \
+    -font "Fira Mono 13" \
+    -theme $HOME/.config/rofi/onedark.rasi
