@@ -115,8 +115,10 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+c reload
 # Restart i3 inplace.
 bindsym $mod+Shift+r restart
-# Exit sway from the keyboard.
+# Exit i3 from the keyboard.
 bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
+# Lock i3.
+bindsym $mod+Ctrl+l exec i3lock
 
 # Resize window.
 mode "resize" {
