@@ -45,14 +45,14 @@ function fish_right_prompt
     printf '%s%s' (set_color -d white) (date)
 end
 
-# Print a hand rolled fortune.
-fortune
-echo
-
 # Start X at login.
-if status --is-login
-  if test -z "$DISPLAY" -a $XDG_VTNR=1
+if status --is-login; and test -z "$DISPLAY"; \
+                      and test -n "$XDG_VTNR"; \
+                      and test "$XDG_VTNR" -eq 1
     exec startx > ~/.Xoutput 2>&1
-  end
+else
+    # Print a hand rolled fortune.
+    fortune
+    echo
 end
 
