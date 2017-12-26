@@ -20,16 +20,16 @@ interval=1
 [disk]
 command=/usr/lib/i3blocks/disk
 
+[temp]
+command=/usr/lib/i3blocks/temperature
+separator=false
+
 [cpu]
 command=/usr/lib/i3blocks/cpu_usage
 separator=false
 
 [load]
 command=/usr/lib/i3blocks/load_average
-separator=false
-
-[temp]
-command=/usr/lib/i3blocks/temperature
 
 [memory]
 command=/usr/lib/i3blocks/memory
