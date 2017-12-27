@@ -24,6 +24,9 @@ set -x RUST_SRC_PATH $HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/l
 alias git hub
 alias l "ls -l"
 
+# Remap caps lock to escape.
+setxkbmap -option caps:escape
+
 # Fish git config.
 set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showstashstate 'yes'
