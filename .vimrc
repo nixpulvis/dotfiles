@@ -95,6 +95,9 @@ autocmd FileType javascript setlocal tabstop=2 shiftwidth=2
 " Allow clicking with the mouse.
 set mouse=a
 
+" Allow subshells to detect running in vim.
+let $INSIDE='vim'
+
 " Vim command tab completion.
 set wildmode=longest,list,full
 set wildmenu

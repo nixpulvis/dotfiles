@@ -53,7 +53,7 @@ if status --is-login; and test -z "$DISPLAY"; \
                       and test -n "$XDG_VTNR"; \
                       and test "$XDG_VTNR" -eq 1
     exec startx > ~/.Xoutput 2>&1
-else
+else if test "$INSIDE" != "vim"
     # Print a hand rolled fortune.
     fortune
     echo
