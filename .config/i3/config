@@ -23,10 +23,10 @@ set $cyan       #56b6c2
 set $white      #abb2bf
 
 # Basic color configuration.
-client.focused          $yellow $yellow     $background $red        $yellow
-client.focused_inactive $yellow $background $foreground $background $background
-client.unfocused        $yellow $background $foreground $background $background
-client.urgent           $red    $red        $background $red        $red
+client.focused          $yellow $yellow $background $red $yellow
+client.focused_inactive $foreground $foreground $background $foreground $foreground
+client.unfocused        $foreground $foreground $background $foreground $foreground
+client.urgent           $red $red $background $red $red
 # TODO: We need to learn more about layout saving I think.
 client.placeholder      $red $red $red $red $red
 # TODO: What exactly does this do?
