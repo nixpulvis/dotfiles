@@ -118,7 +118,17 @@ bindsym $mod+Shift+r restart
 # Exit i3 from the keyboard.
 bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
 # Lock i3.
-bindsym $mod+Ctrl+l exec i3lock
+bindsym $mod+Ctrl+l exec "i3lock \
+--radius=150 \
+--clock --timefont='Fira Mono' --timesize=30 --timecolor=abb2bfff --timestr='%T %Z' \
+--datefont='Fira Mono' --datesize=20 --datecolor=abb2bfff --datestr='%a %F' \
+--color=282c34 \
+--insidecolor=282c34ff --ringcolor=abb2bfff \
+--insidevercolor=61afefff --ringvercolor=61afefff \
+--insidewrongcolor=e06c75ff --ringwrongcolor=e06c75ff \
+--linecolor=282c34ff --keyhlcolor=98c379ff --bshlcolor=e07c75ff \
+--separatorcolor=abb2bfff"
+
 
 # Resize window.
 mode "resize" {
