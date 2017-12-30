@@ -51,12 +51,14 @@ separator=false
 [volume]
 command=/usr/lib/i3blocks/volume
 interval=1
+label= 
 # TODO: Use signals to update.
 # signal=...
 # interval=once
 
 [battery]
 command=/usr/lib/i3blocks/battery
+label= 
 
 [time]
 command=date '+%D %T'
