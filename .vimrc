@@ -71,6 +71,10 @@ for prefix in ['i', 'n', 'v']
   endfor
 endfor
 
+" Bind F1 to look up under the cursor.
+" TODO: This fails if nothing is under the cursor.
+nnoremap <F1> :help <C-r><C-w><CR>
+
 " Clipboard support
 set clipboard=unnamed
 
