@@ -9,29 +9,35 @@ endif
 
 " Bring in a bunch of packages.
 call plug#begin()
-Plug 'jiangmiao/auto-pairs'  " TODO
+" UI / Theme
+Plug 'Yggdroot/indentLine'
 Plug 'airblade/vim-gitgutter'
-Plug 'mattn/webapi-vim'  " TODO
-Plug 'gabrielelana/vim-markdown'
-Plug 'vim-latex/vim-latex'
-Plug 'rust-lang/rust.vim'
-Plug 'timonv/vim-cargo'
-Plug 'cespare/vim-toml'
-Plug 'tpope/vim-commentary'  " TODO
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'sheerun/vim-polyglot'  " TODO
 Plug 'rakr/vim-one'
-Plug 'terryma/vim-multiple-cursors'  " TODO
-Plug 'ntpeters/vim-better-whitespace'  " TODO
-Plug 'Yggdroot/indentLine'  " TODO
-Plug 'scrooloose/nerdtree'  " TODO
-Plug 'majutsushi/tagbar'  " TODO
-Plug 'mbbill/undotree'  " TODO
-Plug 'chrisbra/Colorizer'  " TODO
-Plug 'nathanaelkane/vim-indent-guides'
-Plug 'vim-scripts/Align'  " TODO
+Plug 'scrooloose/nerdtree'
+
+" Tools
+Plug 'chrisbra/Colorizer'
+" TODO: This still doesn't work the way I expect it to.
+Plug 'ctrlpvim/ctrlp.vim'
+" TODO: This still does things *wrong* with jumpping to closing pairs.
+Plug 'jiangmiao/auto-pairs'
+Plug 'mbbill/undotree'
+Plug 'ntpeters/vim-better-whitespace'
+" `gcc`, `gc` and others for commenting.
+Plug 'tpope/vim-commentary'
+
+" Languages
+Plug 'cespare/vim-toml'
+Plug 'gabrielelana/vim-markdown'
+Plug 'rust-lang/rust.vim'
+Plug 'sheerun/vim-polyglot'
+Plug 'timonv/vim-cargo'
+Plug 'vim-latex/vim-latex'
 call plug#end()
+
+" Colorize color strings.
+let g:colorizer_auto_color = 1
 
 " Highlight search matches.
 set hlsearch
