@@ -45,6 +45,9 @@ set hlsearch
 " NOTE: It's very strange that <C-_> is vim's way of saying this.
 nnoremap <silent> <C-_> :nohl<CR>
 
+" vimgrep the current word.
+noremap <F2> :execute "vimgrep /" . expand("<cword>") . "/j **" <Bar> cw<CR>
+
 " Persist undos.
 :silent call system('mkdir -p $HOME/.vim/undo')
 set undodir=$HOME/.vim/undo
