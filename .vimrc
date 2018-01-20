@@ -71,11 +71,12 @@ let g:lightline = { 'colorscheme': 'one' }
 " Highlight the line the cursor is on.
 :set cursorline
 
-" Editor width configuration.
-" TODO: Reconsider sidescroll.
+" Text overflows and requires scrolling.
+" This is an intentionally long line to allow easy testing of the editor overflow. In general we like to have ~80 char max.
 set colorcolumn=80
 set textwidth=0
-set wrap
+set nowrap sidescroll=1 listchars=extends:>
+set sidescrolloff=10
 
 " Unbind the cursor keys in insert, normal and visual modes.
 for prefix in ['i', 'n', 'v', 'c']
