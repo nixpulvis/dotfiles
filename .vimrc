@@ -18,7 +18,6 @@ Plug 'scrooloose/nerdtree'
 
 " Tools
 Plug 'chrisbra/Colorizer'
-" TODO: This still doesn't work the way I expect it to.
 Plug 'ctrlpvim/ctrlp.vim'
 " TODO: This still does things *wrong* with jumpping to closing pairs.
 Plug 'jiangmiao/auto-pairs'
