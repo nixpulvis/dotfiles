@@ -94,6 +94,9 @@ nnoremap <F1> :help <C-r><C-w><CR>
 " Clipboard support
 set clipboard=unnamed
 
+" Strip whitespace on save.
+autocmd BufEnter * EnableStripWhitespaceOnSave
+
 " Folding
 set nofoldenable
 
