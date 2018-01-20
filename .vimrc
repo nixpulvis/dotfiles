@@ -33,6 +33,12 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'vim-scripts/Align'  " TODO
 call plug#end()
 
+" Highlight search matches.
+set hlsearch
+" Map Ctrl-/ to clear highlighting.
+" NOTE: It's very strange that <C-_> is vim's way of saying this.
+nnoremap <silent> <C-_> :nohl<CR>
+
 " Persist undos.
 :silent call system('mkdir -p $HOME/.vim/undo')
 set undodir=$HOME/.vim/undo
