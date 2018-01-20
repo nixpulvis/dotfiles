@@ -99,6 +99,9 @@ cnoremap <C-a> <C-b>
 " TODO: This fails if nothing is under the cursor.
 nnoremap <F1> :help <C-r><C-w><CR>
 
+" Open the NERDTree directory viewer.
+noremap <C-Bslash> :NERDTreeToggle<CR>
+
 " Clipboard support
 set clipboard=unnamed
 
