@@ -48,6 +48,9 @@ nnoremap <silent> <C-_> :nohl<CR>
 " vimgrep the current word.
 noremap <F2> :execute "vimgrep /" . expand("<cword>") . "/j **" <Bar> cw<CR>
 
+" Find the current word.
+noremap <F3> :/<C-r><C-w><CR>
+
 " Persist undos.
 :silent call system('mkdir -p $HOME/.vim/undo')
 set undodir=$HOME/.vim/undo
