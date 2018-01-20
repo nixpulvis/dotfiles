@@ -26,6 +26,7 @@ Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 " `gcc`, `gc` and others for commenting.
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-sleuth'
 
 " Languages
 Plug 'cespare/vim-toml'
@@ -106,13 +107,12 @@ autocmd BufEnter * EnableStripWhitespaceOnSave
 " Folding
 set nofoldenable
 
-" Indentation
+" Default indentation values.
 set expandtab
 set shiftwidth=4
 set tabstop=4
 
-" TODO: Let's stop using various tab sizes.
-filetype plugin on
+" Some filetypes we default to smaller tab length.
 filetype plugin indent on
 autocmd FileType ruby setlocal tabstop=2 shiftwidth=2
 autocmd FileType html setlocal tabstop=2 shiftwidth=2
