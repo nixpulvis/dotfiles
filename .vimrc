@@ -71,11 +71,21 @@ set textwidth=0
 set wrap
 
 " Unbind the cursor keys in insert, normal and visual modes.
-for prefix in ['i', 'n', 'v']
+for prefix in ['i', 'n', 'v', 'c']
   for key in ['<up>', '<down>', '<left>', '<right>']
     exe prefix . "noremap " . key . " <Nop>"
   endfor
 endfor
+
+" Bind vim style movement keys for command mode.
+cnoremap <C-h> <left>
+cnoremap <C-j> <down>
+cnoremap <C-k> <up>
+cnoremap <C-l> <right>
+
+" Bind standard movement C-a for moving to the start of the line.
+" C-e is already bound.
+cnoremap <C-a> <C-b>
 
 " Bind F1 to look up under the cursor.
 " TODO: This fails if nothing is under the cursor.
