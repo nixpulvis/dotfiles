@@ -19,6 +19,7 @@ Plug 'scrooloose/nerdtree'
 " Tools
 Plug 'chrisbra/Colorizer'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'janko-m/vim-test'
 " TODO: This still does things *wrong* with jumpping to closing pairs.
 Plug 'jiangmiao/auto-pairs'
 Plug 'mbbill/undotree'
@@ -106,6 +107,14 @@ nnoremap <F1> :help <C-r><C-w><CR>
 
 " Open the NERDTree directory viewer.
 noremap <C-Bslash> :NERDTreeToggle<CR>
+
+" Testing keybinds.
+nmap <silent> t<C-n> :TestNearest<CR>
+nmap <silent> t<C-f> :TestFile<CR>
+nmap <silent> t<C-s> :TestSuite<CR>
+nmap <silent> t<C-l> :TestLast<CR>
+nmap <silent> t<C-g> :TestVisit<CR>
+let g:test#preserve_screen = 1
 
 " Clipboard support
 set clipboard=unnamed
