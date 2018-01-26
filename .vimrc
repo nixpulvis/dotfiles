@@ -84,6 +84,10 @@ set textwidth=0
 set nowrap sidescroll=1 listchars=extends:>
 set sidescrolloff=10
 
+" Show tabs.
+set list
+set listchars=tab:>-
+
 " Unbind the cursor keys in insert, normal and visual modes.
 for prefix in ['i', 'n', 'v', 'c']
   for key in ['<up>', '<down>', '<left>', '<right>']
@@ -138,6 +142,9 @@ autocmd FileType eruby setlocal tabstop=2 shiftwidth=2
 autocmd FileType css setlocal tabstop=2 shiftwidth=2
 autocmd FileType scss setlocal tabstop=2 shiftwidth=2
 autocmd FileType javascript setlocal tabstop=2 shiftwidth=2
+
+" Use C-style comments.
+autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
 
 " Allow clicking with the mouse.
 set mouse=a
