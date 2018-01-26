@@ -5,12 +5,12 @@ separator_block_width=20
 interval=5
 
 [term]
-command=bash -c 'echo term; if [ -n "$BLOCK_BUTTON" ]; then $TERMINAL > /dev/null; fi'
+command=bash -c 'echo term; if [ -n "$BLOCK_BUTTON" ]; then $TERMINAL > /dev/null & fi'
 label=
 interval=once
 
 [web]
-command=bash -c 'echo web; if [ -n "$BLOCK_BUTTON" ]; then firefox > /dev/null; fi'
+command=bash -c 'echo web; if [ -n "$BLOCK_BUTTON" ]; then firefox > /dev/null & fi'
 label=
 interval=once
 
