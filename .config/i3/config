@@ -152,14 +152,14 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Audio media keys.
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5%
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
+bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
+bindsym XF86AudioMute exec amixer -q set Master toggle
 
 # Brightness media keys.
 # TODO: Support other forms of backlights (like my desktop).
-bindsym XF86MonBrightnessUp exec calc $(cat /sys/class/backlight/intel_backlight/brightness) + 53 | sed "s/\s*//" | sudo tee /sys/class/backlight/intel_backlight/brightness
-bindsym XF86MonBrightnessDown exec calc $(cat /sys/class/backlight/intel_backlight/brightness) - 53 | sed "s/\s*//" | sudo tee /sys/class/backlight/intel_backlight/brightness
+bindsym XF86MonBrightnessUp exec light -A 10
+bindsym XF86MonBrightnessDown exec light -U 10
 
 # TODO: Scratchpad Terminal
 #exec --no-startup-id alacritty --title visor --dimensions 100 100

@@ -15,50 +15,56 @@ interval=once
 [wifi]
 instance=wlp4s0
 command=/usr/lib/i3blocks/wifi
+label=
 separator=false
 
-[wireless]
+[network]
 command=/usr/lib/i3blocks/iface
+label=
 separator=false
 
 [bandwidth]
 command=/usr/lib/i3blocks/bandwidth
 interval=1
 
-[disk]
-command=/usr/lib/i3blocks/disk
-
 [temp]
 command=/usr/lib/i3blocks/temperature
+label=
 separator=false
 
 [cpu]
 command=/usr/lib/i3blocks/cpu_usage
+label=
 separator=false
 
 [load]
 command=/usr/lib/i3blocks/load_average
+label=
+
+[disk]
+command=/usr/lib/i3blocks/disk
+label=
 
 [memory]
 command=/usr/lib/i3blocks/memory
-
-[media]
-instance=cmus
-command=/usr/lib/i3blocks/mediaplayer
-interval=1
-separator=false
+label=
 
 [volume]
 command=/usr/lib/i3blocks/volume
 interval=1
-label= 
+label=
 # TODO: Use signals to update.
 # signal=...
 # interval=once
 
+[brightness]
+command=$HOME/.config/i3blocks/brightness
+interval=1
+label=
+
 [battery]
 command=/usr/lib/i3blocks/battery
-label= 
+label=
 
 [time]
 command=date '+%D %T'
