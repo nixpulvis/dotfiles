@@ -175,11 +175,12 @@ bindsym $mod+minus scratchpad show
 ##############
 
 bar {
+    output primary
     status_command i3blocks
-	position top
+    position top
     font pango: $font
 
-	colors {
+    colors {
         background $background
         separator  $foreground
         statusline $foreground
@@ -189,7 +190,7 @@ bar {
         inactive_workspace  $background $background $foreground
         urgent_workspace    $red        $red        $background
         binding_mode        $background $background $foreground
-	}
+    }
 }
 
 #############
