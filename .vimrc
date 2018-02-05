@@ -32,7 +32,6 @@ Plug 'tpope/vim-sleuth'
 Plug 'cespare/vim-toml'
 Plug 'gabrielelana/vim-markdown'
 Plug 'rust-lang/rust.vim'
-Plug 'sheerun/vim-polyglot'
 Plug 'timonv/vim-cargo'
 Plug 'vim-latex/vim-latex'
 call plug#end()
