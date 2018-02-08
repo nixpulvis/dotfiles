@@ -7,6 +7,6 @@ rofi \
     -lines 5 -columns 5 \
     -hide-scrollbar \
     -matching fuzzy \
-    -display-drun "Launch" \
+    -display-drun "Launch: " \
     -font "Fira Mono 13" \
     -theme $HOME/.config/rofi/onedark.rasi
