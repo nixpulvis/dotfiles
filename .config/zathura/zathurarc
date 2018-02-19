@@ -1,0 +1,25 @@
+set font "Fira Mono 10"
+
+
+set recolor true
+# set recolor-keephue true
+set recolor-darkcolor       "#abb2bf"
+set recolor-lightcolor      "#282c34"
+set default-fg              "#abb2bf"
+set default-bg              "#282c34"
+set statusbar-fg            "#abb2bf"
+set statusbar-bg            "#282c34"
+set inputbar-fg             "#abb2bf"
+set inputbar-bg             "#282c34"
+set inputbar-fg             "#abb2bf"
+set inputbar-bg             "#282c34"
+set completion-fg           "#abb2bf"
+set completion-bg           "#282c34"
+set completion-group-fg     "#282c34"
+set completion-group-bg     "#abb2bf"
+set completion-highlight-fg "#282c34"
+set completion-highlight-bg "#98c379"
+set notification-error-bg   "#e06c75"
+set notification-error-fg   "#282c34"
+set notification-warning-bg "#d19a66"
+set notification-warning-fg "#282c34"
