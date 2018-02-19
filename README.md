@@ -25,12 +25,12 @@ these topics.
 
 - Lenovo ThinkPad X1 Carbon
 - TODO: Desktop (need new motherboard)
-- Raspberry Pi v3 (these dotfiles need to be adapted to work here)
+- Raspberry Pi v3
 
 ### Additional Storage
 
 - Private drive
-- Git drive 
+- Git drive
 - Backup drive
 - Media drive
 
@@ -47,40 +47,30 @@ Generally I'll *avoid* proprietary and closed software, as well as bloated and
 ugly interfaces. I'll *seek* software that works, and maintains sane defaults.
 I'll also *seek* software with good documentation.
 
+### Bootloader
+
+- [systemd-boot](https://www.freedesktop.org/wiki/Software/systemd/systemd-boot/)
+
 ### Operating System
 
-- Arch
+- [Arch Linux](https://www.archlinux.org/)
+
+### Window Manager
+
+- [i3](https://i3wm.org/)
 
 ### Terminal
 
-```
-alacritty
-```
+- [Alacritty](https://github.com/jwilm/alacritty)
+- [Termite](https://github.com/thestinger/termite)
 
 ### Internet
 
-```
-lynx
-firefox
-choromium
-```
+- [Lynx](https://lynx.invisible-island.net/)
+- [Firefox](https://www.mozilla.org/en-US/firefox/)
+- [Chromium](https://www.chromium.org/Home)
 
-### Monitoring
+### PDF
 
-```
-nload
-iftop
-nethogs
-```
+- [Zathura](https://pwmt.org/projects/zathura/)
 
-### Music
-
-```
-cmus
-```
-
-### Email
-
-```
-mutt
-```
