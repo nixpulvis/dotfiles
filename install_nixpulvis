@@ -50,6 +50,7 @@ sudo pacman -S --noconfirm xorg xorg-xinit
 sudo pacman -S --noconfirm i3 dmenu rofi feh
 sudo pacman -R --noconfirm i3lock
 yaourt -S --noconfirm i3lock-color
+yaourt -S --noconfirm light
 
 # Install Mozilla's great fonts.
 sudo pacman -S --noconfirm ttf-fira-mono ttf-fira-sans
