@@ -1,0 +1,64 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+    echo "Must be run as root."
+    exit 1
+fi
+
+# Setup the locale.
+sed -ie "s/#en_US\.UTF/en_US.UTF/" /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+
+# Setup the timezone for correct local system time.
+timedatectl set-timezone America/Denver
+
+# Set the system clock to use NTP.
+timedatectl set-ntp true
+
+# TODO: Create a post-install unit that prompts users to check these settings.
+# We don't want to touch the host machine's clocks.
+#
+# # Set the hardware clock based on the system clock, however the HW clock
+# # will be set in UTC.
+# timedatectl set-local-rtc 0
+# hwclock --systohc
+
+# Setup sudo.
+pacman -S --noconfirm sudo
+chmod 440 /etc/sudoers
+chown root:root /etc/sudoers
+
+# Install dialog and wpa_supplicant for wifi-menu.
+pacman -S --noconfirm dialog wpa_supplicant
+
+# Install our favorite shell, to be used by all.
+pacman -S --noconfirm fish
+chsh -s /usr/bin/fish
+
+# Create our user account, with password-less sudo.
+useradd -m -G wheel -s /usr/bin/fish nixpulvis
+
+# Install git, it's the best thing since sliced bread.
+pacman -S --noconfirm git
+
+# Install this repository into root's Code directory.
+mkdir ~/Code
+git clone https://github.com/nixpulvis/arch.git ~/Code/arch
+
+# We develop.
+pacman -S --noconfirm base-devel
+
+# Vim is the *current* editor of choice. We need `gvim` for X11 clipboard
+# support.
+pacman -S --noconfirm gvim
+
+# TODO #1: Install these arch installer scripts.
+pacman -S --noconfirm dosfstools
+
+# TODO: Hostname
+# TODO #3: Passwords
+
+# TODO: Figure out a better way to call this script.
+sudo -iu nixpulvis /root/install_nixpulvis
+
