@@ -120,6 +120,9 @@ nmap <silent> t<C-l> :TestLast<CR>
 nmap <silent> t<C-g> :TestVisit<CR>
 let g:test#preserve_screen = 1
 
+" Execute . once for each line in visual selection.
+vnoremap . :normal .<CR>
+
 " Clipboard support
 set clipboard=unnamed
 
