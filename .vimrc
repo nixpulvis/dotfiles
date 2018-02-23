@@ -30,10 +30,11 @@ Plug 'tpope/vim-sleuth'
 
 " Languages
 Plug 'cespare/vim-toml'
-Plug 'gabrielelana/vim-markdown'
+Plug 'plasticboy/vim-markdown'
 Plug 'rust-lang/rust.vim'
 Plug 'timonv/vim-cargo'
 Plug 'vim-latex/vim-latex'
+Plug 'wlangstroth/vim-racket'
 call plug#end()
 
 " Colorize color strings.
@@ -162,4 +163,5 @@ set wildmenu
 let g:vim_markdown_conceal = 0
 let g:tex_conceal = 0
 let g:vim_markdown_math = 1
+let g:vim_markdown_frontmatter = 1
 
