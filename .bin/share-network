@@ -23,7 +23,9 @@ sudo sysctl net.ipv4.ip_forward=1 > /dev/null
 
 # Reset and setup new iptables configuration.
 # TODO: Only revert the needed settings.
-sudo iptables -F
+sudo iptables -t filter -F
+sudo iptables -t nat -F
+sudo iptables -X
 sudo iptables -t nat -A POSTROUTING -o $from -j MASQUERADE
 sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -A FORWARD -i $to -o $from -j ACCEPT
