@@ -1,0 +1,75 @@
+#!/bin/bash
+
+if [ "$(whoami)" != "nixpulvis" ]; then
+    echo "Must be run as nixpulvis."
+    exit 1
+fi
+
+# Install Yaourt for AUR package installation.
+git clone https://aur.archlinux.org/package-query.git
+cd package-query
+makepkg -si --noconfirm
+cd ..
+git clone https://aur.archlinux.org/yaourt.git
+cd yaourt
+makepkg -si --noconfirm
+cd ..
+rm -rf package-query yaourt
+
+# Install nixpulvis's dotfiles.
+cd $HOME
+git init
+git remote add origin https://github.com/nixpulvis/dotfiles.git
+git fetch
+git checkout master
+
+# TODO: Install Rails.
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+mkdir ~/.rbenv/plugins
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+rbenv install --skip-existing 2.5.0
+rbenv rehash
+
+# Install stable rust.
+sudo pacman -S --noconfirm rustup
+rustup toolchain install stable
+rustup default stable
+cargo install cargo-script
+
+# Install hub the GitHub wrapper.
+sudo pacman -S --noconfirm hub
+
+# Install our fun quote generator.
+sudo pacman -S --noconfirm fortune-mod
+
+# Install the Xorg server.
+sudo pacman -S --noconfirm xorg xorg-xinit
+
+# Install i3 WM, and supporting tools.
+# TODO: We might need to fork this to fix a border issue.
+sudo pacman -S --noconfirm i3 dmenu rofi feh
+sudo pacman -R --noconfirm i3lock
+yaourt -S --noconfirm i3lock-color
+yaourt -S --noconfirm light
+
+# Install Mozilla's great fonts.
+sudo pacman -S --noconfirm ttf-fira-mono ttf-fira-sans
+# Install font-awesome for icons.
+sudo pacman -S --noconfirm ttf-font-awesome
+
+# Install firefox.
+# TODO: Configure a custom firefox theme.
+sudo pacman -S --noconfirm firefox
+
+# Install the swiss-army-knife of media players.
+sudo pacman -S --noconfirm vlc
+
+# Install the Torrent program of choice.
+sudo pacman -S --noconfirm transmission-cli
+
+# Install fallback terminal.
+pacman -S --noconfirm termite
+
+# Install our terminal emulator.
+yaourt -S --noconfirm alacritty-git
+
