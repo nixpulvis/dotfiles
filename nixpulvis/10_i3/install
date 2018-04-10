@@ -16,8 +16,11 @@ sudo pacman -S --noconfirm ttf-font-awesome
 ln -frs xinitrc $HOME/.xinitrc
 mkdir -p $HOME/.X
 ln -frs backdrop* $HOME/.X
+mkdir -p $HOME/.config/i3
 ln -frs config launch exit $HOME/.config/i3/
+mkdir -p $HOME/.config/i3blocks
 ln -frs blocks_config $HOME/.config/i3blocks/config
 ln -frs brightness $HOME/.config/i3blocks/
+mkdir -p $HOME/.config/rofi
 ln -frs onedark.rasi $HOME/.config/rofi/
 

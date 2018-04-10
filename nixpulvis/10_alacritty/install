@@ -4,5 +4,6 @@ set -e
 # Install our terminal emulator.
 yaourt -S --needed --noconfirm alacritty-git
 
+mkdir -p $HOME/.config/alacritty
 ln -frs alacritty.yml $HOME/.config/alacritty/alacritty.yml
 

@@ -8,6 +8,7 @@ sudo pacman -S --needed --noconfirm hub
 sudo pacman -S --needed --noconfirm fortune-mod
 
 # Install the fish config, and my custom binaries.
+mkdir -p $HOME/.config/fish
 ln -frs config.fish $HOME/.config/fish/config.fish
 mkdir -p $HOME/.bin
 ln -frs share-network $HOME/.bin/share-network
