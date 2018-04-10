@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+# Don't reinstall.
+if [ -x "$(command -v ruby)" ]; then
+    exit 0
+fi
+
+# Install Ruby, and our ruby environment.
+# TODO: Install Rails.
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+mkdir ~/.rbenv/plugins
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+rbenv install --skip-existing 2.5.0
+rbenv rehash
+

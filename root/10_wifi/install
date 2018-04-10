@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+# Install needed tools to allow users to connect to WiFi using wifi-menu.
+pacman -S --needed --noconfirm dialog wpa_supplicant
+

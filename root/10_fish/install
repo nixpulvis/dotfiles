@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+# Install our favorite shell, to be used by all.
+pacman -S --needed --noconfirm fish
+chsh -s /usr/bin/fish
+

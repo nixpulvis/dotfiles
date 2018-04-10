@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# Install hub the GitHub wrapper.
+sudo pacman -S --needed --noconfirm hub
+
+# Install our fun quote generator.
+sudo pacman -S --needed --noconfirm fortune-mod
+
+# TODO: Install fish.config.
+

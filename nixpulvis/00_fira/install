@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+# Install Mozilla's great fonts.
+sudo pacman -S --needed --noconfirm ttf-fira-mono ttf-fira-sans
+

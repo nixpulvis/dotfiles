@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+# Install the Torrent program of choice.
+sudo pacman -S --needed --noconfirm transmission-cli
+

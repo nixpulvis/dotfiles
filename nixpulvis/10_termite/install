@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+# Install fallback terminal.
+sudo pacman -S --needed --noconfirm termite
+

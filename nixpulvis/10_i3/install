@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+# Install the Xorg server.
+sudo pacman -S --needed --noconfirm xorg xorg-xinit
+
+# Install i3 WM, and supporting tools.
+# TODO: We might need to fork this to fix a border issue.
+sudo pacman -S --needed --noconfirm i3-wm i3blocks dmenu rofi feh
+yaourt -S --needed --noconfirm i3lock-color
+yaourt -S --needed --noconfirm light
+
+# Install font-awesome for icons.
+sudo pacman -S --noconfirm ttf-font-awesome
+

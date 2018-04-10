@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Install and configure `sudo`. We have *two* groups that interact with sudo:
+# - `sudo` is the safer group, requiring user's password to execute.
+# - `wheel` is the most trusted group, not requiring a password to execute.
+
+pacman -S --needed --noconfirm sudo
+# TODO: Move the sudo file into place.
+chmod 440 /etc/sudoers
+chown root:root /etc/sudoers
+

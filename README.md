@@ -1,5 +1,12 @@
 # Dotfiles .:.
 
+## Installation
+
+```sh
+# Run as root.
+./install <user>
+```
+
 ## Hardware
 
 My setup is based on a few key pieces of hardware. I'm always changing small
