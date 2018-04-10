@@ -6,7 +6,7 @@ set -e
 # - `wheel` is the most trusted group, not requiring a password to execute.
 
 pacman -S --needed --noconfirm sudo
-# TODO: Move the sudo file into place.
+cp sudoers /etc/sudoers
 chmod 440 /etc/sudoers
 chown root:root /etc/sudoers
 
