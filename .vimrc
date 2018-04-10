@@ -35,6 +35,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'timonv/vim-cargo'
 Plug 'vim-latex/vim-latex'
 Plug 'wlangstroth/vim-racket'
+Plug 'elixir-lang/vim-elixir'
 call plug#end()
 
 " Colorize color strings.
