@@ -36,7 +36,7 @@ if [[ -d $USER ]]; then
         else
             cmd="sudo -u $USER ./install"
         fi
-        if ! $cmd &> /dev/null; then
+        if ! $cmd; then
             echo "${red}failed${reset}."
             exit 1
         fi

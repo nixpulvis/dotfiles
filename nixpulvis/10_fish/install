@@ -7,5 +7,8 @@ sudo pacman -S --needed --noconfirm hub
 # Install our fun quote generator.
 sudo pacman -S --needed --noconfirm fortune-mod
 
-# TODO: Install fish.config.
+# Install the fish config, and my custom binaries.
+ln -frs config.fish $HOME/.config/fish/config.fish
+mkdir -p $HOME/.bin
+ln -frs share-network $HOME/.bin/share-network
 

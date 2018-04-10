@@ -2,3 +2,5 @@
 set -e
 
 sudo pacman -S --needed --noconfirm zathura
+
+ln -frs zathurarc $HOME/.config/zathura/

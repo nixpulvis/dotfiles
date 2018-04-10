@@ -13,3 +13,11 @@ yaourt -S --needed --noconfirm light
 # Install font-awesome for icons.
 sudo pacman -S --noconfirm ttf-font-awesome
 
+ln -frs xinitrc $HOME/.xinitrc
+mkdir -p $HOME/.X
+ln -frs backdrop* $HOME/.X
+ln -frs config launch exit $HOME/.config/i3/
+ln -frs blocks_config $HOME/.config/i3blocks/config
+ln -frs brightness $HOME/.config/i3blocks/
+ln -frs onedark.rasi $HOME/.config/rofi/
+
