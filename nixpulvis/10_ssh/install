@@ -2,7 +2,7 @@
 set -e
 
 mkdir -p $HOME/.ssh
-ln -frs id_rsa.pub $HOME/.ssh/
+cp -f id_rsa.pub $HOME/.ssh/
 chmod 700 $HOME/.ssh
 chmod 644 $HOME/.ssh/id_rsa.pub
 
