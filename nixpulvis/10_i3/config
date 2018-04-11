@@ -43,7 +43,9 @@ set $mod Mod4
 floating_modifier $mod
 
 # Start a terminal, see $TERMINAL for the executable.
-bindsym $mod+grave exec i3-sensible-terminal
+# If the terminal is alacritty, then our terminal script will open a new window
+# in the same directory as the focused alacritty window (if one exists).
+bindsym $mod+grave exec "$HOME/.config/i3/terminal"
 
 # Kill currently focused window.
 bindsym $mod+Shift+q kill

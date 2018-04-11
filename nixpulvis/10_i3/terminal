@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ "$TERMINAL" == "alacritty" ]]; then
+    spawn-alacritty-cwd || alacritty
+else
+    i3-sensible-terminal
+fi
+
