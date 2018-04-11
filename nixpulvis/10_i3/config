@@ -198,5 +198,5 @@ bar {
 #############
 # Wallpaper #
 #############
-exec --no-startup-id feh --bg-scale $HOME/.X/backdrop3.png
+exec --no-startup-id feh --bg-scale $HOME/.X/backdrop.png
 

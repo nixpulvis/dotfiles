@@ -24,3 +24,7 @@ ln -frs brightness $HOME/.config/i3blocks/
 mkdir -p $HOME/.config/rofi
 ln -frs onedark.rasi $HOME/.config/rofi/
 
+# Set default desktop wallpaper randomly.
+choice=`shuf -i 1-3 -n 1`
+ln -frs $HOME/.X/backdrop${choice}.png $HOME/.X/backdrop.png
+
