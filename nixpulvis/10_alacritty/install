@@ -6,4 +6,5 @@ yaourt -S --needed --noconfirm alacritty-git
 
 mkdir -p $HOME/.config/alacritty
 ln -frs alacritty.yml $HOME/.config/alacritty/alacritty.yml
+ln -frs spawn-alacritty-cwd $HOME/.bin/spawn-alacritty-cwd
 
