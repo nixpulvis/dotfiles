@@ -1,0 +1,7 @@
+# Start X if we should.
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+	exec startx &> $HOME/.Xoutput
+fi
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+

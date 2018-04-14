@@ -3,5 +3,8 @@ set -e
 
 # Install our favorite shell, to be used by all.
 pacman -S --needed --noconfirm fish
-chsh -s /usr/bin/fish
+
+# Jump into fish.
+ln -frs bash_profile $HOME/.bash_profile
+ln -frs bashrc $HOME/.bashrc
 

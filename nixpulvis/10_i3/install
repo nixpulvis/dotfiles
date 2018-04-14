@@ -13,6 +13,7 @@ yaourt -S --needed --noconfirm light
 # Install font-awesome for icons.
 sudo pacman -S --noconfirm ttf-font-awesome
 
+ln -frs bash_profile $HOME/.bash_profile
 ln -frs xinitrc $HOME/.xinitrc
 mkdir -p $HOME/.X
 ln -frs backdrop* $HOME/.X
