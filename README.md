@@ -1,5 +1,9 @@
 # Dotfiles .:.
 
+## Clone
+
+TODO: Notes about where to clone the dotfiles.
+
 ## Installation
 
 ```sh
@@ -57,27 +61,38 @@ I'll also *seek* software with good documentation.
 ### Bootloader
 
 - [systemd-boot](https://www.freedesktop.org/wiki/Software/systemd/systemd-boot/)
+is used primarily because it's much simpler than GRUB, and is part of the
+systemd software group, which the rest of my installation uses.
 
 ### Operating System
 
-- [Arch Linux](https://www.archlinux.org/)
+- [Arch Linux](https://www.archlinux.org/) comes with a pretty small `base`
+install group, and has a great package manager `pacman`. Being relativly popular
+is also an advantage, as finding packages is pretty reliable.
 
 ### Window Manager
 
-- [i3](https://i3wm.org/)
+- [i3](https://i3wm.org/) is simple and keyboard-centric. Being a tiling WM
+means I don't waste space or thought with overlapping windows normally.
+
 
 ### Terminal
 
-- [Alacritty](https://github.com/jwilm/alacritty)
-- [Termite](https://github.com/thestinger/termite)
+- [Alacritty](https://github.com/jwilm/alacritty) is my primary terminal
+emulator. It's fast, GPU accelerated, and written in Rust. However it's not
+feature complete yet, and requires compiling from sources. For that reason I
+also use,
+- [Termite](https://github.com/thestinger/termite) a lightweight and functional
+terminal.
 
 ### Internet
 
-- [Lynx](https://lynx.invisible-island.net/)
-- [Firefox](https://www.mozilla.org/en-US/firefox/)
-- [Chromium](https://www.chromium.org/Home)
+- [Lynx](https://lynx.invisible-island.net/) for when a graphical environment
+isn't avalible.
+- [Firefox](https://www.mozilla.org/en-US/firefox/) as my standard browser.
+- [Chromium](https://www.chromium.org/Home) to test things in Google's browser.
 
 ### PDF
 
-- [Zathura](https://pwmt.org/projects/zathura/)
+- [Zathura](https://pwmt.org/projects/zathura/) nuff said.
 
