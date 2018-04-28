@@ -1,10 +1,18 @@
 # Dotfiles .:.
 
-## Clone
+To a UNIX developer, dotfiles are synonymous with configuration files, and this
+repository is a collection of mine, along with some scripts to install them.
 
-TODO: Notes about where to clone the dotfiles.
+Some of these configurations are compatible with software that runs on various
+operating systems, and will work even if the installer doesn't. I only support
+the installer script for Arch Linux at the moment, but that may change.
+
+Read more about these dotfiles in the [Hardware](#hardware) and
+[Software](#software) sections.
 
 ## Installation
+
+TODO: Notes about where to clone the dotfiles.
 
 ```sh
 # Run as root.
