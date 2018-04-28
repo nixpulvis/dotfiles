@@ -1,11 +1,17 @@
 # Dotfiles .:.
 
+<img src="img/dots.jpg" height=150 /><img src="img/more_dots.gif" height=150 /><img src="img/circle_circle.png" height=150 />
+
 To a UNIX developer, dotfiles are synonymous with configuration files, and this
 repository is a collection of mine, along with some scripts to install them.
+You simply can't spend enough bytes on dotfiles. A well setup machine is your
+best friend.
 
 Some of these configurations are compatible with software that runs on various
 operating systems, and will work even if the installer doesn't. I only support
-the installer script for Arch Linux at the moment, but that may change.
+the installer script for Arch Linux at the moment, but that may change. If you
+are interested in getting an Arch Linux install up and running easily, check
+out my [arch](https://github.com/nixpulvis/arch) installer project.
 
 Read more about these dotfiles in the [Hardware](#hardware) and
 [Software](#software) sections.
