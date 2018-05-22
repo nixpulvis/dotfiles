@@ -50,3 +50,4 @@ function fish_greeting
   echo "><_> tick... tock..."
 end
 
+source ~/.asdf/asdf.fish
