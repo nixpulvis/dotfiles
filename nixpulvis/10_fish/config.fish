@@ -1,10 +1,3 @@
-# Set the terminal variable helps i3 decide what to do.
-if type -q alacritty
-    set -x TERMINAL alacritty
-else if type -q termite
-    set -x TERMINAL termite
-end
-
 # We edit files with Vim.
 set -x EDITOR vim
 
