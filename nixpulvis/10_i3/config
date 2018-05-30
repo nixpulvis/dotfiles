@@ -147,6 +147,7 @@ bindsym $mod+r mode "resize"
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
 bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
 bindsym XF86AudioMute exec amixer -q set Master toggle
+bindsym XF86AudioMicMute exec amixer -q set Capture toggle
 
 # Brightness media keys.
 # TODO: Support other forms of backlights (like my desktop).
