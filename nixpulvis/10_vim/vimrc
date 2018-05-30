@@ -15,6 +15,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 Plug 'rakr/vim-one'
 Plug 'scrooloose/nerdtree'
+Plug 'mhinz/vim-startify'
 
 " Tools
 Plug 'chrisbra/Colorizer'
@@ -37,6 +38,9 @@ Plug 'vim-latex/vim-latex'
 Plug 'wlangstroth/vim-racket'
 Plug 'elixir-lang/vim-elixir'
 call plug#end()
+
+let g:startify_change_to_dir = 0
+let g:startify_custom_header = 'startify#fortune#quote()'
 
 " Colorize color strings.
 let g:colorizer_auto_color = 1
