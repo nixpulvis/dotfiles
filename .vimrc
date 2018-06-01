@@ -174,7 +174,9 @@ set wildmode=longest,list,full
 set wildmenu
 
 " Spell checking.
-:map <F5> :setlocal spell! spelllang=en_us<CR>
+hi clear SpellBad
+hi SpellBad cterm=underline ctermfg=red
+map <F5> :setlocal spell! spelllang=en_us<CR>
 
 " Don't play with my JSON.
 let g:vim_json_syntax_conceal = 0
