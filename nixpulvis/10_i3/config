@@ -170,7 +170,6 @@ bindsym --release Print exec deepin-screenshot
 ##############
 
 bar {
-    output primary
     status_command i3blocks
     position top
     font pango: $font
