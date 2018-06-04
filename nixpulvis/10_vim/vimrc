@@ -23,11 +23,13 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'janko-m/vim-test'
 " TODO: This still does things *wrong* with jumpping to closing pairs.
 Plug 'jiangmiao/auto-pairs'
+Plug 'jremmen/vim-ripgrep'
 Plug 'mbbill/undotree'
 Plug 'ntpeters/vim-better-whitespace'
 " `gcc`, `gc` and others for commenting.
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-surround'
 
 " Languages
 Plug 'cespare/vim-toml'
@@ -47,10 +49,10 @@ let g:colorizer_auto_color = 1
 
 " Highlight search matches.
 set hlsearch
+let g:rg_highlight = 1
 " Map Ctrl-/ to clear highlighting.
 " NOTE: It's very strange that <C-_> is vim's way of saying this.
 nnoremap <silent> <C-_> :nohl<CR>
-
 " vimgrep the current word.
 noremap <F2> :execute "vimgrep /" . expand("<cword>") . "/j **" <Bar> cw<CR>
 
