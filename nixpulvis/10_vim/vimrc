@@ -35,12 +35,13 @@ Plug 'tpope/vim-surround'
 
 " Languages
 Plug 'cespare/vim-toml'
+Plug 'elixir-lang/vim-elixir'
+Plug 'elzr/vim-json'
 Plug 'plasticboy/vim-markdown'
 Plug 'rust-lang/rust.vim'
 Plug 'timonv/vim-cargo'
 Plug 'vim-latex/vim-latex'
 Plug 'wlangstroth/vim-racket'
-Plug 'elixir-lang/vim-elixir'
 call plug#end()
 
 let g:startify_change_to_dir = 0
@@ -174,6 +175,9 @@ set wildmenu
 
 " Spell checking.
 :map <F5> :setlocal spell! spelllang=en_us<CR>
+
+" Don't play with my JSON.
+let g:vim_json_syntax_conceal = 0
 
 " Markdown
 let g:vim_markdown_conceal = 0
