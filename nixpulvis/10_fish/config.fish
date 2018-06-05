@@ -41,7 +41,7 @@ function fish_right_prompt
     if test $last_status -ne 0
         echo -n '('(set_color red)$last_status(set_color normal)') '
     end
-    printf '%s%s' (set_color -d white) (date)
+    printf '%s%s%s' (set_color -d white) (date) (set_color normal)
 end
 
 # Print a nice startup message (when not in vim).
