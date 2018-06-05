@@ -2,7 +2,7 @@
 set -e
 
 # Install our terminal emulator.
-yaourt -S --needed --noconfirm alacritty-git
+yaourt -S --needed --noconfirm alacritty-scrollback-git
 
 # Install needed tool for `spawn-alacritty-cwd`.
 sudo pacman -S --needed --noconfirm xdotool
