@@ -31,9 +31,6 @@ separator=false
 separator_block_width=10
 
 [load_average]
-separator=false
-separator_block_width=10
-
 [memory]
 [disk]
 
