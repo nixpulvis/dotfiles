@@ -10,12 +10,12 @@ command=bash -c 'echo ""; if [ -n "$BLOCK_BUTTON" ]; then firefox --private >
 interval=once
 
 [wifi]
-instance=wlp4s0
 label=
 separator=false
 separator_block_width=10
 
 [network]
+command=/usr/lib/i3blocks/iface
 separator=false
 separator_block_width=10
 
