@@ -149,6 +149,19 @@ bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
 bindsym XF86AudioMute exec amixer -q set Master toggle
 bindsym XF86AudioMicMute exec amixer -q set Capture toggle
 
+# TODO: XF86Tools, XF86WLAN (ensure it falls through), XF86Display.
+
+# Toggle bluetooth.
+# TODO: Write a script to kill process and toggle.
+bindsym XF86Bluetooth exec blueman-applet
+
+# Tool Button
+bindsym XF86Tools exec termite -e htop -t XF86Tools --class=XF86Tools
+bindsym Shift + XF86Tools exec termite -e "watch sensors" -t XF86Tools --class=XF86Tools
+bindsym Ctrl + XF86Tools exec termite -e "speedtest" -t XF86Tools --class=XF86Tools
+bindsym Ctrl + Shift + XF86Tools exec termite -e "mtr 8.8.8.8" -t XF86Tools --class=XF86Tools
+for_window [class="XF86Tools"] floating enable
+
 # Brightness media keys.
 # TODO: Support other forms of backlights (like my desktop).
 bindsym XF86MonBrightnessUp exec light -A 10

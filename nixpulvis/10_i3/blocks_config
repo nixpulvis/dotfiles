@@ -1,6 +1,7 @@
 # TODO: Incorperate some of the blocks from
 # https://github.com/Anachron/i3blocks
 
+command=$HOME/.config/i3blocks/$BLOCK_NAME
 separator_block_width=20
 interval=5
 
@@ -16,58 +17,50 @@ interval=once
 
 [wifi]
 instance=wlp4s0
-command=/usr/lib/i3blocks/wifi
 label=
 separator=false
+separator_block_width=10
 
 [network]
-command=/usr/lib/i3blocks/iface
-label=
 separator=false
+separator_block_width=10
 
 [bandwidth]
-command=/usr/lib/i3blocks/bandwidth
 interval=1
 
 [temp]
-command=/usr/lib/i3blocks/temperature
-label=
 separator=false
+separator_block_width=10
 
 [cpu]
-command=/usr/lib/i3blocks/cpu_usage
-label=
 separator=false
+separator_block_width=10
 
 [load]
-command=/usr/lib/i3blocks/load_average
-label=
-
-[disk]
-command=/usr/lib/i3blocks/disk
-label=
+separator=false
+separator_block_width=10
 
 [memory]
-command=/usr/lib/i3blocks/memory
-label=
+[disk]
 
 [volume]
-command=/usr/lib/i3blocks/volume
 interval=1
-label=
-# TODO: Use signals to update.
-# signal=...
-# interval=once
+separator=false
+separator_block_width=0
+
+[mic]
+interval=1
 
 [brightness]
-command=$HOME/.config/i3blocks/brightness
 interval=1
 label=
 
+# TODO: Dynamic battery.
 [battery]
-command=/usr/lib/i3blocks/battery
 label=
 
+# Here lies our system clock. This is *critical* to be up to date, and
+# correctly configured. Mistakes here can cause real world issues.
 [time]
-command=date '+%D %T'
+command=date '+%D %T %Z'
 interval=1
