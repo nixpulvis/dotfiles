@@ -22,15 +22,15 @@ separator_block_width=10
 [bandwidth]
 interval=1
 
-[temp]
+[temperature]
 separator=false
 separator_block_width=10
 
-[cpu]
+[cpu_usage]
 separator=false
 separator_block_width=10
 
-[load]
+[load_average]
 separator=false
 separator_block_width=10
 

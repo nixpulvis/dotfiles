@@ -21,8 +21,8 @@ mkdir -p $HOME/.config/i3
 ln -frs config launch terminal exit lock $HOME/.config/i3/
 mkdir -p $HOME/.config/i3blocks
 ln -frs blocks_config $HOME/.config/i3blocks/config
-ln -frs bandwidth battery brightness cpu_usage disk load_average mic \
-    temperature volume wifi $HOME/.config/i3blocks/
+ln -frs bandwidth battery brightness cpu_usage disk load_average memory \
+    mic temperature volume wifi $HOME/.config/i3blocks/
 
 mkdir -p $HOME/.config/rofi
 ln -frs onedark.rasi $HOME/.config/rofi/
