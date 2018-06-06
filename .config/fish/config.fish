@@ -22,6 +22,13 @@ alias l "ls -l"
 # Remap caps lock to escape.
 setxkbmap -option caps:escape
 
+# XXX: This is computer spesific, and shouldn't be committed. It would be nice
+# to be able to persist this another way though.
+xrandr --output DP-2 --primary
+xrandr --output DP-3 --rotate left
+xrandr --output HDMI-1 --left-of DP-2
+xrandr --output DP-3 --right-of DP-2
+
 # Fish git config.
 set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showstashstate 'yes'
