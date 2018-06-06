@@ -8,5 +8,6 @@ rofi \
     -hide-scrollbar \
     -matching fuzzy \
     -display-drun "Launch: " \
+    -dpi 128 \
     -font "Fira Mono 13" \
     -theme $HOME/.config/rofi/onedark.rasi

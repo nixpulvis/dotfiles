@@ -7,7 +7,7 @@ RED='#e06c75'
 while [ "$select" != "NO" -a "$select" != "YES" ]; do
     select=$(echo -e 'NO\nYES' | dmenu -i \
         -nb $BACKGROUND -nf $FOREGROUND -sb $RED -sf $BACKGROUND \
-        -fn 'Fira Mono:bold:pixelsize=16' \
+        -fn 'Fira Mono:bold:pixelsize=21' \
         -p "Do you really want to exit i3, thus ending the session?")
     [ -z "$select" ] && exit 0
 done
