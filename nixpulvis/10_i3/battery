@@ -37,13 +37,13 @@ $status = $1;
 $percent = $2;
 $full_text = "";
 
-if ($percent < 25) {
+if ($percent < 20) {
 	$full_text .= "  ";
-} elsif ($percent < 50) {
+} elsif ($percent < 40) {
 	$full_text .= "  ";
-} elsif ($percent < 75) {
+} elsif ($percent < 60) {
 	$full_text .= "  ";
-} elsif ($percent < 99) {
+} elsif ($percent < 80) {
 	$full_text .= "  ";
 } else {
 	$full_text .= "  ";
