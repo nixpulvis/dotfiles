@@ -35,7 +35,21 @@ if ($acpi !~ /: (\w+), (\d+)%/) {
 
 $status = $1;
 $percent = $2;
-$full_text = "$percent%";
+$full_text = "";
+
+if ($percent < 25) {
+	$full_text .= "  ";
+} elsif ($percent < 50) {
+	$full_text .= "  ";
+} elsif ($percent < 75) {
+	$full_text .= "  ";
+} elsif ($percent < 99) {
+	$full_text .= "  ";
+} else {
+	$full_text .= "  ";
+}
+
+$full_text .= "$percent%";
 $short_text = $full_text;
 
 if ($status eq 'Discharging') {

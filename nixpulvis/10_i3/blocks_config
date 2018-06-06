@@ -46,9 +46,7 @@ interval=1
 interval=1
 label=
 
-# TODO: Dynamic battery.
 [battery]
-label=
 
 # Here lies our system clock. This is *critical* to be up to date, and
 # correctly configured. Mistakes here can cause real world issues.
