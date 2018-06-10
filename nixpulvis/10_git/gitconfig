@@ -31,7 +31,5 @@
 [apply]
     whitespace = warn
 
-[url "ssh://git@heroku.com/"]
-	insteadOf = https://git.heroku.com/
 [credential]
 	helper = store
