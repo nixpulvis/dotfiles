@@ -64,10 +64,9 @@ colors:
     cyan:    '0x56b6c2'
     white:   '0xffffff'
 
-# Visual Bell
 visual_bell:
-  animation: EaseOutSine
-  duration: 200
+  animation: Ease
+  duration: 0
 
 # Mouse bindings
 mouse_bindings:
