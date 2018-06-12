@@ -1,7 +1,0 @@
-#!/bin/bash
-set -e
-
-# Install Vim, the *current* editor of choice. We need `gvim` for X11
-# clipboard support.
-pacman -S --needed --noconfirm gvim
-

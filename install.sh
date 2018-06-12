@@ -25,23 +25,28 @@ if ! id -u $USER &> /dev/null; then
     useradd -m -G wheel -s /usr/bin/fish $USER
 fi
 
-# Install each of the user's modules.
-if [[ -d $USER ]]; then
-    for module in $(ls $USER); do
-        cd $USER/$module
-        pretty_module=`echo $module | cut -d '_' -f2`
-        echo "${green}Installing $USER $pretty_module...${reset} "
-        if [[ "$USER" == "root" ]]; then
-            cmd="./install"
-        else
+if [[ "$USER" == "root" ]]; then
+    echo "${green}Installing root "
+    cmd="install/root"
+    if ! $cmd; then
+        echo "${red}failed${reset}."
+        exit 1
+    fi
+else
+    # Install each of the user's modules.
+    if [[ -d $USER ]]; then
+        for module in $(ls $USER); do
+            cd $USER/$module
+            pretty_module=`echo $module | cut -d '_' -f2`
+            echo "${green}Installing $USER $pretty_module...${reset} "
             cmd="sudo -u $USER ./install"
-        fi
-        if ! $cmd; then
-            echo "${red}failed${reset}."
-            exit 1
-        fi
-        cd ../..
-    done
+            if ! $cmd; then
+                echo "${red}failed${reset}."
+                exit 1
+            fi
+            cd ../..
+        done
+    fi
 fi
 
 # Indicate we've install the dotfiles for $USER.

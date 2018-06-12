@@ -1,0 +1,51 @@
+#!/bin/bash
+set -e
+
+# Setup the systems locale configuration. This includes language, date, and
+# time settings.
+
+# Setup the locale.
+sed -ie "s/#en_US\.UTF/en_US.UTF/" /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+
+# Setup the timezone for correct local system time.
+# TODO: Configurable, default to UTC.
+timedatectl set-timezone America/Denver
+
+# Set the system clock to use NTP.
+timedatectl set-ntp true
+
+# Set the hardware clock based on the system clock, however the HW clock
+# will be set in UTC.
+timedatectl set-local-rtc 0
+hwclock --systohc
+
+# Install and configure `sudo`. We have *two* groups that interact with sudo:
+# - `sudo` is the safer group, requiring user's password to execute.
+# - `wheel` is the most trusted group, not requiring a password to execute.
+pacman -S --needed --noconfirm sudo
+cp etc/sudoers /etc/sudoers
+chmod 440 /etc/sudoers
+chown root:root /etc/sudoers
+
+# We are developers.
+pacman -S --needed --noconfirm base-devel
+
+# Install our favorite shell, to be used by all.
+pacman -S --needed --noconfirm fish
+
+# Jump into fish.
+ln -frs .bash_profile $HOME/.bash_profile
+ln -frs .bashrc $HOME/.bashrc
+
+# Install git, it's the best thing since sliced bread.
+pacman -S --needed --noconfirm git
+
+# Install Vim, the *current* editor of choice. We need `gvim` for X11
+# clipboard support.
+pacman -S --needed --noconfirm gvim
+
+# Install needed tools to allow users to connect to WiFi using wifi-menu.
+pacman -S --needed --noconfirm dialog wpa_supplicant
+

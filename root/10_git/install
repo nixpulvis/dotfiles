@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-
-# Install git, it's the best thing since sliced bread.
-pacman -S --needed --noconfirm git
-
