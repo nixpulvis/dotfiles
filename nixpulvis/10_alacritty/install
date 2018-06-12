@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+exit
+
 # Install our terminal emulator.
 yaourt -S --needed --noconfirm alacritty-scrollback-git
 
