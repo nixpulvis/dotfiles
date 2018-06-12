@@ -11,7 +11,7 @@ yaourt -S --needed --noconfirm i3lock-color
 yaourt -S --needed --noconfirm light
 
 # Install font-awesome for icons.
-sudo pacman -S --noconfirm ttf-font-awesome
+yaourt -S --noconfirm ttf-font-awesome-4
 
 ln -frs bash_profile $HOME/.bash_profile
 ln -frs xinitrc $HOME/.xinitrc
