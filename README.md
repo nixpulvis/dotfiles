@@ -1,6 +1,6 @@
 # Dotfiles .:.
 
-<img src="img/dots.jpg" height=150 /><img src="img/more_dots.gif" height=150 /><img src="img/circle_circle.png" height=150 />
+<img src=".img/dots.jpg" height=150 /><img src=".img/more_dots.gif" height=150 /><img src=".img/circle_circle.png" height=150 />
 
 To a UNIX developer, dotfiles are synonymous with configuration files, and this
 repository is a collection of mine, along with some scripts to install them.
