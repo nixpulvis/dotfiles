@@ -16,10 +16,10 @@ timedatectl set-timezone America/Denver
 # Set the system clock to use NTP.
 timedatectl set-ntp true
 
-# Set the hardware clock based on the system clock, however the HW clock
-# will be set in UTC.
-timedatectl set-local-rtc 0
-hwclock --systohc
+# # Set the hardware clock based on the system clock, however the HW clock
+# # will be set in UTC.
+# timedatectl set-local-rtc 0
+# hwclock --systohc
 
 # Install and configure `sudo`. We have *two* groups that interact with sudo:
 # - `sudo` is the safer group, requiring user's password to execute.
