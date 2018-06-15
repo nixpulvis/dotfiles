@@ -138,7 +138,7 @@ let g:test#preserve_screen = 1
 vnoremap . :normal .<CR>
 
 " Clipboard support
-set clipboard=unnamed
+set clipboard=unnamedplus
 
 " Strip whitespace on save.
 autocmd BufEnter * EnableStripWhitespaceOnSave
