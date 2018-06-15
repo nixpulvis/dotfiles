@@ -1,7 +1,0 @@
-#!/bin/bash
-set -e
-
-sudo pacman -S --needed --noconfirm zathura zathura-pdf-poppler
-
-mkdir -p $HOME/.config/zathura
-ln -frs zathurarc $HOME/.config/zathura/

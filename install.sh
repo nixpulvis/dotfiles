@@ -7,12 +7,6 @@ reset=`tput sgr0`
 
 USER=$1
 
-# Ensure this script is called by the root user.
-if [[ "`whoami`" != "root" ]]; then
-    echo "You must run this script as root."
-    exit 1
-fi
-
 # Ensure root dotfiles have been installed before any other users.
 if [[ ! -f /root/.dotfiles ]] && [[ "$USER" != "root" ]]; then
     echo "You must first run \`./install root\`."
@@ -25,28 +19,10 @@ if ! id -u $USER &> /dev/null; then
     useradd -m -G wheel -s /usr/bin/fish $USER
 fi
 
-if [[ "$USER" == "root" ]]; then
-    echo "${green}Installing root "
-    cmd="install/root"
-    if ! $cmd; then
-        echo "${red}failed${reset}."
-        exit 1
-    fi
-else
-    # Install each of the user's modules.
-    if [[ -d $USER ]]; then
-        for module in $(ls $USER); do
-            cd $USER/$module
-            pretty_module=`echo $module | cut -d '_' -f2`
-            echo "${green}Installing $USER $pretty_module...${reset} "
-            cmd="sudo -u $USER ./install"
-            if ! $cmd; then
-                echo "${red}failed${reset}."
-                exit 1
-            fi
-            cd ../..
-        done
-    fi
+# Call the aproprite install script.
+if ! "install/$USER"; then
+	echo "${red}failed${reset}."
+	exit 1
 fi
 
 # Indicate we've install the dotfiles for $USER.

@@ -1,9 +1,0 @@
-#!/bin/bash
-set -e
-
-# Install fallback terminal.
-sudo pacman -S --needed --noconfirm termite
-
-mkdir -p $HOME/.config/termite
-ln -frs config $HOME/.config/termite/
-

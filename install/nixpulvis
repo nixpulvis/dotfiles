@@ -1,0 +1,178 @@
+#!/bin/bash
+set -e
+
+install_fonts() {
+    # Mozilla's great fonts.
+    sudo pacman -S --needed --noconfirm ttf-fira-mono ttf-fira-sans
+}
+
+install_yaourt() {
+    # Install an AUR helper command.
+    if [ ! -x "$(command -v yaourt)" ]; then
+        # Install Yaourt for AUR package installation.
+        git clone https://aur.archlinux.org/package-query.git
+        cd package-query
+        makepkg -si --noconfirm
+        cd ..
+        git clone https://aur.archlinux.org/yaourt.git
+        cd yaourt
+        makepkg -si --noconfirm
+        cd ..
+        rm -rf package-query yaourt
+    else
+        echo "skipping yaourt install"
+    fi
+}
+
+install_git() {
+    ln -frs .gitconfig $HOME/.gitconfig
+    ln -frs .gitignore $HOME/.gitignore
+}
+
+install_apps() {
+    ##### Alacritty
+
+    # Install the scrollback branch for now.
+    yaourt -S --needed --noconfirm alacritty-scrollback-git
+    # Install needed tool for `spawn-alacritty-cwd`.
+    sudo pacman -S --needed --noconfirm xdotool
+    # Link the config and scripts.
+    mkdir -p $HOME/.config/alacritty
+    ln -frs .config/alacritty/alacritty.yml $HOME/.config/alacritty/alacritty.yml
+    ln -frs bin/spawn-alacritty-cwd $HOME/.bin/spawn-alacritty-cwd
+
+    ##### Termite
+
+    # Fallback terminal.
+    sudo pacman -S --needed --noconfirm termite
+
+    mkdir -p $HOME/.config/termite
+    ln -frs .config/termite/config $HOME/.config/termite/
+
+    ##### Firefox
+    #
+    # TODO: Configure a custom firefox theme.
+
+    sudo pacman -S --needed --noconfirm firefox
+
+    ##### Transmission
+
+    # Install the Torrent program of choice.
+    sudo pacman -S --needed --noconfirm transmission-cli
+
+    ##### Vim
+
+    ln -frs .vimrc $HOME/.vimrc
+
+    ##### VLC
+
+    # Install the swiss-army-knife of media players.
+    sudo pacman -S --needed --noconfirm vlc
+
+    ##### Zathura
+    sudo pacman -S --needed --noconfirm zathura zathura-pdf-poppler
+
+    mkdir -p $HOME/.config/zathura
+    ln -frs .config/zathura/zathurarc $HOME/.config/zathura/
+}
+
+# Install hub the GitHub wrapper.
+#
+# TODO: This is still not working out of the box, guessing it's auth related.
+install_hub() {
+    sudo pacman -S --needed --noconfirm hub
+}
+
+install_wm() {
+    # Install the Xorg server.
+    sudo pacman -S --needed --noconfirm xorg xorg-xinit
+
+    # Install i3 WM, and supporting tools.
+    # TODO: We might need to fork this to fix a border issue.
+    sudo pacman -S --needed --noconfirm i3-wm i3blocks dmenu rofi feh sysstat xautolock
+    yaourt -S --needed --noconfirm i3lock-color
+    yaourt -S --needed --noconfirm light
+
+    # Install font-awesome for icons.
+    yaourt -S --noconfirm ttf-font-awesome-4
+
+    ln -frs .bash_profile $HOME/.bash_profile
+    ln -frs .xinitrc $HOME/.xinitrc
+    mkdir -p $HOME/.X
+    ln -frs .X/backdrop* $HOME/.X
+    mkdir -p $HOME/.config/i3
+    ln -frs .config/i3/{config,launch,terminal,exit,lock} $HOME/.config/i3/
+    mkdir -p $HOME/.config/i3blocks
+    ln -frs .config/i3blocks/{bandwidth,battery,brightness,cpu_usage,disk,load_average,memory,mic,temperature,volume,wifi} $HOME/.config/i3blocks/
+
+    mkdir -p $HOME/.config/rofi
+    ln -frs .config/rofi/onedark.rasi $HOME/.config/rofi/
+
+    # Set default desktop wallpaper randomly.
+    choice=`shuf -i 1-3 -n 1`
+    ln -frs $HOME/.X/backdrop${choice}.png $HOME/.X/backdrop.png
+}
+
+install_ruby() {
+    # Don't reinstall, this takes time.
+    if [ ! -x "$(command -v ruby)" ]; then
+        # Install Ruby, and our ruby environment.
+        if [[ ! -d $HOME/.rbenv ]]; then
+            git clone https://github.com/rbenv/rbenv.git $HOME/.rbenv
+            mkdir $HOME/.rbenv/plugins
+            git clone https://github.com/rbenv/ruby-build.git $HOME/.rbenv/plugins/ruby-build
+        fi
+    fi
+
+    $HOME/.rbenv/bin/rbenv install --skip-existing 2.5.0
+    $HOME/.rbenv/bin/rbenv rehash
+}
+
+install_rust() {
+    # Don't reinstall.
+    if [ ! -x "$(command -v rustc)" ]; then
+        # Install rustup and stable rust.
+        sudo pacman -S --noconfirm rustup
+        rustup toolchain install stable
+        rustup default stable
+
+        # Allows running rust files as scripts.
+        cargo install --force cargo-script
+    fi
+}
+
+install_ssh() {
+    mkdir -p $HOME/.ssh
+    cp -f .ssh/id_rsa.pub $HOME/.ssh/
+    chmod 700 $HOME/.ssh
+    chmod 644 $HOME/.ssh/id_rsa.pub
+
+    # TODO: install private key, and set it to 600.
+}
+
+install_shell() {
+    # Install our fun quote generator.
+    sudo pacman -S --needed --noconfirm fortune-mod
+
+    # Install the fish config, and my custom binaries.
+    mkdir -p $HOME/.config/fish
+    ln -frs .config/fish/config.fish $HOME/.config/fish/config.fish
+    mkdir -p $HOME/.bin
+    ln -frs bin/share-network $HOME/.bin/share-network
+
+    # Jump into fish.
+    ln -frs .bashrc $HOME/.bashrc
+}
+
+# Here be the magic.
+install_yaourt
+install_fonts
+install_shell
+install_git
+install_wm
+install_ssh
+install_apps
+install_hub
+install_ruby
+install_rust
+

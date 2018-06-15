@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-
-# Install the swiss-army-knife of media players.
-sudo pacman -S --needed --noconfirm vlc
-

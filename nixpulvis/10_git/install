@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-
-ln -frs gitconfig $HOME/.gitconfig
-ln -frs gitignore $HOME/.gitignore
-

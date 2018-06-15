@@ -1,7 +1,0 @@
-#!/bin/bash
-set -e
-
-# Install firefox.
-# TODO: Configure a custom firefox theme.
-sudo pacman -S --needed --noconfirm firefox
-
