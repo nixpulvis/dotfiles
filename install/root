@@ -11,7 +11,7 @@ echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
 # Setup the timezone for correct local system time.
 # TODO: Configurable, default to UTC.
-timedatectl set-timezone America/Denver
+timedatectl set-timezone America/New_York
 
 # Set the system clock to use NTP.
 timedatectl set-ntp true
