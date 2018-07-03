@@ -51,5 +51,5 @@ label=
 # Here lies our system clock. This is *critical* to be up to date, and
 # correctly configured. Mistakes here can cause real world issues.
 [time]
-command=date '+%D %T %Z'
+command=date '+%Y-%m-%d %H:%M:%S'
 interval=1
