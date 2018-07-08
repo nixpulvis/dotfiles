@@ -75,6 +75,9 @@ install_apps() {
 
     mkdir -p $HOME/.config/zathura
     ln -frs .config/zathura/zathurarc $HOME/.config/zathura/
+
+    ##### Zip
+    sudo pacman -S --needed --noconfirm zip unzip
 }
 
 # Install hub the GitHub wrapper.
@@ -90,7 +93,8 @@ install_wm() {
 
     # Install i3 WM, and supporting tools.
     # TODO: We might need to fork this to fix a border issue.
-    sudo pacman -S --needed --noconfirm i3-wm i3blocks dmenu rofi feh sysstat xautolock
+    sudo pacman -S --needed --noconfirm i3-wm i3blocks dmenu rofi feh \
+        sysstat acpi xautolock deepin-screenshot
     yaourt -S --needed --noconfirm i3lock-color
     yaourt -S --needed --noconfirm light
 
@@ -112,6 +116,10 @@ install_wm() {
     # Set default desktop wallpaper randomly.
     choice=`shuf -i 1-3 -n 1`
     ln -frs $HOME/.X/backdrop${choice}.png $HOME/.X/backdrop.png
+
+    # Add a `~/Desktop` directory, this is the default location for
+    # screenshots.
+    mkdir -p $HOME/Desktop
 }
 
 install_ruby() {
