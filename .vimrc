@@ -18,11 +18,9 @@ Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 
 " Tools
-Plug 'chrisbra/Colorizer'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'janko-m/vim-test'
 " TODO: This still does things *wrong* with jumpping to closing pairs.
 Plug 'jiangmiao/auto-pairs'
 Plug 'jremmen/vim-ripgrep'
