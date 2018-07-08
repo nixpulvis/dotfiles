@@ -18,6 +18,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 
 " Tools
+Plug 'ervandew/supertab'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'ctrlpvim/ctrlp.vim'
@@ -41,6 +42,12 @@ Plug 'timonv/vim-cargo'
 Plug 'vim-latex/vim-latex'
 Plug 'wlangstroth/vim-racket'
 call plug#end()
+
+set wildmode=longest,list:longest
+set wildmenu
+set complete=.,kspell,t
+set completeopt=menuone,preview
+let g:SuperTabDefaultCompletionType = "context"
 
 let g:startify_change_to_dir = 0
 let g:startify_custom_header = 'startify#fortune#quote()'
