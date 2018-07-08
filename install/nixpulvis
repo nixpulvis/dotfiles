@@ -8,6 +8,7 @@ install_fonts() {
 
 install_yaourt() {
     # Install an AUR helper command.
+    # TODO: Detect and/or flag for reinstall.
     if [ ! -x "$(command -v yaourt)" ]; then
         # Install Yaourt for AUR package installation.
         git clone https://aur.archlinux.org/package-query.git
