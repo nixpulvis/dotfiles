@@ -30,7 +30,13 @@ fi
 # Start xautolock: TODO: systemd unit.
 exec xautolock -time 3 -locker $HOME/.config/i3/lock &
 
-
+# XXX: This is computer spesific, and shouldn't be committed. It would be nice
+# to be able to persist this another way though.
+xrandr --output DP-1-3 --primary
+xrandr --dpi 128
+xrandr --output DP-1-1 --rotate left
+xrandr --output DP-1-1 --right-of DP-1-3
+xrandr --output eDP-1 --left-of DP-1-3
 
 # Start our window manager.
 exec i3
