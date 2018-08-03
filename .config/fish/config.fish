@@ -44,10 +44,8 @@ function fish_right_prompt
     printf '%s%s%s' (set_color -d white) (date '+%D %T %Z') (set_color normal)
 end
 
-# Print a nice startup message (when not in vim).
-if test "$INSIDE" != "vim"
-    # Print a hand rolled fortune.
-    fortune
-    echo
+# Print a nice startup message.
+function fish_greeting
+  fortune
 end
 
