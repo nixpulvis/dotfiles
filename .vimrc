@@ -34,6 +34,7 @@ Plug 'tpope/vim-surround'
 
 " Languages
 Plug 'cespare/vim-toml'
+Plug 'dag/vim-fish'
 Plug 'elixir-lang/vim-elixir'
 Plug 'elzr/vim-json'
 Plug 'plasticboy/vim-markdown'
