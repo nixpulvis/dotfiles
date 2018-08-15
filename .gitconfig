@@ -4,24 +4,24 @@
     signingkey = Nathan Lilienthal
 
 [alias]
-    up = !git remote update -p; git merge --ff-only @{u}
+    up = !git remote update -p
     a = add
     b = branch
-    c = clean
+    c = clone
     d = diff
     f = fetch
-    h = show
+    w = show
     i = commit
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
     m = merge
-    n = init
+    in = init
     o = remote
     p = push
     r = rebase
     s = status -s
     t = tag
     u = reset
-    v = pull
+    pl = pull
     x = checkout
     z = stash
     cp = cherry-pick
