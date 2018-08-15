@@ -1,6 +1,7 @@
 [user]
-	name = Nathan Lilienthal
+    name = Nathan Lilienthal
     email = nathan@nixpulvis.com
+    signingkey = Nathan Lilienthal
 
 [alias]
     up = !git remote update -p; git merge --ff-only @{u}
@@ -32,4 +33,4 @@
     whitespace = warn
 
 [credential]
-	helper = store
+    helper = store
