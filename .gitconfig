@@ -16,6 +16,7 @@
     m = merge
     in = init
     o = remote
+    p0 = rev-list --max-parents=0 HEAD
     p = push
     r = rebase
     s = status -s
