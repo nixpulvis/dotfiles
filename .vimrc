@@ -18,6 +18,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 
 " Tools
+Plug 'maralla/completor.vim'
 Plug 'ervandew/supertab'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
