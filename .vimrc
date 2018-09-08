@@ -18,6 +18,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 
 " Tools
+Plug 'pseewald/vim-anyfold'
 Plug 'maralla/completor.vim'
 Plug 'ervandew/supertab'
 Plug 'junegunn/goyo.vim'
@@ -155,7 +156,8 @@ set backupcopy=yes
 
 " Folding
 set nofoldenable
-set foldmethod=syntax
+let anyfold_activate=1
+set foldlevel=0
 
 " Default indentation values.
 set expandtab
