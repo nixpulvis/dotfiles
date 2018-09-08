@@ -155,6 +155,7 @@ set backupcopy=yes
 
 " Folding
 set nofoldenable
+set foldmethod=syntax
 
 " Default indentation values.
 set expandtab
