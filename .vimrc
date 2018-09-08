@@ -150,6 +150,9 @@ set clipboard=unnamedplus
 " Strip whitespace on save.
 autocmd BufEnter * EnableStripWhitespaceOnSave
 
+" NOTE: Fix for inotify / webpack detection.
+set backupcopy=yes
+
 " Folding
 set nofoldenable
 
