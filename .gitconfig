@@ -10,7 +10,7 @@
     c = clone
     d = diff
     f = fetch
-    w = show
+    sh = show
     i = commit
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
     m = merge
@@ -23,6 +23,7 @@
     t = tag
     u = reset
     pl = pull
+    w = whatchanged
     x = checkout
     z = stash
     cp = cherry-pick
