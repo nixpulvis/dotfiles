@@ -36,6 +36,7 @@ xrandr --output DP-2 --primary
 xrandr --output DP-3 --rotate left
 xrandr --output HDMI-1 --left-of DP-2
 xrandr --output DP-3 --right-of DP-2
+xrandr --dpi 96
 
 # Start our window manager.
 exec i3
