@@ -174,7 +174,10 @@ autocmd FileType scss setlocal tabstop=2 shiftwidth=2
 autocmd FileType javascript setlocal tabstop=2 shiftwidth=2
 
 " Use C-style comments.
-autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
+autocmd FileType c,cpp,cs,java,rust setlocal commentstring=//\ %s
+
+" Use rust syntx for *.lalrpop.
+autocmd BufRead,BufNewFile *.lalrpop setfiletype rust
 
 " Allow clicking with the mouse.
 set mouse=a
