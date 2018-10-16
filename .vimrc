@@ -52,6 +52,9 @@ set complete=.,kspell,t
 set completeopt=menuone,preview
 let g:SuperTabDefaultCompletionType = "context"
 
+" Ignore everything in the .gitignore file from ctrl-p.
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
 let g:startify_change_to_dir = 0
 let g:startify_custom_header = 'startify#fortune#quote()'
 
@@ -184,10 +187,6 @@ set mouse=a
 
 " Allow subshells to detect running in vim.
 let $INSIDE='vim'
-
-" Vim command tab completion.
-set wildmode=longest,list,full
-set wildmenu
 
 " Spell checking.
 hi clear SpellBad
