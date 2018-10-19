@@ -106,7 +106,7 @@ install_wm() {
     mkdir -p $HOME/.X
     ln -frs .X/backdrop* $HOME/.X
     mkdir -p $HOME/.config/i3
-    ln -frs .config/i3/{config,launch,terminal,exit,lock} $HOME/.config/i3/
+    ln -frs .config/i3/{config,launch,terminal,exit,mute,lock} $HOME/.config/i3/
     mkdir -p $HOME/.config/i3blocks
     ln -frs .config/i3blocks/{config,bandwidth,battery,brightness,cpu_usage,disk,load_average,memory,mic,temperature,volume,wifi} $HOME/.config/i3blocks/
 

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+amixer -q set Master toggle
+
+OFF=`amixer get Speaker | grep "\[" | cut -d ' ' -f9 | head -n 1`;
+if [ "$OFF" = "[off]" ]; then
+    amixer -q set Speaker on
+fi
+
+
