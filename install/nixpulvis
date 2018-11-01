@@ -34,7 +34,7 @@ install_apps() {
     ##### Alacritty
 
     # Install the scrollback branch for now.
-    yaourt -S --needed --noconfirm alacritty-scrollback-git
+    yaourt -S --needed --noconfirm alacritty-git
     # Install needed tool for `spawn-alacritty-cwd`.
     sudo pacman -S --needed --noconfirm xdotool
     # Link the config and scripts.
