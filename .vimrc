@@ -44,6 +44,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'timonv/vim-cargo'
 Plug 'vim-latex/vim-latex'
 Plug 'wlangstroth/vim-racket'
+Plug 'Beerstorm/vim-brainfuck'
 call plug#end()
 
 set wildmode=longest,list:longest
