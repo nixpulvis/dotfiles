@@ -47,5 +47,6 @@ end
 # Print a nice startup message.
 function fish_greeting
   fortune
+  echo "><_> tick... tock..."
 end
 
