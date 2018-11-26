@@ -4,8 +4,8 @@ window:
     x: 5
     y: 5
 
-  # Setting this to false will result in window without borders and title bar.
-  decorations: true
+  # Setting this to "none" will result in window without borders and title bar.
+  decorations: "full"
 
 scrolling:
   # How many lines of scrollback to keep,
