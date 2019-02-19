@@ -35,16 +35,17 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 
 " Languages
+Plug 'Beerstorm/vim-brainfuck'
 Plug 'cespare/vim-toml'
 Plug 'dag/vim-fish'
 Plug 'elixir-lang/vim-elixir'
 Plug 'elzr/vim-json'
+Plug 'jvoorhis/coq.vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'rust-lang/rust.vim'
 Plug 'timonv/vim-cargo'
 Plug 'vim-latex/vim-latex'
 Plug 'wlangstroth/vim-racket'
-Plug 'Beerstorm/vim-brainfuck'
 call plug#end()
 
 set wildmode=longest,list:longest
@@ -98,10 +99,10 @@ set laststatus=2
 let g:lightline = { 'colorscheme': 'one' }
 
 " Add a numberline gutter.
-:set number
+set number
 
 " Highlight the line the cursor is on.
-:set cursorline
+set cursorline
 
 " Text overflows and requires scrolling.
 " This is an intentionally long line to allow easy testing of the editor overflow. In general we like to have ~80 char max.
@@ -160,7 +161,7 @@ set backupcopy=yes
 
 " Folding
 set nofoldenable
-let anyfold_activate=1
+autocmd FileType * AnyFoldActivate
 set foldlevel=0
 
 " Default indentation values.
@@ -202,4 +203,3 @@ let g:vim_markdown_conceal = 0
 let g:tex_conceal = 0
 let g:vim_markdown_math = 1
 let g:vim_markdown_frontmatter = 1
-
