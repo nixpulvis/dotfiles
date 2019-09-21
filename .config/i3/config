@@ -46,6 +46,7 @@ floating_modifier $mod
 # If the terminal is alacritty, then our terminal script will open a new window
 # in the same directory as the focused alacritty window (if one exists).
 bindsym $mod+grave exec "$HOME/.config/i3/terminal"
+bindsym $mod+shift+grave layout tabbed; exec "$HOME/.config/i3/terminal"
 
 # Kill currently focused window.
 bindsym $mod+Shift+q kill
