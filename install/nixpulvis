@@ -41,6 +41,7 @@ install_apps() {
     mkdir -p $HOME/.config/alacritty
     ln -frs .config/alacritty/alacritty.yml $HOME/.config/alacritty/alacritty.yml
     ln -frs bin/spawn-alacritty-cwd $HOME/.bin/spawn-alacritty-cwd
+    ln -frs bin/backup $HOME/.bin/backup
 
     ##### Termite
 
