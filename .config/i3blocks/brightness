@@ -2,15 +2,14 @@
 
 # Left click
 if [[ "${BLOCK_BUTTON}" -eq 1 ]]; then
-  light -A 10
+  sudo light -A 10
 # Right click
 elif [[ "${BLOCK_BUTTON}" -eq 3 ]]; then
-  light -U 10
+  sudo light -U 10
 fi
 
-URGENT_VALUE=20
+URGENT_VALUE=10
 
-# /home/nixpulvis/.config/i3blocks/brightness: line 14: [[: 100.00: syntax error: invalid arithmetic operator (error token is ".0
 curBrightness=$(light)
 if (( $(echo "${curBrightness} < 0.0" | bc -l) )); then
   exit
