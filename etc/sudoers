@@ -1,4 +1,5 @@
 root    ALL=(ALL) ALL
 %wheel  ALL=(ALL) NOPASSWD: ALL
 %sudo   ALL=(ALL) ALL
+oursh   ALL=(ALL) NOPASSWD: /usr/bin/oursh
 

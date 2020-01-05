@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+install_shell() {
+    sudo pacman -S --needed --noconfirm fortune-mod
+    mkdir -p $HOME/Code
+    if [[ ! -d $HOME/Code/oursh ]]; then
+        git clone https://github.com/nixpulvis/oursh.git $HOME/Code/oursh
+    fi
+    cd $HOME/Code/oursh
+    cargo install --path . --features shebang-block
+    sudo cp ~/.cargo/bin/oursh /usr/bin/oursh
+}
+
+install_shell
