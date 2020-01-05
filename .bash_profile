@@ -6,9 +6,9 @@ elif type termite > /dev/null; then
 fi
 
 # Start X if we should.
-# TODO: root?
-if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
-	exec startx &> $HOME/.Xoutput
+# TODO: Wayland
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 && $USER != "root" ]]; then
+    exec startx &> $HOME/.Xoutput
 fi
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
