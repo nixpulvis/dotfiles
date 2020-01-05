@@ -148,8 +148,8 @@ bindsym $mod+r mode "resize"
 # Audio media keys.
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
 bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
-bindsym XF86AudioMute exec "$HOME/.config/i3/mute"
-bindsym XF86AudioMicMute exec amixer -q set Capture toggle
+bindsym XF86AudioMute        exec "$HOME/.config/i3/mute"
+bindsym XF86AudioMicMute     exec amixer -q set Capture toggle
 # TODO: XF86Tools, XF86WLAN (ensure it falls through), XF86Display.
 
 # Toggle bluetooth.

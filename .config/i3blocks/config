@@ -29,6 +29,7 @@ separator_block_width=10
 [disk]
 
 [volume]
+command=$HOME/.config/i3blocks/volume 5% pulse
 interval=1
 separator=false
 separator_block_width=0
