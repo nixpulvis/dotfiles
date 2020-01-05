@@ -21,6 +21,9 @@ timedatectl set-ntp true
 timedatectl set-local-rtc 0
 hwclock --systohc
 
+# Install pacman configuration.
+cp etc/pacman.conf /etc/pacman.conf
+
 # Install and configure `sudo`. We have *two* groups that interact with sudo:
 # - `sudo` is the safer group, requiring user's password to execute.
 # - `wheel` is the most trusted group, not requiring a password to execute.
