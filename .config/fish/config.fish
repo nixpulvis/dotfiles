@@ -1,6 +1,9 @@
 # We edit files with Vim.
 set -x EDITOR vim
 
+# TODO: Get alacritty terminfo working.
+set -x TERM xterm-256color
+
 # Executables in our home directory.
 set -x PATH $HOME/.bin $PATH
 
