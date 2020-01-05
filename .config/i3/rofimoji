@@ -1,0 +1,9 @@
+#!/bin/bash
+
+rofimoji \
+    --rofi-args "
+    -theme $HOME/.config/rofi/onedark.rasi
+    -location 1 -width 100
+    -lines 5 -columns 5
+    -hide-scrollbar
+    "

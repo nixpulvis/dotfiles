@@ -98,6 +98,7 @@ install_wm() {
         sysstat acpi xautolock deepin-screenshot
     yaourt -S --needed --noconfirm i3lock-color
     yaourt -S --needed --noconfirm light
+    yaourt -S --needed --noconfirm rofimoji
 
     # Install font-awesome for icons.
     yaourt -S --noconfirm ttf-font-awesome-4

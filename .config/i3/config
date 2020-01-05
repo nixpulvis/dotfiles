@@ -54,6 +54,7 @@ bindsym --release button2 kill
 
 # TODO: Theme not working atm
 bindsym $mod+d exec --no-startup-id "$HOME/.config/i3/launch"
+bindsym $mod+m exec --no-startup-id "$HOME/.config/i3/rofimoji"
 
 # Change current focus.
 bindsym $mod+h focus left
