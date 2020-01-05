@@ -9,15 +9,19 @@ USER=$1
 
 # TODO: Ensure root dotfiles have been installed before any other users.
 
-# Create the user (if needed).
-if ! id -u $USER &> /dev/null; then
-    # TODO: flag for sudo group.
+install_nixpulvis() {
+    # TODO: sudo group?
     useradd -m -G wheel -s /usr/bin/fish $USER
-fi
+}
+
+install_us() {
+    # TODO: sudo group?
+    useradd -m -s /usr/bin/oursh $USER
+}
 
 # Call the aproprite install script.
 if ! "install/$USER"; then
-	echo "${red}failed${reset}."
-	exit 1
+    echo "${red}failed${reset}."
+    exit 1
 fi
 
