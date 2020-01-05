@@ -80,15 +80,15 @@ noremap <F3> :/<C-r><C-w><CR>
 set undodir=$HOME/.vim/undo
 set undofile
 
+" Setup the color theme.
 " Use 24-bit colors (required for the 'one' theme to work).
 set termguicolors
-
-" Setup the color theme.
 syntax enable
 set background=dark
 colorscheme one
 
 " Distraction free.
+" TODO: Still broken in alacritty?
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 
@@ -106,21 +106,18 @@ set cursorline
 
 " Text overflows and requires scrolling.
 " This is an intentionally long line to allow easy testing of the editor overflow. In general we like to have ~80 char max.
+" TODO: Override rust.
 set colorcolumn=80
 set textwidth=0
 set nowrap sidescroll=1 listchars=extends:>
 set sidescrolloff=10
 
+" Folding.
+set foldlevel=99
+
 " Show tabs.
 set list
 set listchars=tab:>-
-
-" Unbind the cursor keys in insert, normal and visual modes.
-for prefix in ['i', 'n', 'v', 'c']
-  for key in ['<up>', '<down>', '<left>', '<right>']
-    exe prefix . "noremap " . key . " <Nop>"
-  endfor
-endfor
 
 " Bind vim style movement keys for command mode.
 cnoremap <C-h> <left>
@@ -154,15 +151,13 @@ vnoremap . :normal .<CR>
 set clipboard=unnamedplus
 
 " Strip whitespace on save.
-autocmd BufEnter * EnableStripWhitespaceOnSave
-
-" NOTE: Fix for inotify / webpack detection.
-set backupcopy=yes
-
-" Folding
-set nofoldenable
-autocmd FileType * AnyFoldActivate
-set foldlevel=0
+fun! EnableStripWhitespaceOnSaveExceptMarkdown()
+  if &ft =~ 'markdown'
+    return
+  endif
+  EnableStripWhitespaceOnSave
+endfun
+autocmd BufEnter * call EnableStripWhitespaceOnSaveExceptMarkdown()
 
 " Default indentation values.
 set expandtab
