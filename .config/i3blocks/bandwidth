@@ -50,7 +50,7 @@ if ! [ -e "/sys/class/net/${INTERFACE}/operstate" ] || \
 then
     echo "$INTERFACE down"
     echo "$INTERFACE down"
-    echo "#FF0000"
+    echo "#ff0000"
     exit 0
 fi
 

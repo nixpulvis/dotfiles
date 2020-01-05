@@ -10,16 +10,11 @@ command=bash -c 'echo ""; if [ -n "$BLOCK_BUTTON" ]; then firefox --private >
 interval=once
 
 [wifi]
-label=
+label= 
 separator=false
 separator_block_width=10
 
 [iface]
-separator=false
-separator_block_width=10
-
-[bandwidth]
-interval=1
 
 [temperature]
 separator=false
@@ -43,7 +38,7 @@ interval=1
 
 [brightness]
 interval=1
-label=
+label= 
 
 [battery]
 

@@ -10,8 +10,9 @@ fi
 
 URGENT_VALUE=20
 
+# /home/nixpulvis/.config/i3blocks/brightness: line 14: [[: 100.00: syntax error: invalid arithmetic operator (error token is ".0
 curBrightness=$(light)
-if [[ "${curBrightness}" -le 0 ]]; then
+if (( $(echo "${curBrightness} < 0.0" | bc -l) )); then
   exit
 fi
 
@@ -23,7 +24,7 @@ fi
 
 echo "${percent}%"
 echo "${percent}%"
-echo ""
+# echo ""
 
 if [[ "${percent}" -le "${URGENT_VALUE}" ]]; then
   exit 33

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -CS
 #
 # Copyright 2014 Pierre Mavro <deimos@deimos.fr>
 # Copyright 2014 Vivien Didelot <vivien@didelot.org>
@@ -38,15 +38,15 @@ $percent = $2;
 $full_text = "";
 
 if ($percent < 20) {
-	$full_text .= "  ";
+	$full_text .= " ";
 } elsif ($percent < 40) {
-	$full_text .= "  ";
+	$full_text .= " ";
 } elsif ($percent < 60) {
-	$full_text .= "  ";
+	$full_text .= " ";
 } elsif ($percent < 80) {
-	$full_text .= "  ";
+	$full_text .= " ";
 } else {
-	$full_text .= "  ";
+	$full_text .= " ";
 }
 
 $full_text .= "$percent%";

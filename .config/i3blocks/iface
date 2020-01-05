@@ -35,7 +35,7 @@ fi
 if [[ "$(cat /sys/class/net/$IF/operstate)" = 'down' ]]; then
   echo down # full text
   echo down # short text
-  echo \#FF0000 # color
+  echo '#ff0000' # color
   exit
 fi
 

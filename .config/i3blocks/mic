@@ -27,11 +27,11 @@ pactl list sources | grep -q "Mute: yes" && [[ $? -eq 0 ]] && state="off";
 # Toggle mic's state
 case $state in
     off)
-    echo "    mute";
+    echo "  mute";
     exit 0;
     ;;
     *)
-    echo "    open ";
+    echo "  open ";
     exit 33;
     ;;
 esac
