@@ -14,8 +14,7 @@ label=
 separator=false
 separator_block_width=10
 
-[network]
-command=/usr/lib/i3blocks/iface
+[iface]
 separator=false
 separator_block_width=10
 
