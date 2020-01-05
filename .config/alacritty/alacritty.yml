@@ -12,8 +12,6 @@ scrolling:
 
   # Number of lines the viewport will move for every line scrolled.
   multiplier: 3
-  # Faux Scrolling
-  faux_multiplier: 3
 
 # Display tabs using this many cells (changes require restart)
 tabspaces: 4
