@@ -165,8 +165,8 @@ for_window [class="XF86Tools"] floating enable
 
 # Brightness media keys.
 # TODO: Support other forms of backlights (like my desktop).
-bindsym XF86MonBrightnessUp exec light -A 10
-bindsym XF86MonBrightnessDown exec light -U 10
+bindsym XF86MonBrightnessUp exec sudo light -A 10
+bindsym XF86MonBrightnessDown exec sudo light -U 10
 
 # TODO: Scratchpad Terminal
 #exec --no-startup-id alacritty --title visor --dimensions 100 100
