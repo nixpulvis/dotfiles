@@ -206,3 +206,7 @@ bar {
 #############
 exec --no-startup-id feh --bg-scale $HOME/.X/backdrop.png
 
+####################
+# Screen Placement #
+####################
+exec --no-startup-id xrandr --output DVI-I-2 --rotate left --auto
