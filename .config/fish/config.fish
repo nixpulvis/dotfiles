@@ -16,8 +16,7 @@ if type -q rbenv
     source (rbenv init -|psub)
 end
 
-# Setup cargo and rust.
-set -x PATH $HOME/.cargo/bin $PATH
+# Setup rust src.
 set -x RUST_SRC_PATH $HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src
 
 alias git hub
