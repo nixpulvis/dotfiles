@@ -1,3 +1,6 @@
+env:
+  TERM: "xterm-256color"
+
 window:
   # Using dynamic padding alone results in a small padding
   # area, which changes in size.
