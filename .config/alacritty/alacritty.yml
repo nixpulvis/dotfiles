@@ -22,7 +22,7 @@ font:
   # 1920x1080
   #
   # size: 18  # My eyes!
-  size: 10     # Glasses are nice.
+  size: 13     # Glasses are nice.
 
   normal:
     family: "Fira Mono"
