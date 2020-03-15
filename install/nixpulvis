@@ -43,11 +43,11 @@ install_shell() {
     # Install our fun quote generator.
     sudo pacman -S --needed --noconfirm fortune-mod
 
-    mkdir -p $HOME/Code
-    if [[ ! -d $HOME/Code/oursh ]]; then
-        git clone https://aur.archlinux.org/package-query.git $HOME/Code/oursh
+    mkdir -p $HOME/Projects
+    if [[ ! -d $HOME/Projects/oursh ]]; then
+        git clone https://aur.archlinux.org/package-query.git $HOME/Projects/oursh
     fi
-    cd $HOME/Code/oursh
+    cd $HOME/Projects/oursh
     cargo install --path . --features shebang-block
     cd -
 
