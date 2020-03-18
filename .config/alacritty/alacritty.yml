@@ -27,6 +27,11 @@ font:
 
 # Colors (One Dark)
 colors:
+  # Make Vi mode obvious
+  vi_mode_cursor:
+    cursor: '0xc678dd'
+    text: '0x282c34'
+
   # Default colors
   primary:
     background: '0x282c34'
