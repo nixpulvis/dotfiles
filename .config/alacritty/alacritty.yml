@@ -58,3 +58,8 @@ colors:
     magenta: '0xc678dd'
     cyan:    '0x56b6c2'
     white:   '0xffffff'
+
+key_bindings:
+  - { key: 05, mods: Shift, mode: Vi, action: Last }
+  - { key: 06, mods: Shift, mode: Vi, action: Bracket }
+  - { key: 07, mods: Shift, mode: Vi, action: FirstOccupied }
