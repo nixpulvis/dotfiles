@@ -30,9 +30,8 @@ fi
 # Start xautolock: TODO: systemd unit.
 exec xautolock -time 3 -locker $HOME/.config/i3/lock &
 
-xrandr --output DP-4 --primary
-xrandr --output DP-2 --rotate left --right-of DP-4
-xrandr --output HDMI-0 --off
+xrandr --output HDMI-0 --primary
+xrandr --output DP-0 --rotate left --right-of HDMI-0
 
 # Start our window manager.
 exec i3
