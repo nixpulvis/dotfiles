@@ -124,6 +124,7 @@ install_wm() {
     yaourt -S --needed --noconfirm i3lock-color
     yaourt -S --needed --noconfirm light
     yaourt -S --needed --noconfirm rofimoji
+    yaourt -S --needed --noconfirm rofi-file-browser-extended-git
 
     # Install font-awesome for icons.
     yaourt -S --noconfirm ttf-font-awesome-4
@@ -132,7 +133,7 @@ install_wm() {
     mkdir -p $HOME/.X
     ln -frs .X/backdrop* $HOME/.X
     mkdir -p $HOME/.config/i3
-    ln -frs .config/i3/{config,launch,rofimoji,terminal,exit,mute,lock} $HOME/.config/i3/
+    ln -frs .config/i3/{config,launch,open,rofimoji,terminal,exit,mute,lock} $HOME/.config/i3/
     mkdir -p $HOME/.config/i3blocks
     ln -frs .config/i3blocks/{config,iface,bandwidth,battery,brightness,cpu_usage,disk,load_average,memory,mic,temperature,volume,wifi} $HOME/.config/i3blocks/
 
