@@ -1,0 +1,83 @@
+colors:
+  # Make Vi mode obvious
+  vi_mode_cursor:
+    cursor: '#FE66DF'
+    text: '#161616'
+
+  # Default colors
+  primary:
+    # Dark
+    background: '#161616'
+    foreground: '#cacaca'
+    # TODO: # Light
+    # background: '#fafafa'
+    # foreground: '#161616'
+
+  # Normal colors
+  normal:
+    black:   '#000000'
+    red:     '#FE340A'
+    green:   '#2cc81b'
+    yellow:  '#FF8000'
+    blue:    '#00A3FE'
+    magenta: '#FE66DF'
+    cyan:    '#03F0FB'
+    white:   '#FFFFFF'
+
+  # Bright colors
+  bright:
+    black:   '#0C0C0C'
+    red:     '#fe562e'
+    # red:     '#ff0000'
+    green:   '#54e53e'
+    yellow:  '#fd9805'
+    blue:    '#64b3fe'
+    magenta: '#fe99e6'
+    cyan:    '#a2f9fe'
+    white:   '#FFFFFF'
+
+  # Dim colors
+  dim:
+    black:   '#000000'
+    red:     '#c70107'
+    green:   '#099301'
+    yellow:  '#d06206'
+    blue:    '#1774ca'
+    magenta: '#cc31b0'
+    cyan:    '#0aafb1'
+    white:   '#AAAAAA'
+
+  indexed_colors:
+    - { index: 161, color: "#ff00ff" }
+
+    # Greys
+    # - { index: 231, color: '#ff0000' }
+    # - { index: 232, color: '#ff0000' }
+    # - { index: 233, color: '#ff0000' }
+    # NOTE: textwidth length.
+    - { index: 234, color: '#080808' }
+    # - { index: 235, color: '#ff0000' }
+    # DarkGrey
+    - { index: 236, color: '#333333' }
+    # - { index: 237, color: '#ff0000' }
+    # - { index: 238, color: '#ff0000' }
+    # " NOTE: Indent line
+    # - { index: 239, color: '#ff0000' }
+    # - { index: 240, color: '#ff0000' }
+    # - { index: 241, color: '#ff0000' }
+    # LightGrey
+    - { index: 242, color: '#666666' }
+    # - { index: 243, color: '#ff0000' }
+    # - { index: 244, color: '#ff0000' }
+    # - { index: 245, color: '#ff0000' }
+    # - { index: 246, color: '#ff0000' }
+    # - { index: 247, color: '#ff0000' }
+    # [LightLight]Grey
+    - { index: 248, color: '#FF0000' }
+    - { index: 249, color: '#ff0000' }
+    - { index: 250, color: '#ff0000' }
+    - { index: 251, color: '#ff0000' }
+    - { index: 252, color: '#ff0000' }
+    - { index: 253, color: '#ff0000' }
+    - { index: 254, color: '#ff0000' }
+    - { index: 255, color: '#ff0000' }
