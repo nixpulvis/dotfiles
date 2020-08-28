@@ -69,6 +69,8 @@ install_bin() {
 
 install_editor() {
     ln -frs .vimrc $HOME/.vimrc
+    ln -frs .vim/autoload/lightline $HOME/.vim/autoload/lightline
+    ln -frs .vim/colors/nixpulvis.vim $HOME/.vim/colors/nixpulvis.vim
 }
 
 install_ssh() {
