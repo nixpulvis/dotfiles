@@ -9,4 +9,4 @@ rofi \
     -matching fuzzy \
     -display-drun "Launch: " \
     -font "Fira Mono 13" \
-    -theme $HOME/.config/rofi/onedark.rasi
+    -theme $HOME/.config/rofi/nixpulvis.rasi
