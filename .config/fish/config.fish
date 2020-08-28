@@ -1,17 +1,11 @@
 # We edit files with Vim.
 set -x EDITOR vim
 
-# TODO: Get alacritty terminfo working.
-set -x TERM xterm-256color
-
 # Executables in our home directory.
 set -x PATH $HOME/.bin $PATH
 
 # Some of our own custom stuff might end up here.
 set -x PATH /usr/local/bin $PATH
-
-# TODO: Fix the Alacritty terminfo for GUI colors.
-set -x TERM xterm-256color
 
 # Setup rbenv.
 set -x PATH $HOME/.rbenv/bin $PATH
