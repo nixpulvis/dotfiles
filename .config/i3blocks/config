@@ -9,25 +9,6 @@ interval=5
 command=bash -c 'echo ""; if [ -n "$BLOCK_BUTTON" ]; then firefox --private > /dev/null & fi'
 interval=once
 
-[wifi]
-label= 
-separator=false
-separator_block_width=10
-
-[iface]
-
-[temperature]
-separator=false
-separator_block_width=10
-
-[cpu_usage]
-separator=false
-separator_block_width=10
-
-[load_average]
-[memory]
-[disk]
-
 [volume]
 command=$HOME/.config/i3blocks/volume 5% pulse
 interval=1
@@ -41,10 +22,42 @@ interval=1
 interval=1
 label= 
 
+# System
+[temperature]
+label= 
+separator=false
+separator_block_width=10
+
+[cpu_usage]
+label=  
+separator=false
+separator_block_width=10
+
+[load_average]
+label=  
+
+[memory]
+label=  
+
+[disk]
+label=  
+
+# Network
+[wifi]
+label= 
+separator=false
+separator_block_width=10
+
+[iface]
+label= 
+
 [battery]
 
 # Here lies our system clock. This is *critical* to be up to date, and
 # correctly configured. Mistakes here can cause real world issues.
+[date]
+label= 
+
 [time]
-command=date '+%Y-%m-%d %Z %a %H:%M:%S'
+label= 
 interval=1

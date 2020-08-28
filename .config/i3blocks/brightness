@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Left click
-if [[ "${BLOCK_BUTTON}" -eq 1 ]]; then
-  sudo light -A 10
-# Right click
-elif [[ "${BLOCK_BUTTON}" -eq 3 ]]; then
-  sudo light -U 10
-fi
+step=10
+case $BLOCK_BUTTON in
+  1) sudo light -S 80 ;;
+  3) sudo light -S 20 ;;
+  4) sudo light -N $step -A $step ;;
+  5) sudo light -N $step -U $step ;;
+esac
 
 URGENT_VALUE=10
 
@@ -17,9 +17,17 @@ fi
 
 percent=$(echo "scale=0;${curBrightness}" | bc -l)
 percent=${percent%.*}
-if [[ "${percent}" -le 0 ]]; then
-  exit
-fi
+
+# TODO: Used to simply not print anything.
+# if [[ "${percent}" -le 0 ]]; then
+#   echo -n "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
+#   echo -n "BRIGHTNESS OFF"
+#   echo    "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
+#   echo    "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
+#   echo "#FE340A"
+#   echo "#FE340A"
+#   exit
+# fi
 
 echo "${percent}%"
 echo "${percent}%"
