@@ -1,0 +1,14 @@
+# mouse_bindings:
+# - { mouse: 5, action: PageUp }
+
+key_bindings:
+  - { key: 05, mods: Shift, mode: Vi, action: Last }
+  - { key: 06, mods: Shift, mode: Vi, action: Bracket }
+  - { key: 07, mods: Shift, mode: Vi, action: FirstOccupied }
+  - { key: Return, mode: Vi, action: SearchNext }
+  - { key: Escape, mode: Vi, action: ToggleViMode }
+
+  - { key: F, mods: Control|Shift, mode: ~Vi, action: ToggleViMode }
+  - { key: F, mods: Control|Shift, action: SearchForward }
+  - { key: B, mods: Control|Shift, mode: ~Vi, action: ToggleViMode }
+  - { key: B, mods: Control|Shift, action: SearchBackward }

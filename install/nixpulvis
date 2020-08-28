@@ -31,7 +31,7 @@ install_terminal() {
     # Install needed tool for `spawn-alacritty-cwd`.
     sudo pacman -S --needed --noconfirm xdotool
     mkdir -p $HOME/.config/alacritty
-    ln -frs .config/alacritty/alacritty.yml $HOME/.config/alacritty/alacritty.yml
+    ln -frs .config/alacritty/{alacritty,colors,bindings}.yml $HOME/.config/alacritty/
 
     # Fallback terminal, Termite
     sudo pacman -S --needed --noconfirm termite
