@@ -1,12 +1,12 @@
 #!/bin/bash
 
-BACKGROUND='#282c34'
-FOREGROUND='#abb2bf'
-RED='#e06c75'
+BACKGROUND='#161616'
+FOREGROUND='#CACACA'
+YELLOW='#FF8000'
 
 while [ "$select" != "NO" -a "$select" != "YES" ]; do
     select=$(echo -e 'NO\nYES' | dmenu -i \
-        -nb $BACKGROUND -nf $FOREGROUND -sb $RED -sf $BACKGROUND \
+        -nb $BACKGROUND -nf $FOREGROUND -sb $YELLOW -sf $BACKGROUND \
         -fn 'Fira Mono:bold:pixelsize=16' \
         -p "Do you really want to exit i3, thus ending the session?")
     [ -z "$select" ] && exit 0

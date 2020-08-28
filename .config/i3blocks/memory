@@ -36,14 +36,25 @@ awk -v type=$TYPE '
 	swap_free=$2
 }
 END {
+	mem_percent=(mem_total - mem_free) / mem_total * 100
+
 	# full text
 	if (type == "swap")
-		printf("%.1fG\n", (swap_total-swap_free)/1024/1024)
+		printf("%.1fG/%.1fG\n", (mem_total - mem_free)/1024/1024, mem_total/1024/1024)
 	else
-		printf("%.1fG\n", mem_free/1024/1024)
+		printf("%.1fG/%.1fG (%d\%)\n",
+			   (mem_total - mem_free)/1024/1024,
+			   mem_total/1024/1024,
+		   	   mem_percent)
+
+
 
 	# TODO: short text
+	print ""
 
-	# TODO: color (if less than X%)
+	if (mem_percent >= 50) {
+		print "#161616"
+		print "#FE340A"
+	}
 }
 ' /proc/meminfo

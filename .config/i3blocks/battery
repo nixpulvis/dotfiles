@@ -38,7 +38,7 @@ $percent = $2;
 $full_text = "";
 
 if ($percent < 20) {
-	$full_text .= " ";
+	$full_text .= "  ";
 } elsif ($percent < 40) {
 	$full_text .= " ";
 } elsif ($percent < 60) {
@@ -74,13 +74,14 @@ print "$short_text\n";
 if ($status eq 'Discharging') {
 
 	if ($percent < 20) {
-		print "#e06c75\n";
+		print "#161616\n";
+		print "#FE340A\n";
 	} elsif ($percent < 40) {
-		print "#d19a66\n";
+		print "#FE340A\n";
 	} elsif ($percent < 60) {
-		print "#f4bf75\n";
+		print "#FD9805\n";
 	} elsif ($percent < 80) {
-		print "#90a959\n";
+		print "#2CC81B\n";
 	}
 
 	if ($percent < 5) {

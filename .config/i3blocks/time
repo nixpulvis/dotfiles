@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# TODO: Dynamic label.
+
+date=$(date '+%H:%M:%S')
+
+echo "$date "
+echo "$date "
