@@ -2,7 +2,7 @@
 
 rofimoji \
     --rofi-args "
-    -theme $HOME/.config/rofi/onedark.rasi
+    -theme $HOME/.config/rofi/nixpulvis.rasi
     -location 1 -width 100
     -lines 5 -columns 5
     -hide-scrollbar

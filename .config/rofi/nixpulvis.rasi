@@ -1,11 +1,21 @@
 * {
-    foreground:                  rgba(171,178,191,100%);
+    background:                  rgba(22,22,22,100%);
+    normal-background:           @background;
+    alternate-normal-background: @background;
+    selected-normal-foreground:  @background;
+
+    foreground:                  rgba(175,175,175,100%);
+    selected-normal-background:  @foreground;
     normal-foreground:           @foreground;
     alternate-normal-foreground: @foreground;
     lightfg:                     @foreground;
-    red:                         rgba(255,0,0,100%);
+    separatorcolor:              @foreground;
+
+    border-color:                rgba(255,128,0,100%);
+
+    red:                         rgba(254,52,10,100%);
+    blue:                        rgba(0,163,254,100%);
     selected-urgent-foreground:  rgba(255,0,0,100%);
-    blue:                        rgba(255,0,0,100%);
     urgent-foreground:           rgba(255,0,0,100%);
     alternate-urgent-background: rgba(255,0,0,100%);
     active-foreground:           rgba(255,0,0,100%);
@@ -14,15 +24,6 @@
     alternate-active-background: rgba(255,0,0,100%);
     bordercolor:                 rgba(255,0,0,100%);
 
-    background:                  rgba(40,44,52,100%);
-    normal-background:           @background;
-    alternate-normal-background: @background;
-    selected-normal-background:  @foreground;
-    selected-normal-foreground:  @background;
-
-    border-color:                rgba(209,154,102,100%);
-
-    separatorcolor:              @foreground;
     urgent-background:           rgba(255,0,0,100%);
     selected-urgent-background:  rgba(255,0,0,100%);
     alternate-urgent-foreground: @urgent-foreground;

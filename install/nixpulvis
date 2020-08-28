@@ -140,7 +140,7 @@ install_wm() {
     ln -frs .config/i3blocks/{config,iface,bandwidth,battery,brightness,cpu_usage,disk,load_average,memory,mic,temperature,volume,wifi,date,time} $HOME/.config/i3blocks/
 
     mkdir -p $HOME/.config/rofi
-    ln -frs .config/rofi/onedark.rasi $HOME/.config/rofi/
+    ln -frs .config/rofi/nixpulvis.rasi $HOME/.config/rofi/
 
     # Set default desktop wallpaper randomly.
     choice=`shuf -i 1-3 -n 1`
