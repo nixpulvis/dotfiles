@@ -36,3 +36,8 @@
 
 [credential]
     helper = store
+
+[diff]
+    tool = vimdiff
+[merge]
+    tool = vimdiff
