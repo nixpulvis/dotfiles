@@ -7,7 +7,7 @@ scrollback_lines = 10000
 
 [colors]
 foreground = #abb2bf
-background = #282c34
+background = #161616
 
 # If unset, will reverse foreground and background
 # TODO: Test correct value.
@@ -29,20 +29,20 @@ color5 = #c678dd
 color6 = #56b6c2
 # White
 color7 = #abb2bf
-# Black (bright)
-color8 = #5c6370
-# Red (bright)
-color9 = #e06c75
-# Green (bright)
-color10 = #98c379
-# Yellow (bright)
-color11 = #d19a66
-# Blue (bright)
-color12 = #61afef
-# Magenta (bright)
-color13 = #c678dd
-# Cyan (bright)
-color14 = #56b6c2
-# White (bright)
-color15 = #ffffff
+# # Black (bright)
+# color8 = #5c6370
+# # Red (bright)
+# color9 = #e06c75
+# # Green (bright)
+# color10 = #98c379
+# # Yellow (bright)
+# color11 = #d19a66
+# # Blue (bright)
+# color12 = #61afef
+# # Magenta (bright)
+# color13 = #c678dd
+# # Cyan (bright)
+# color14 = #56b6c2
+# # White (bright)
+# color15 = #ffffff
 
