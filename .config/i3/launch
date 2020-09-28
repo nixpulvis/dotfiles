@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# TODO: Build our theme.
 rofi \
     -show drun \
     -location 1 -width 100 \
