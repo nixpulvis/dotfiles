@@ -4,8 +4,8 @@ step=10
 case $BLOCK_BUTTON in
   1) sudo light -S 80 ;;
   3) sudo light -S 20 ;;
-  4) sudo light -N $step -A $step ;;
-  5) sudo light -N $step -U $step ;;
+  4) sudo light -A $step ;;
+  5) sudo light -U $step ;;
 esac
 
 URGENT_VALUE=10
