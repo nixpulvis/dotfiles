@@ -166,29 +166,14 @@ for_window [class="XF86Tools"] floating enable
 bindsym XF86MonBrightnessUp exec sudo light -A 10
 bindsym XF86MonBrightnessDown exec sudo light -U 10
 
-for_window [title="^topshelf$"] move container to workspace ⊤
-exec workspace ⊤
-exec alacritty --title=topshelf
-bindsym Shift+$mod+t exec i3-msg exec "$HOME/.config/i3/terminal --title topshelf"; workspace ⊤
-bindsym $mod+t workspace ⊤
-
-# for_window [class="^cobweb$"] move container to workspace ⊥
-# exec workspace ⊥
-# exec 'firefox -P cobweb --class=cobweb --new-window'
-# bindsym Shift+$mod+g exec i3-msg exec 'firefox -P cobweb --class=cobweb --new-window'; workspace ⊥
-# bindsym $mod+g workspace ⊥
+# TODO: Scratchpad Terminal
 
 for_window [title="^Signal$"] move container to workspace 
-exec --no-startup-id 'signal-desktop'
 bindsym $mod+c workspace 
 bindsym Shift+$mod+c move container to workspace 
 
 for_window [title="Trello$"] move container to workspace 
-exec --no-startup-id 'trello'
 bindsym $mod+u workspace 
-
-# exec move to workspace 1
-exec i3-msg 'move container to workspace 10'
 
 # TODO: Visor Terminal
 #exec --no-startup-id alacritty --title visor --dimensions 100 100
