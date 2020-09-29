@@ -129,7 +129,7 @@ install_wm() {
     mkdir -p $HOME/.config/i3
     ln -frs .config/i3/{config,launch,open,rofimoji,terminal,exit,mute,lock} $HOME/.config/i3/
     mkdir -p $HOME/.config/i3blocks
-    ln -frs .config/i3blocks/{config,iface,bandwidth,battery,brightness,cpu_usage,disk,load_average,memory,mic,temperature,volume,wifi,date,time} $HOME/.config/i3blocks/
+    ln -frs .config/i3blocks/{config,iface,bandwidth,battery,brightness,cpu_usage,disk,load_average,memory,mic,temperature,volume,wifi,_date,time} $HOME/.config/i3blocks/
 
     mkdir -p $HOME/.config/rofi
     ln -frs .config/rofi/nixpulvis.rasi $HOME/.config/rofi/
