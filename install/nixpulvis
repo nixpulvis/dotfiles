@@ -118,10 +118,9 @@ install_wm() {
     yaourt -S --needed --noconfirm i3lock-color
     yaourt -S --needed --noconfirm light
     yaourt -S --needed --noconfirm rofimoji
-    yaourt -S --needed --noconfirm rofi-file-browser-extended-git
 
     # Install font-awesome for icons.
-    yaourt -S --noconfirm ttf-font-awesome-4
+    yaourt -S --noconfirm ttf-font-awesome
 
     ln -frs .xinitrc $HOME/.xinitrc
     mkdir -p $HOME/.X
