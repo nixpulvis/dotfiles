@@ -208,8 +208,12 @@ bar {
     }
 }
 
-#############
-# Wallpaper #
-#############
-exec --no-startup-id feh --bg-scale $HOME/.X/backdrop.png
+###########
+# Desktop #
+###########
 
+# Config for `pukak`
+exec --no-startup-id xrandr --output DP-0 --rotate left --pos 0x0 \
+                            --output HDMI-0 --pos 1080x720
+
+exec --no-startup-id feh --bg-scale $HOME/.X/backdrop.png
