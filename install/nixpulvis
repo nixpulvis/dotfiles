@@ -133,6 +133,9 @@ install_wm() {
     mkdir -p $HOME/.config/rofi
     ln -frs .config/rofi/nixpulvis.rasi $HOME/.config/rofi/
 
+    # Setup default home directories.
+    ln -frs .config/user-dirs.dirs $HOME/.config/user-dirs.dirs
+
     # Set default desktop wallpaper randomly.
     choice=`shuf -i 1-3 -n 1`
     ln -frs $HOME/.X/backdrop${choice}.png $HOME/.X/backdrop.png
