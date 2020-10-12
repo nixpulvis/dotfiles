@@ -92,6 +92,12 @@ augroup rust,cc
     autocmd FileType c,cpp,rust set textwidth=99
 augroup END
 
+augroup ott
+  autocmd BufEnter,BufRead,BufNewFile *.ott setlocal filetype=ott
+  autocmd FileType ott setlocal commentstring=%\ %s
+augroup END
+
+
 " Clipboard support.
 set clipboard=unnamedplus
 
