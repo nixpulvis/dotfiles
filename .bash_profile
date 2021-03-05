@@ -8,10 +8,13 @@ elif type termite > /dev/null; then
     export TERMINAL=termite
 fi
 
-# Start X if we should.
-# TODO: Wayland
-if [[ ! $DISPLAY && $XDG_VTNR -eq 1 && $USER != "root" ]]; then
-    exec startx &> $HOME/.Xoutput
+# Start a window manager if we should.
+if [[ $USER != "root" ]]; then
+    if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+        exec sway &> $HOME/.sway_output
+    elif [[ ! $DISPLAY && $XDG_VTNR -eq 2 ]]; then
+        exec startx &> $HOME/.Xoutput
+    fi
 fi
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc

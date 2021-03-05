@@ -1,0 +1,211 @@
+########
+# Font #
+########
+
+# Use Mozilla's fantasic Fira font.
+set $font Fira Mono 11
+font pango: $font
+
+##########
+# Colors #
+##########
+
+# One dark, from the one vim theme.
+set $foreground #afafaf
+set $background #161616
+set $black      #000000
+set $red        #FE340A
+set $green      #2cc81b
+set $yellow     #FF8000
+set $blue       #00A3FE
+set $magenta    #FE66DF
+set $cyan       #03F0FB
+set $white      #FFFFFF
+
+# Basic color configuration.
+client.focused          $yellow $yellow $background $red $yellow
+client.focused_inactive $foreground $foreground $background $foreground $foreground
+client.unfocused        $foreground $foreground $background $foreground $foreground
+client.urgent           $red $red $background $red $red
+# TODO: We need to learn more about layout saving I think.
+client.placeholder      $red $red $red $red $red
+# TODO: What exactly does this do?
+client.background       $background
+
+###############
+# Keybindings #
+###############
+
+# Use the OS key for sway's modifier.
+set $mod Mod4
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# Start a terminal, see $TERMINAL for the executable.
+# If the terminal is alacritty, then our terminal script will open a new window
+# in the same directory as the focused alacritty window (if one exists).
+bindsym $mod+grave exec --no-startup-id "$HOME/.config/i3/terminal"
+# bindsym $mod+shift+grave layout tabbed; exec "$HOME/.config/i3/terminal"
+
+# Kill currently focused window.
+bindsym $mod+Shift+q kill
+bindsym --release button2 kill
+
+bindsym $mod+d exec --no-startup-id "$HOME/.config/i3/launch"
+# TODO: Not working.
+bindsym $mod+m exec --no-startup-id "$HOME/.config/i3/rofimoji"
+
+# Change current focus.
+bindsym $mod+h focus left
+bindsym $mod+l focus right
+bindsym $mod+k focus up
+bindsym $mod+j focus down
+bindsym $mod+Left focus left
+bindsym $mod+Right focus right
+bindsym $mod+Up focus up
+bindsym $mod+Down focus down
+bindsym $mod+space focus mode_toggle
+
+# Move focused window.
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Set split direction.
+bindsym $mod+b split h
+bindsym $mod+v split v
+
+# Set view modes
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+
+# Focus parent (outer) and child (inner).
+bindsym $mod+o focus parent
+bindsym $mod+i focus child
+
+# Switch workspace.
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# Move focused container to workspace.
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+# Restart sway inplace.
+bindsym $mod+Shift+r reload; restart
+# Exit sway from the keyboard.
+bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
+# Lock sway.
+bindsym $mod+Ctrl+l exec "$HOME/.config/sway/lock"
+
+# Resize window.
+mode "resize" {
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Up resize grow height 10 px or 10 ppt
+    bindsym Down resize shrink height 10 px or 10 ppt
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+    bindsym k resize grow height 10 px or 10 ppt
+    bindsym j resize shrink height 10 px or 10 ppt
+
+    # Exit resize mode.
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+# Enter resize mode.
+bindsym $mod+r mode "resize"
+
+# Audio media keys.
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
+bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
+bindsym XF86AudioMute        exec "$HOME/.config/i3/mute"
+bindsym XF86AudioMicMute     exec amixer -q set Capture toggle
+# TODO: XF86Tools, XF86WLAN (ensure it falls through), XF86Display.
+
+# Toggle bluetooth.
+# TODO: Write a script to kill process and toggle.
+bindsym XF86Bluetooth exec blueman-applet
+
+# Brightness media keys.
+# TODO: Support other forms of backlights (like my desktop).
+bindsym XF86MonBrightnessUp exec sudo light -A 10
+bindsym XF86MonBrightnessDown exec sudo light -U 10
+
+# TODO: Scratchpad Terminal
+
+for_window [title="^Signal$"] move container to workspace 
+bindsym $mod+c workspace 
+bindsym Shift+$mod+c move container to workspace 
+
+for_window [title="Trello$"] move container to workspace 
+bindsym $mod+u workspace 
+
+# TODO: Visor Terminal
+#exec --no-startup-id alacritty --title visor --dimensions 100 100
+#for_window [class="visor"] move scratchpad, fullscreen toggle
+#bindsym F12 [class="visor"] scratchpad show, fullscreen toggle
+
+# Move windows into scratchpad.
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+bindsym --release Print exec grim -g $(slurp) "$HOME/desktop/screenshot-$(date -u +'%Y-%m-%dT%H:%M:%SZ').png"
+
+##############
+# Status Bar #
+##############
+
+bar {
+    status_command i3blocks
+    position top
+    font pango: $font
+
+    colors {
+        background $background
+        separator  $foreground
+        statusline $foreground
+
+        focused_workspace   $yellow     $yellow     $background
+        active_workspace    $yellow     $background $foreground
+        inactive_workspace  $background $background $foreground
+        urgent_workspace    $red        $red        $background
+        binding_mode        $background $background $foreground
+    }
+}
+
+input "type:keyboard" {
+    xkb_layout us
+    xkb_options caps:escape
+}
+
+#############
+# Wallpaper #
+#############
+output * bg $HOME/media/pictures/backdrops/backdrop1.png fill

@@ -113,10 +113,10 @@ install_wm() {
     # Install the Xorg server.
     sudo pacman -S --needed --noconfirm xorg xorg-xinit
 
-    # Install i3 WM, and supporting tools.
-    # TODO: We might need to fork this to fix a border issue.
-    sudo pacman -S --needed --noconfirm i3-wm i3blocks dmenu rofi feh \
+    # Install sway/i3 WM, and supporting tools.
+    sudo pacman -S --needed --noconfirm sway i3-wm i3blocks dmenu rofi feh \
         sysstat acpi xautolock deepin-screenshot
+    yaourt -S --needed --noconfirm swaylock-effects-git
     yaourt -S --needed --noconfirm i3lock-color
     yaourt -S --needed --noconfirm light
     yaourt -S --needed --noconfirm rofimoji
@@ -127,6 +127,8 @@ install_wm() {
     ln -frs .xinitrc $HOME/.xinitrc
     mkdir -p $HOME/.X
     ln -frs .X/backdrop* $HOME/.X
+    mkdir -p $HOME/.config/sway
+    ln -frs .config/sway/{config,lock} $HOME/.config/sway/
     mkdir -p $HOME/.config/i3
     ln -frs .config/i3/{config,launch,open,rofimoji,terminal,exit,mute,lock} $HOME/.config/i3/
     mkdir -p $HOME/.config/i3blocks
