@@ -28,8 +28,6 @@ install_fonts() {
 install_terminal() {
     # Install our terminal, Alacritty.
     yaourt -S --needed --noconfirm alacritty
-    # Install needed tool for `spawn-alacritty-cwd`.
-    sudo pacman -S --needed --noconfirm xdotool
     mkdir -p $HOME/.config/alacritty
     ln -frs .config/alacritty/{alacritty,colors,bindings}.yml $HOME/.config/alacritty/
 
