@@ -121,7 +121,7 @@ bindsym $mod+Shift+r reload; restart
 # Exit sway from the keyboard.
 bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
 # Lock sway.
-bindsym $mod+Ctrl+l exec "$HOME/.config/sway/lock"
+bindsym $mod+Ctrl+l exec loginctl lock-session
 
 # Resize window.
 mode "resize" {
@@ -204,6 +204,13 @@ input "type:keyboard" {
     xkb_layout us
     xkb_options caps:escape
 }
+
+##################
+# Sway Idle/Lock #
+##################
+exec swayidle -w \
+    lock $HOME/.config/sway/lock \
+    before-sleep $HOME/.config/sway/lock
 
 #############
 # Wallpaper #
