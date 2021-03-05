@@ -56,6 +56,8 @@ let g:lightline = {
 set hlsearch
 let g:rg_highlight = 1
 
+let g:ctrlp_custom_ignore = '**/target/*\|**/dumps/*\|**/backup/*'
+
 " Use C-style comments.
 autocmd FileType c,cpp,cs,java,rust setlocal commentstring=//\ %s
 
