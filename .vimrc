@@ -152,6 +152,12 @@ cnoremap <C-a> <C-b>
 " Spell checking.
 map <F5> :setlocal spell! spelllang=en_us<CR>
 
+" Lookup word in dictionary.
+fun LookupDefinition(word)
+  exe '!dict -d gcide ' . a:word
+endfun
+map <F6> :call LookupDefinition(expand("<cword>"))<CR>
+
 " Map Ctrl-/ to clear highlighting.
 nnoremap <silent> <C-_> :nohl<CR>
 
