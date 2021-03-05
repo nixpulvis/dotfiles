@@ -3,7 +3,7 @@
 ########
 
 # Use Mozilla's fantasic Fira font.
-set $font Fira Mono 10
+set $font Fira Mono 11
 font pango: $font
 
 ##########
