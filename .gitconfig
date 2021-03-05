@@ -28,6 +28,9 @@
     z = stash
     cp = cherry-pick
 
+[init]
+    defaultBranch = master
+
 [branch]
     autosetuprebase = always
 
