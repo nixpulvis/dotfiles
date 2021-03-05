@@ -80,7 +80,8 @@ set number
 
 " Highlight the line the cursor is on.
 " NOTE: Also works with cursorcolumn.
-set cursorcolumn
+" TODO: Fix my theme for this
+" set cursorcolumn
 " set cursorline
 
 set formatoptions-=t
