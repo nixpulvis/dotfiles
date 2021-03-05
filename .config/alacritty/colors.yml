@@ -1,83 +1,94 @@
 colors:
-  # Make Vi mode obvious
-  vi_mode_cursor:
-    cursor: '#FE66DF'
-    text: '#161616'
+  search:
+    matches:
+      foreground: '#FE340A'
+      background: '#FFFFFF'
+
+  hints:
+    start:
+      foreground: CellBackground
+      background: CellForeground
+    end:
+      foreground: CellBackground
+      background: CellForeground
+
+  line_indicator:
+    background: '#FD9805'
 
   # Default colors
   primary:
     # Dark
     background: '#161616'
-    foreground: '#cacaca'
+    foreground: '#CACACA'
     # TODO: # Light
-    # background: '#fafafa'
+    # background: '#FAFAFA'
     # foreground: '#161616'
 
   # Normal colors
   normal:
     black:   '#000000'
     red:     '#FE340A'
-    green:   '#2cc81b'
+    green:   '#2CC81B'
     yellow:  '#FF8000'
     blue:    '#00A3FE'
     magenta: '#FE66DF'
     cyan:    '#03F0FB'
     white:   '#FFFFFF'
 
-  # Bright colors
+  # Bright colORS
   bright:
     black:   '#0C0C0C'
-    red:     '#fe562e'
-    # red:     '#ff0000'
-    green:   '#54e53e'
-    yellow:  '#fd9805'
-    blue:    '#64b3fe'
-    magenta: '#fe99e6'
-    cyan:    '#a2f9fe'
+    red:     '#FE562E'
+    # red:     '#FF0000'
+    green:   '#54E53E'
+    yellow:  '#FD9805'
+    blue:    '#64B3FE'
+    magenta: '#FE99E6'
+    cyan:    '#A2F9FE'
     white:   '#FFFFFF'
 
   # Dim colors
   dim:
     black:   '#000000'
-    red:     '#c70107'
+    red:     '#C70107'
     green:   '#099301'
-    yellow:  '#d06206'
-    blue:    '#1774ca'
-    magenta: '#cc31b0'
-    cyan:    '#0aafb1'
+    yellow:  '#D06206'
+    blue:    '#1774CA'
+    magenta: '#CC31B0'
+    cyan:    '#0AAFB1'
     white:   '#AAAAAA'
 
   indexed_colors:
-    - { index: 161, color: "#ff00ff" }
+    - { index: 161, color: "#FF00FF" }
 
     # Greys
-    # - { index: 231, color: '#ff0000' }
-    # - { index: 232, color: '#ff0000' }
-    # - { index: 233, color: '#ff0000' }
+    # - { index: 231, color: '#FF0000' }
+    # - { index: 232, color: '#FF0000' }
+    # - { index: 233, color: '#FF0000' }
     # NOTE: textwidth length.
     - { index: 234, color: '#080808' }
-    # - { index: 235, color: '#ff0000' }
+    # - { index: 235, color: '#FF0000' }
     # DarkGrey
     - { index: 236, color: '#333333' }
-    # - { index: 237, color: '#ff0000' }
-    # - { index: 238, color: '#ff0000' }
+    # - { index: 237, color: '#FF0000' }
+    # - { index: 238, color: '#FF0000' }
     # " NOTE: Indent line
-    # - { index: 239, color: '#ff0000' }
-    # - { index: 240, color: '#ff0000' }
-    # - { index: 241, color: '#ff0000' }
+    # - { index: 239, color: '#FF0000' }
+    # - { index: 240, color: '#FF0000' }
+    # - { index: 241, color: '#FF0000' }
     # LightGrey
     - { index: 242, color: '#666666' }
-    # - { index: 243, color: '#ff0000' }
-    # - { index: 244, color: '#ff0000' }
-    # - { index: 245, color: '#ff0000' }
-    # - { index: 246, color: '#ff0000' }
-    # - { index: 247, color: '#ff0000' }
+    # - { index: 243, color: '#FF0000' }
+    # - { index: 244, color: '#FF0000' }
+    # - { index: 245, color: '#FF0000' }
+    # - { index: 246, color: '#FF0000' }
+    # - { index: 247, color: '#FF0000' }
     # [LightLight]Grey
     - { index: 248, color: '#FF0000' }
-    - { index: 249, color: '#ff0000' }
-    - { index: 250, color: '#ff0000' }
-    - { index: 251, color: '#ff0000' }
-    - { index: 252, color: '#ff0000' }
-    - { index: 253, color: '#ff0000' }
-    - { index: 254, color: '#ff0000' }
-    - { index: 255, color: '#ff0000' }
+    - { index: 249, color: '#FF0000' }
+    - { index: 250, color: '#FF0000' }
+    - { index: 251, color: '#FF0000' }
+    - { index: 252, color: '#FF0000' }
+    - { index: 253, color: '#FF0000' }
+    - { index: 254, color: '#FF0000' }
+    - { index: 255, color: '#FF0000' }

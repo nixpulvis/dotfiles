@@ -1,14 +1,17 @@
-# mouse_bindings:
-# - { mouse: 5, action: PageUp }
+hints:
+  enabled:
+    - regex: "\\w+://[^\\s]+"
+      command: xdg-open
+      binding:
+        key: G
+        mods: Control|Shift
+    - regex: "[^\\s]+"
+      command: wl-copy
+      binding:
+        key: D
+        mods: Control|Shift
 
 key_bindings:
-  - { key: 05, mods: Shift, mode: Vi, action: Last }
-  - { key: 06, mods: Shift, mode: Vi, action: Bracket }
-  - { key: 07, mods: Shift, mode: Vi, action: FirstOccupied }
-  - { key: Return, mode: Vi, action: SearchNext }
-  - { key: Escape, mode: Vi, action: ToggleViMode }
-
-  - { key: F, mods: Control|Shift, mode: ~Vi, action: ToggleViMode }
-  - { key: F, mods: Control|Shift, action: SearchForward }
-  - { key: B, mods: Control|Shift, mode: ~Vi, action: ToggleViMode }
-  - { key: B, mods: Control|Shift, action: SearchBackward }
+  - { key: 5, mods: Shift, mode: Vi, action: Last }
+  - { key: 6, mods: Shift, mode: Vi, action: Bracket }
+  - { key: 7, mods: Shift, mode: Vi, action: FirstOccupied }

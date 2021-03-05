@@ -6,7 +6,6 @@ window:
   # Setting this to "none" will result in window without borders and title bar.
   decorations: "full"
 
-
 scrolling:
   # How many lines of scrollback to keep,
   history: 10000
@@ -16,22 +15,16 @@ scrolling:
 
 # Font configuration (changes require restart)
 font:
-
   # xrandr:
   # 310mm x 170mm
   # 1920x1080
   #
   # size: 18  # My eyes!
-  size: 10     # Glasses are nice.
+  size: 13    # Glasses are nice.
 
   normal:
     family: "Fira Mono"
 
-# cursor:
-#   style:
-#     shape: Block
-#     blinking: true
-
 import:
-  - '/home/nixpulvis/.config/alacritty/bindings.yml'
-  - '/home/nixpulvis/.config/alacritty/colors.yml'
+  - '~/.config/alacritty/bindings.yml'
+  - '~/.config/alacritty/colors.yml'
