@@ -21,8 +21,8 @@ Plug 'itchyny/lightline.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'jremmen/vim-ripgrep'
 Plug 'junegunn/goyo.vim'
-Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
+" TODO: Need to figure out a way to dim without 256 colors.
+" Plug 'junegunn/limelight.vim'
 Plug 'jvoorhis/coq.vim'
 Plug 'kmyk/brainfuck-highlight.vim'
 Plug 'mbbill/undotree'
@@ -133,7 +133,7 @@ set undodir=$HOME/.vim/undo
 set undofile
 
 " Distraction free.
-autocmd! User GoyoEnter Limelight
+" autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave colorscheme nixpulvis
 
 set wildmode=longest,list:longest
