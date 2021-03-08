@@ -34,19 +34,5 @@ chmod 440 /etc/sudoers
 chown root:root /etc/sudoers
 
 # We are developers.
-pacman -S --needed --noconfirm base-devel
-
-# Zip
-sudo pacman -S --needed --noconfirm zip unzip
-
-# Install git, it's the best thing since sliced bread.
-pacman -S --needed --noconfirm git hub
-
-# Install Vim, the *current* editor of choice. We need `gvim` for X11
-# clipboard support.
-pacman -S --needed --noconfirm gvim
-ln -frs .vimrc $HOME/.vimrc
-
-# Install needed tools to allow users to connect to WiFi using wifi-menu.
-pacman -S --needed --noconfirm dialog wpa_supplicant
-
+pacman -S --needed --noconfirm base-devel dialog wpa_supplicant inetutils \
+    zip unzip git gvim
