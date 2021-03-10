@@ -128,7 +128,7 @@ install_wm() {
     mkdir -p $HOME/.X
     ln -frs .X/backdrop* $HOME/.X
     mkdir -p $HOME/.config/sway
-    ln -frs .config/sway/{config,lock} $HOME/.config/sway/
+    ln -frs .config/sway/{config,lock,screenshot} $HOME/.config/sway/
     mkdir -p $HOME/.config/i3
     ln -frs .config/i3/{config,launch,open,rofimoji,terminal,exit,mute,lock} $HOME/.config/i3/
     mkdir -p $HOME/.config/i3blocks

@@ -176,7 +176,7 @@ bindsym $mod+u workspace 
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
-bindsym --release Print exec grim -g $(slurp) "$HOME/desktop/screenshot-$(date -u +'%Y-%m-%dT%H:%M:%SZ').png"
+bindsym --release Print exec "$HOME/.config/sway/screenshot"
 
 ##############
 # Status Bar #
