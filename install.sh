@@ -10,12 +10,10 @@ USER=$1
 # TODO: Ensure root dotfiles have been installed before any other users.
 
 install_nixpulvis() {
-    # TODO: sudo group?
-    useradd -m -G wheel -s /usr/bin/fish $USER
+    useradd -m -G sudo -s /usr/bin/fish $USER
 }
 
 install_us() {
-    # TODO: sudo group?
     useradd -m -s /usr/bin/oursh $USER
 }
 
