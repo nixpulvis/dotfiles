@@ -1,5 +1,11 @@
 { config, pkgs, ... }:
 {
+  home.file.".bin" = {
+    source = ./bin;
+    recursive = true;
+    executable = true;
+  };
+
   xsession = {
     enable = true;
     windowManager.i3 = {
