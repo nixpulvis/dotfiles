@@ -1,5 +1,9 @@
 {
-  font = "Fira Mono 12";
+  font = {
+    family = "Fira Mono";
+    size = 12;
+  };
+
   colors = {
     foreground = "#afafaf";
     background = "#161616";

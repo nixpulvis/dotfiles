@@ -12,7 +12,7 @@ in
     windowManager.i3 = rec {
       enable = true;
       config = {
-        fonts = [style.font];
+        fonts = ["${style.font.family} ${toString style.font.size}"];
         colors = {
           focused = {
             border = style.colors.yellow;
@@ -47,7 +47,7 @@ in
         bars = [{
           statusCommand = "${pkgs.i3blocks}/bin/i3blocks";
           position = "top";
-          fonts = [style.font];
+          fonts = ["${style.font.family} ${toString style.font.size}"];
           colors = {
             background = style.colors.background;
             separator = style.colors.foreground;
