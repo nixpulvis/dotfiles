@@ -1,19 +1,85 @@
 { config, pkgs, ... }:
+let style = import ./style.nix;
+in
 {
+
+  home.packages = with pkgs; [
+    font-awesome
+  ];
+
   xsession = {
     enable = true;
     windowManager.i3 = rec {
       enable = true;
       config = {
-        modifier = "Mod4";
+        fonts = [style.font];
+        colors = {
+          focused = {
+            border = style.colors.yellow;
+            background = style.colors.yellow;
+            text = style.colors.background;
+            indicator = style.colors.red;
+            childBorder = style.colors.yellow;
+          };
+          focusedInactive = {
+            border = style.colors.foreground;
+            background = style.colors.foreground;
+            text = style.colors.background;
+            indicator = style.colors.foreground;
+            childBorder = style.colors.foreground;
+          };
+          unfocused = {
+            border = style.colors.foreground;
+            background = style.colors.foreground;
+            text = style.colors.background;
+            indicator = style.colors.foreground;
+            childBorder = style.colors.foreground;
+          };
+          urgent = {
+            border = style.colors.red;
+            background = style.colors.red;
+            text = style.colors.background;
+            indicator = style.colors.red;
+            childBorder = style.colors.red;
+          };
+          background = style.colors.background;
+        };
         bars = [{
           statusCommand = "${pkgs.i3blocks}/bin/i3blocks";
           position = "top";
+          fonts = [style.font];
+          colors = {
+            background = style.colors.background;
+            separator = style.colors.foreground;
+            statusline = style.colors.foreground;
+            focusedWorkspace = {
+              background = style.colors.yellow;
+              border = style.colors.yellow;
+              text = style.colors.background;
+            };
+            activeWorkspace = {
+              background = style.colors.background;
+              border = style.colors.yellow;
+              text = style.colors.foreground;
+            };
+            inactiveWorkspace = {
+              background = style.colors.background;
+              border = style.colors.background;
+              text = style.colors.foreground;
+            };
+            urgentWorkspace = {
+              background = style.colors.red;
+              border = style.colors.red;
+              text = style.colors.background;
+            };
+          };
         }];
+        modifier = "Mod4";
         keybindings = {
           "${config.modifier}+Shift+r" = "reload; restart;";
           "${config.modifier}+d" = "exec ${pkgs.rofi}/bin/rofi -show drun";
           "${config.modifier}+Shift+q" = "kill";
+          "${config.modifier}+grave" = "exec ${pkgs.alacritty}/bin/alacritty";
 
           # TODO: Refactor
 
