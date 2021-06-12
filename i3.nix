@@ -77,6 +77,7 @@ in
         modifier = "Mod4";
         keybindings = {
           "${config.modifier}+Shift+r" = "reload; restart;";
+          "${config.modifier}+Shift+e" = "exit";
           "${config.modifier}+d" = "exec ${pkgs.rofi}/bin/rofi -show drun";
           "${config.modifier}+Shift+q" = "kill";
           "${config.modifier}+grave" = "exec ${pkgs.alacritty}/bin/alacritty";

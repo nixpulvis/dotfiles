@@ -2,6 +2,7 @@
 {
   imports = [
     ./alacritty.nix
+    ./fish.nix
     ./git.nix
     ./i3.nix
     ./vim.nix
@@ -14,11 +15,6 @@
     gnupg
     pavucontrol
     htop
+    borgbackup
   ];
-
-  home.file.".bin" = {
-    source = ./bin;
-    recursive = true;
-    executable = true;
-  };
 }

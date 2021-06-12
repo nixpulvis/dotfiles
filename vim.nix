@@ -1,14 +1,5 @@
 { config, pkgs, ... }:
 {
-  home.file.".bashrc".text = "EDITOR=vim";
-
-  programs.bash = {
-    enable = true;
-    sessionVariables = {
-      EDITOR = "vim";
-    };
-  };
-
   programs.vim = {
     enable = true;
     plugins = with pkgs.vimPlugins; [
