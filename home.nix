@@ -13,6 +13,7 @@
     pass-otp
     gnupg
     pavucontrol
+    htop
   ];
 
   home.file.".bin" = {
