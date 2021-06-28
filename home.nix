@@ -2,6 +2,7 @@
 {
   imports = [
     ./alacritty.nix
+    ./audio.nix
     ./fish.nix
     ./git.nix
     ./i3.nix
