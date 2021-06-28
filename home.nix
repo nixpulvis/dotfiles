@@ -10,7 +10,6 @@
   ];
 
   home.packages = with pkgs; [
-    alacritty
     firefox
     pass-otp
     gnupg

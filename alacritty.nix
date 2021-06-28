@@ -2,6 +2,8 @@
 let style = import ./style.nix;
 in
 {
+  home.packages = with pkgs; [ alacritty ];
+
   programs.alacritty = {
     enable = true;
     settings = {
