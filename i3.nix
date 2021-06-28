@@ -78,13 +78,29 @@ in
         keybindings = {
           "${config.modifier}+Shift+r" = "reload; restart;";
           "${config.modifier}+Shift+e" = "exit";
+
+          "${config.modifier}+grave" = "exec ${pkgs.alacritty}/bin/alacritty";
           "${config.modifier}+d" = "exec ${pkgs.rofi}/bin/rofi -show drun";
           "${config.modifier}+Shift+q" = "kill";
-          "${config.modifier}+grave" = "exec ${pkgs.alacritty}/bin/alacritty";
+
+          "${config.modifier}+f" = "fullscreen";
+          "${config.modifier}+r" = "mode resize";
 
           # TODO: Refactor
 
-          # Switch workspace.
+          # Directional container focus.
+          "${config.modifier}+h" = "focus left";
+          "${config.modifier}+j" = "focus down";
+          "${config.modifier}+k" = "focus up";
+          "${config.modifier}+l" = "focus right";
+
+          # Directional container move.
+          "${config.modifier}+Shift+h" = "move left";
+          "${config.modifier}+Shift+j" = "move down";
+          "${config.modifier}+Shift+k" = "move up";
+          "${config.modifier}+Shift+l" = "move right";
+
+          # Workspace focus.
           "${config.modifier}+1" = "workspace 1";
           "${config.modifier}+2" = "workspace 2";
           "${config.modifier}+3" = "workspace 3";
