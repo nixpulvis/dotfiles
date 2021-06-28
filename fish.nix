@@ -1,5 +1,4 @@
-{ config, pkgs, ... }:
-{
+{ config, pkgs, ... }: {
   programs.fish = {
     enable = true;
     promptInit = ''

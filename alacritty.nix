@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 let style = import ./style.nix;
-in
-{
+in {
   home.packages = with pkgs; [ alacritty ];
 
   programs.alacritty = {
@@ -33,7 +32,7 @@ in
             };
           }
           {
-            regex = ''[^\\s]+'';
+            regex = "[^\\\\s]+";
             action = "Copy";
             binding = {
               key = "W";
@@ -44,20 +43,48 @@ in
       };
 
       key_bindings = [
-        { key = "N"; mods = "Control"; command = { program = "alacritty"; args = []; }; }
-        { key = "PageUp"; mode = "Vi"; action = "ScrollPageUp"; }
-        { key = "PageDown"; mode = "Vi"; action = "ScrollPageDown"; }
-        { key = 5; mods = "Shift"; mode = "Vi"; action = "Last"; }
-        { key = 6; mods = "Shift"; mode = "Vi"; action = "Bracket"; }
-        { key = 7; mods = "Shift"; mode = "Vi"; action = "FirstOccupied"; }
+        {
+          key = "N";
+          mods = "Control";
+          command = {
+            program = "alacritty";
+            args = [ ];
+          };
+        }
+        {
+          key = "PageUp";
+          mode = "Vi";
+          action = "ScrollPageUp";
+        }
+        {
+          key = "PageDown";
+          mode = "Vi";
+          action = "ScrollPageDown";
+        }
+        {
+          key = 5;
+          mods = "Shift";
+          mode = "Vi";
+          action = "Last";
+        }
+        {
+          key = 6;
+          mods = "Shift";
+          mode = "Vi";
+          action = "Bracket";
+        }
+        {
+          key = 7;
+          mods = "Shift";
+          mode = "Vi";
+          action = "FirstOccupied";
+        }
       ];
 
       colors = {
-        search = {
-        };
+        search = { };
 
-        hints = {
-        };
+        hints = { };
 
         line_indicator.background = style.colors.yellow;
 
@@ -71,7 +98,7 @@ in
           red = style.colors.red;
           green = style.colors.green;
           yellow = style.colors.yellow;
-          blue = style.colors.blue ;
+          blue = style.colors.blue;
           magenta = style.colors.magenta;
           cyan = style.colors.cyan;
           white = "#FFFFFF";
@@ -87,9 +114,10 @@ in
 
         };
 
-        indexed_colors = [
-          { index = 161; color = "#FF00FF"; }
-        ];
+        indexed_colors = [{
+          index = 161;
+          color = "#FF00FF";
+        }];
       };
     };
   };

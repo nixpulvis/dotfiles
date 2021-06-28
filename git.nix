@@ -1,11 +1,10 @@
-{ config, pkgs, ... }:
-{
+{ config, pkgs, ... }: {
   programs.git = {
     enable = true;
     userName = "Nathan Lilienthal";
     userEmail = "nathan@nixpulvis.com";
     signing.key = "Nathan Lilienthal";
-    ignores = ["*.swp"];
+    ignores = [ "*.swp" ];
     aliases = {
       up = "!git remote update -p";
       a = "add";
@@ -15,7 +14,8 @@
       f = "fetch";
       sh = "show";
       i = "commit";
-      l = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
+      l =
+        "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
       m = "merge";
       o = "remote";
       p0 = "rev-list --max-parents=0 HEAD";
