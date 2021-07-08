@@ -2,21 +2,19 @@
 
 step=10
 case $BLOCK_BUTTON in
-  1) sudo light -S 80 ;;
-  3) sudo light -S 20 ;;
-  4) sudo light -A $step ;;
-  5) sudo light -U $step ;;
+  1) brightnessctl set -q "80%" ;;
+  3) brightnessctl set -q "20%" ;;
+  4) brightnessctl set -q "+$step" ;;
+  5) brightnessctl set -q "-$step" ;;
 esac
 
 URGENT_VALUE=10
 
-curBrightness=$(light)
-if (( $(echo "${curBrightness} < 0.0" | bc -l) )); then
-  exit
-fi
+max=$(brightnessctl max)
+get=$(brightnessctl get)
 
-percent=$(echo "scale=0;${curBrightness}" | bc -l)
-percent=${percent%.*}
+percent=$(echo "scale=1; ($get/$max*100)" | bc)
+percent=$(echo ${percent%.*})
 
 # TODO: Used to simply not print anything.
 # if [[ "${percent}" -le 0 ]]; then
