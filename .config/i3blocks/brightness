@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 step=10
 case $BLOCK_BUTTON in
