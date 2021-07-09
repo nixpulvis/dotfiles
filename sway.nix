@@ -1,8 +1,15 @@
-{ config, pkgs, ... }:
-let style = import ./style.nix;
+{ config, pkgs, lib, ... }:
+
+let
+  style = import ./style.nix;
+  start-sway = pkgs.writeShellScriptBin "start-sway" ''
+    systemctl --user import-environment
+    exec systemctl --user start sway.service
+  '';
 in {
 
   home.packages = with pkgs; [
+    start-sway
     font-awesome
     i3blocks
     swaylock
@@ -130,4 +137,75 @@ in {
       };
     };
   };
+
+  systemd.user.sockets.dbus = {
+    Unit = {
+      Description = "D-Bus User Message Bus Socket";
+    };
+    Socket = {
+      ListenStream = "%t/bus";
+      ExecStartPost = "${pkgs.systemd}/bin/systemctl --user set-environment DBUS_SESSION_BUS_ADDRESS=unix:path=%t/bus";
+    };
+    Install = {
+      WantedBy = [ "sockets.target" ];
+      Also = [ "dbus.service" ];
+    };
+  };
+
+  systemd.user.services.dbus = {
+    Unit = {
+      Description = "D-Bus User Message Bus";
+      Requires = [ "dbus.socket" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.dbus}/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation";
+      ExecReload = "${pkgs.dbus}/bin/dbus-send --print-reply --session --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig";
+    };
+    Install = {
+      Also = [ "dbus.socket" ];
+    };
+  };
+
+  systemd.user.services.sway = {
+    Unit = {
+    Description = "Sway - Wayland window manager";
+    Documentation = [ "man:sway(5)" ];
+    BindsTo = [ "graphical-session.target" ];
+    Wants = [ "graphical-session-pre.target" ];
+    After = [ "graphical-session-pre.target" ];
+    };
+    Service = {
+    Type = "simple";
+    ExecStart = "${pkgs.sway}/bin/sway";
+    Restart = "on-failure";
+    RestartSec = 1;
+    TimeoutStopSec = 10;
+    };
+  };
+
+  # systemd.user.services.swayidle = {
+  #   enable = true;
+  #   description = "swayidle locking";
+  #   requiredBy = [ "graphical-session.target" ];
+  #   unitConfig = {
+  #     PartOf = [ "graphical-session.target" ];
+  #     ConditionGroup = "users";
+  #   };
+  #   path = with pkgs; [ bash strace swayidle swaylock sway ];
+  #   script = ''
+  #     swayidle -w \
+  #     timeout 150 'swaylock -elfF -s fill -i ${.X/backdrop1.png}' \
+  #     timeout 300 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+  #     before-sleep 'swaylock -elfF -s fill -i ${.X/backdrop1.png}'
+  #     lock 'swaylock -elfF -s fill -i ${.X/backdrop1.png}'
+  #   '';
+  #   # script = ''
+  #   #   swayidle -w \
+  #   #   timeout 120 '${pkgs.backlight-locker} down' resume '${pkgs.backlight-locker} up' \
+  #   #   timeout 150 'swaylock -elfF -s fill -i ${../../nixos-nineish.png}' \
+  #   #   timeout 300 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+  #   #   before-sleep 'swaylock -elfF -s fill -i ${../../nixos-nineish.png}'
+  #   #   lock 'swaylock -elfF -s fill -i ${../../nixos-nineish.png}'
+  #   # '';
+  # };
 }
