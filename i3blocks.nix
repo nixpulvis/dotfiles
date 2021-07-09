@@ -1,6 +1,8 @@
 { config, pkgs, ... }: {
   home.packages = with pkgs; [
     i3blocks
+    sysstat
+    acpi
     lm_sensors
     brightnessctl
     perl

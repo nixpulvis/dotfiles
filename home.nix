@@ -1,9 +1,4 @@
-{ config, pkgs, ... }:
-
-# Both i3 (X11) and sway (Wayland) are supported.
-let wayland = true;
-
-in {
+{ config, pkgs, ... }: {
   imports = [
     ./audio.nix
     ./crypto.nix
@@ -13,7 +8,9 @@ in {
     ./rust.nix
     ./ruby.nix
 
-    (if wayland then ./sway.nix else ./i3.nix)
+    # (if wayland then ./sway.nix else ./i3.nix)
+    ./sway.nix
+    ./i3.nix
     ./alacritty.nix
   ];
 

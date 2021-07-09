@@ -1,3 +1,4 @@
+{ wm }:
 let 
   pkgs = import <nixpkgs> {};
   style = import ./style.nix;
@@ -78,11 +79,13 @@ in rec {
 
   keybindings = {
     "${modifier}+Shift+r" = "reload; restart;";
-    "${modifier}+Shift+e" = "exit";
+    "${modifier}+Shift+e" = "exec ${if wm == "i3" then "exit-i3" else "exit-sway"}";
 
     "${modifier}+grave" = "exec ${pkgs.alacritty}/bin/alacritty";
     "${modifier}+d" = "exec ${pkgs.rofi}/bin/rofi -show drun";
     "${modifier}+Shift+q" = "kill";
+    "button2 --release" = "kill";
+
 
     "${modifier}+f" = "fullscreen";
     "${modifier}+r" = "mode resize";

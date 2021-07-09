@@ -1,12 +1,19 @@
 { config, pkgs, lib, ... }:
 let
   style = import ./style.nix;
-  i3 = import ./i3+sway.nix;
   # TODO: Relocate in src.
   backdrop = .X/backdrop2.png;
   start-sway = pkgs.writeShellScriptBin "start-sway" ''
     systemctl --user import-environment
     exec systemctl --user start sway.service
+  '';
+  exit-sway = pkgs.writeShellScriptBin "exit-sway" ''
+    while [ "$select" != "NO" -a "$select" != "YES" ]; do
+      select=$(echo -e 'NO\nYES' | dmenu -i -p "Do you really want to exit sway, thus ending the session?")
+      [ -z "$select" ] && exit 0
+    done
+    [ "$select" = "NO" ] && exit 0
+    swaymsg exit
   '';
 in {
   imports = [
@@ -18,19 +25,18 @@ in {
 
   home.packages = with pkgs; [
     start-sway
+    exit-sway
     font-awesome
     swaylock
     swayidle
     wl-clipboard
     mako
-    sysstat
-    acpi
   ];
 
   wayland.windowManager.sway = rec {
     enable = true;
     wrapperFeatures.gtk = true;
-    config = i3 // {
+    config = import ./i3+sway.nix { wm = "sway"; } // {
       output = { "*" = { bg = "${backdrop} fill"; }; };
     };
   };
