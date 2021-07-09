@@ -10,6 +10,8 @@ in {
     ./fish.nix
     ./git.nix
     ./vim.nix
+    ./rust.nix
+    ./ruby.nix
 
     (if wayland then ./sway.nix else ./i3.nix)
     ./i3blocks.nix
