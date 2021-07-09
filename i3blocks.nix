@@ -1,5 +1,11 @@
 { config, pkgs, ... }: {
-  home.packages = with pkgs; [ lm_sensors brightnessctl perl bc ];
+  home.packages = with pkgs; [
+    i3blocks
+    lm_sensors
+    brightnessctl
+    perl
+    bc
+  ];
 
   home.file.".config/i3blocks/config".source = ./.config/i3blocks/config;
   home.file.".config/i3blocks/_date".source = ./.config/i3blocks/_date;
