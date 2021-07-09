@@ -1,14 +1,25 @@
-{ config, pkgs, ... }: {
-  imports =
-    [ ./alacritty.nix ./audio.nix ./fish.nix ./git.nix ./sway.nix ./i3blocks.nix ./vim.nix ];
+{ config, pkgs, ... }:
+
+# Both i3 (X11) and sway (Wayland) are supported.
+let wayland = true;
+
+in {
+  imports = [
+    ./audio.nix
+    ./crypto.nix
+    ./fish.nix
+    ./git.nix
+    ./vim.nix
+
+    (if wayland then ./sway.nix else ./i3.nix)
+    ./i3blocks.nix
+    ./alacritty.nix
+  ];
 
   home.packages = with pkgs; [
-    firefox
-    zathura
-    pass-otp
-    gnupg
-    pavucontrol
-    htop
     borgbackup
+    firefox
+    htop
+    zathura
   ];
 }
