@@ -16,6 +16,7 @@ in {
     swaylock
     swayidle
     wl-clipboard
+    mako
     rofi
     sysstat
     acpi
