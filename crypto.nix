@@ -3,4 +3,9 @@
     pass-otp
     gnupg
   ];
+
+  home.file.".ssh" = {
+    source = ./.ssh;
+    recursive = true;
+  };
 }
