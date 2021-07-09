@@ -2,6 +2,7 @@
 
 let
   style = import ./style.nix;
+  backdrop = .X/backdrop1.png;
   start-sway = pkgs.writeShellScriptBin "start-sway" ''
     systemctl --user import-environment
     exec systemctl --user start sway.service
@@ -22,7 +23,9 @@ in {
 
   wayland.windowManager.sway = rec {
     enable = true;
+    wrapperFeatures.gtk = true;
     config = {
+      output = { "*" = { bg = "${backdrop} fill"; }; };
       fonts = [ "${style.font.family} ${toString style.font.size}" ];
       colors = {
         focused = {
@@ -193,7 +196,7 @@ in {
     Service = {
       Type = "simple";
       ExecStart = ''
-        ${pkgs.swayidle}/bin/swayidle -w timeout 150 'swaylock -elfF -s fill -i ${.X/backdrop1.png}' timeout 300 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' before-sleep 'swaylock -elfF -s fill -i ${.X/backdrop1.png}' lock 'swaylock -elfF -s fill -i ${.X/backdrop1.png}'
+        ${pkgs.swayidle}/bin/swayidle -w timeout 150 'swaylock -elfF -s fill -i ${backdrop}' timeout 300 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' before-sleep 'swaylock -elfF -s fill -i ${backdrop}' lock 'swaylock -elfF -s fill -i ${backdrop}'
       '';
     };
 
