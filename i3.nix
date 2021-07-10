@@ -2,8 +2,12 @@
 let
   style = import ./style.nix;
   exit-i3 = pkgs.writeShellScriptBin "exit-i3" ''
+    BACKGROUND='${style.colors.background}'
+    FOREGROUND='${style.colors.foreground}'
+    YELLOW='${style.colors.yellow}'
+
     while [ "$select" != "NO" -a "$select" != "YES" ]; do
-      select=$(echo -e 'NO\nYES' | dmenu -i -p "Do you really want to exit i3, thus ending the session?")
+      select=$(echo -e 'NO\nYES' | dmenu -i -nb $BACKGROUND -nf $FOREGROUND -sb $YELLOW -sf $BACKGROUND -fn 'Fira Mono:bold:pixelsize=20' -p "Do you really want to exit i3, thus ending the session?")
       [ -z "$select" ] && exit 0
     done
     [ "$select" = "NO" ] && exit 0

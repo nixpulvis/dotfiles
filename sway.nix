@@ -8,8 +8,12 @@ let
     exec systemctl --user start sway.service
   '';
   exit-sway = pkgs.writeShellScriptBin "exit-sway" ''
+    BACKGROUND='${style.colors.background}'
+    FOREGROUND='${style.colors.foreground}'
+    YELLOW='${style.colors.yellow}'
+
     while [ "$select" != "NO" -a "$select" != "YES" ]; do
-      select=$(echo -e 'NO\nYES' | dmenu -i -p "Do you really want to exit sway, thus ending the session?")
+      select=$(echo -e 'NO\nYES' | dmenu -i -nb $BACKGROUND -nf $FOREGROUND -sb $YELLOW -sf $BACKGROUND -fn 'Fira Mono:bold:pixelsize=20' -p "Do you really want to exit sway, thus ending the session?")
       [ -z "$select" ] && exit 0
     done
     [ "$select" = "NO" ] && exit 0
