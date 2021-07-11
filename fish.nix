@@ -1,4 +1,5 @@
 { config, pkgs, ... }: {
+  home.packages = with pkgs; [ fortune ];
   programs.fish = {
     enable = true;
     promptInit = ''
@@ -25,13 +26,13 @@
 
     interactiveShellInit = ''
       set -x EDITOR vim
-      # fish_add_path $HOME/.bin
-    '';
-  };
+      alias l "ls -l"
 
-  home.file.".bin" = {
-    source = ./bin;
-    recursive = true;
-    executable = true;
+      # Print a nice startup message.
+      function fish_greeting
+        fortune
+        echo "><_> tick... tock..."
+      end
+    '';
   };
 }

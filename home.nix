@@ -17,10 +17,12 @@
   ];
 
   home.packages = with pkgs; [
+    xdg-utils
     firefox
     htop
     zathura
-    xdg-utils
+    vlc
+    transmission
   ];
 
   home.file.".config/user-dirs.dirs".source = .config/user-dirs.dirs;
