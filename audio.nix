@@ -10,5 +10,21 @@
     pavucontrol
     renoise
     spotify
+    mpc_cli
+    ncmpcpp
   ];
+
+  services.mpd = {
+    enable = true;
+    musicDirectory = ~/media/music;
+    playlistDirectory = ~/media/music;
+    extraConfig = ''
+      audio_output {
+          type        "pulse"
+          name        "My Pulse Output"
+          #   server      "remote_server"     # optional
+          #   sink        "remote_server_sink"    # optional
+      }
+    '';
+  };
 }

@@ -1,0 +1,88 @@
+{ config, pkgs, ... }:
+let
+  backup = pkgs.writeShellScriptBin "backup" ''
+    #!/bin/sh
+
+    # Setting this, so the repo does not need to be given on the commandline:
+    # TODO: Support remote backup too.
+    #       export BORG_REPO=ssh://nixpulvis@example.com:2022/~/backup
+    export BORG_REPO=/mnt/backup
+
+    # # Setting this, so you won't be asked for your repository passphrase:
+    # export BORG_PASSPHRASE='XYZl0ngandsecurepa_55_phrasea&&123'
+    # or this to ask an external program to supply the passphrase:
+    export BORG_PASSCOMMAND='pass show devices/backup/wd2T'
+
+    # some helpers and error handling:
+    info() { printf "\n%s %s\n\n" "$( date )" "$*" >&2; }
+    trap 'echo $( date ) Backup interrupted >&2; exit 2' INT TERM
+
+    info "Starting backup"
+
+    # Backup the most important directories into an archive named after
+    # the machine this script is currently running on:
+
+    borg create                  \
+        --verbose                \
+        --filter AME             \
+        --list                   \
+        --stats                  \
+        --show-rc                \
+        --compression lz4        \
+        --exclude-caches         \
+        --exclude '**/.cache/*'  \
+        --exclude '**/.git/*'    \
+        --exclude '**/target/*'  \
+        --exclude '**/build/*'   \
+        --exclude '**/cache/*'   \
+        --exclude '~/.cargo'     \
+        --exclude '~/.rustup'    \
+        --exclude '/var/cache/*' \
+        --exclude '/var/tmp/*'   \
+                                 \
+        ::'{hostname}-{now}'     \
+        /etc                     \
+        /home                    \
+        /root                    \
+        /var                     \
+
+    backup_exit=$?
+
+    info "Pruning repository"
+
+    # Use the `prune` subcommand to maintain 7 daily, 4 weekly and 12 monthly
+    # archives of THIS machine. The '{hostname}-' prefix is very important to
+    # limit prune's operation to this machine's archives and not apply to
+    # other machines' archives also:
+
+    borg prune                          \
+        --list                          \
+        --prefix '{hostname}-'          \
+        --show-rc                       \
+        --keep-daily    7               \
+        --keep-weekly   4               \
+        --keep-monthly  12              \
+
+    prune_exit=$?
+
+    # use highest exit code as global exit code
+    global_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
+
+    if [ $global_exit -eq 0 ]; then
+        info "Backup and Prune finished successfully"
+    elif [ $global_exit -eq 1 ]; then
+        info "Backup and/or Prune finished with warnings"
+    else
+        info "Backup and/or Prune finished with errors"
+    fi
+
+    exit $global_exit
+  '';
+in {
+  home.packages = with pkgs; [
+    borgbackup
+    backup
+  ];
+
+  # TODO: https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/backup/borgbackup.nix
+}
