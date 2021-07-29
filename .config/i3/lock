@@ -2,11 +2,12 @@
 
 i3lock \
     --radius=150 \
-    --clock --time-font='Fira Mono' --timesize=30 --timecolor=cacacaff --timestr='%T %Z' \
-    --date-font='Fira Mono' --datesize=20 --datecolor=cacacaff --datestr='%a %F' \
+    --clock --time-font='Fira Mono' --time-size=30 --time-color=cacacaff --time-str='%T %Z' \
+    --date-font='Fira Mono' --date-size=20 --date-color=cacacaff --date-str='%a %F' \
     --color=161616 \
-    --insidecolor=282c34ff --ringcolor=cacacaff \
-    --insidevercolor=00A3FEff --ringvercolor=00A3FEff \
-    --insidewrongcolor=FE340Aff --ringwrongcolor=FE340Aff \
-    --linecolor=161616ff --keyhlcolor=CACACAff --bshlcolor=FF8000ff \
-    --separatorcolor=cacacaff
+    --inside-color=282c34ff --ring-color=cacacaff \
+    --insidever-color=00a3feff --ringver-color=00a3feff \
+    --insidewrong-color=fe340aff --ringwrong-color=fe340aff \
+    --line-color=161616ff --keyhl-color=ff8000ff --bshl-color=ff8000ff \
+    --separator-color=cacacaff \
+    --wrong-text="incorrect" --noinput-text="clear"

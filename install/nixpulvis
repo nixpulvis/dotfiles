@@ -30,11 +30,6 @@ install_terminal() {
     yaourt -S --needed --noconfirm alacritty
     mkdir -p $HOME/.config/alacritty
     ln -frs .config/alacritty/{alacritty,colors,bindings}.yml $HOME/.config/alacritty/
-
-    # Fallback terminal, Termite
-    sudo pacman -S --needed --noconfirm termite
-    mkdir -p $HOME/.config/termite
-    ln -frs .config/termite/config $HOME/.config/termite/
 }
 
 install_shell() {
@@ -55,6 +50,8 @@ install_shell() {
 install_bin() {
     mkdir -p $HOME/.bin
     ln -fs /dotfiles/bin/* $HOME/.bin
+
+    sudo pacman -S --needed --noconfirm pass pass-otp borg python-packaging python-llfuse
 }
 
 install_editor() {
@@ -116,9 +113,9 @@ install_wm() {
     # Install i3 WM, and supporting tools.
     # TODO: We might need to fork this to fix a border issue.
     sudo pacman -S --needed --noconfirm i3-wm i3blocks dmenu rofi feh \
-        sysstat acpi xautolock deepin-screenshot
+        sysstat acpi xautolock xclip deepin-screenshot
     yaourt -S --needed --noconfirm i3lock-color
-    yaourt -S --needed --noconfirm light
+    yaourt -S --needed --noconfirm brightnessctl
     yaourt -S --needed --noconfirm rofimoji
 
     # Install font-awesome for icons.

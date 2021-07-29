@@ -1,3 +1,6 @@
+env:
+  WINIT_X11_SCALE_FACTOR: "1"
+
 window:
   # Using dynamic padding alone results in a small padding
   # area, which changes in size.

@@ -93,11 +93,7 @@ means I don't waste space or thought with overlapping windows normally.
 ### Terminal
 
 - [Alacritty](https://github.com/jwilm/alacritty) is my primary terminal
-emulator. It's fast, GPU accelerated, and written in Rust. However it's not
-feature complete yet, and requires compiling from sources. For that reason I
-also use,
-- [Termite](https://github.com/thestinger/termite) a lightweight and functional
-terminal.
+emulator. It's fast, GPU accelerated, and written in Rust.
 
 ### Internet
 
