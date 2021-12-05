@@ -1,18 +1,26 @@
 hints:
   enabled:
-    - regex: "\\w+://[^\\s]+"
+    - regex: "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
       command: xdg-open
+      post_processing: true
+      mouse:
+        enabled: true
       binding:
         key: G
         mods: Control|Shift
     - regex: "[^\\s]+"
       command: wl-copy
+      mouse:
+        enabled: true
+        mods: Shift
       binding:
         key: D
         mods: Control|Shift
 
 key_bindings:
-  - { key: N, mods: Control, command: { program: "alacritty", args: [] } }
+  # - { key: N, mods: Control, command: { program: "alacritty", args: [] } }
+  # - { key: N, mods: Control, action: SpawnNewInstance }
+  - { key: N, mods: Control, action: CreateNewWindow }
   - { key: 5, mods: Shift, mode: Vi, action: Last }
   - { key: 6, mods: Shift, mode: Vi, action: Bracket }
   - { key: 7, mods: Shift, mode: Vi, action: FirstOccupied }
