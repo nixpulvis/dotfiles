@@ -31,10 +31,8 @@ install_terminal() {
     mkdir -p $HOME/.config/alacritty
     ln -frs .config/alacritty/{alacritty,colors,bindings}.yml $HOME/.config/alacritty/
 
-    # Fallback terminal, Termite
-    sudo pacman -S --needed --noconfirm termite
-    mkdir -p $HOME/.config/termite
-    ln -frs .config/termite/config $HOME/.config/termite/
+    # Fallback terminal(s)
+    sudo pacman -S --needed --noconfirm xterm rxvt-unicode
 }
 
 install_shell() {
