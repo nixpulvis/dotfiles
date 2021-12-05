@@ -39,7 +39,7 @@ function fish_right_prompt
     if test $last_status -ne 0
         echo -n '('(set_color red)$last_status(set_color normal)') '
     end
-    printf '%s%s%s' (set_color -d white) (date '+%D %T %Z') (set_color normal)
+    printf '%s%s%s' (set_color -d white) (date '+%Y-%m-%d %T%z') (set_color normal)
 end
 
 # Print a nice startup message.
