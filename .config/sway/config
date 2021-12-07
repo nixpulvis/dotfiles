@@ -205,6 +205,10 @@ input "type:keyboard" {
     xkb_options caps:escape
 }
 
+input "type:touchpad" {
+    scroll_factor 0.5
+}
+
 ##################
 # Sway Idle/Lock #
 ##################
