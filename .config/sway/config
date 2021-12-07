@@ -10,7 +10,6 @@ font pango: $font
 # Colors #
 ##########
 
-# One dark, from the one vim theme.
 set $foreground #afafaf
 set $background #161616
 set $black      #000000
