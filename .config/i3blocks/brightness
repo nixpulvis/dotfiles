@@ -1,39 +1,30 @@
 #!/bin/bash
 
-step=10
+STEP=10
+URGENT=20
+
 case $BLOCK_BUTTON in
-  1) sudo light -S 80 ;;
-  3) sudo light -S 20 ;;
-  4) sudo light -A $step ;;
-  5) sudo light -U $step ;;
+  1) brightnessctl -q s "80%" ;;
+  3) brightnessctl -q s "20%" ;;
+  4) brightnessctl -q s "+$STEP%" ;;
+  5) brightnessctl -q s "$STEP%-" ;;
 esac
 
-URGENT_VALUE=10
+max=$(brightnessctl max)
+current=$(brightnessctl get)
+percent=$(echo "scale=1; $current/$max * 100" | bc -l | sed 's/\.0$//')
 
-curBrightness=$(light)
-if (( $(echo "${curBrightness} < 0.0" | bc -l) )); then
-  exit
-fi
-
-percent=$(echo "scale=0;${curBrightness}" | bc -l)
-percent=${percent%.*}
-
-# TODO: Used to simply not print anything.
-# if [[ "${percent}" -le 0 ]]; then
-#   echo -n "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
-#   echo -n "BRIGHTNESS OFF"
-#   echo    "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
-#   echo    "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
-#   echo "#FE340A"
-#   echo "#FE340A"
-#   exit
-# fi
-
-echo "${percent}%"
-echo "${percent}%"
-# echo ""
-
-if [[ "${percent}" -le "${URGENT_VALUE}" ]]; then
+if [[ "${percent}" == 0 ]]; then
+  msg="-------------------------------------- "
+  msg+="THE BRIGHTNESS IS OFF, CLICK HERE TO TURN BACK ON THE LIGHTS!"
+  msg+=" --------------------------------------"
+  echo $msg
+  echo $msg
+  echo "#CACACA"
+  echo "#FE340A"
   exit 33
+else
+  echo "${percent}%"
+  echo "${percent}%"
+  [[ "${percent}" -le "${URGENT}" ]] && exit 33
 fi
-

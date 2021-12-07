@@ -154,8 +154,8 @@ bindsym XF86Bluetooth exec blueman-applet
 
 # Brightness media keys.
 # TODO: Support other forms of backlights (like my desktop).
-bindsym XF86MonBrightnessUp exec sudo light -A 10
-bindsym XF86MonBrightnessDown exec sudo light -U 10
+bindsym XF86MonBrightnessUp exec brightnessctl -q s "+10%"
+bindsym XF86MonBrightnessDown exec brightnessctl -q s "10%-"
 
 # TODO: Scratchpad Terminal
 
