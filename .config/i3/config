@@ -119,7 +119,7 @@ bindsym $mod+Shift+0 move container to workspace 10
 # Restart i3 inplace.
 bindsym $mod+Shift+r reload; restart
 # Exit i3 from the keyboard.
-bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
+bindsym $mod+Shift+e exec "$HOME/.config/i3/exit i3"
 # Lock i3.
 # TODO: https://unix.stackexchange.com/questions/336363/changing-the-lock-screen-in-xscreensaver-to-i3lock
 bindsym $mod+Ctrl+l exec "$HOME/.config/i3/lock"

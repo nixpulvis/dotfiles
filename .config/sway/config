@@ -119,7 +119,7 @@ bindsym $mod+Shift+0 move container to workspace 10
 # Restart sway inplace.
 bindsym $mod+Shift+r reload; restart
 # Exit sway from the keyboard.
-bindsym $mod+Shift+e exec "$HOME/.config/i3/exit"
+bindsym $mod+Shift+e exec "$HOME/.config/i3/exit sway"
 # Lock sway.
 bindsym $mod+Ctrl+l exec loginctl lock-session
 
