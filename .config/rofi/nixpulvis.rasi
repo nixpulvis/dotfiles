@@ -1,5 +1,5 @@
 * {
-    foreground:                  #afafaf;
+    foreground:                  #cacaca;
     normal-foreground:           @foreground;
     alternate-normal-foreground: @foreground;
 

@@ -10,7 +10,7 @@ font pango: $font
 # Colors #
 ##########
 
-set $foreground #afafaf
+set $foreground #cacaca
 set $background #161616
 set $black      #000000
 set $red        #FE340A
