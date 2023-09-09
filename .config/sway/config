@@ -219,6 +219,6 @@ exec swayidle -w \
     before-sleep $HOME/.config/sway/lock
 
 #############
-# Wallpaper #
+# Wallpaper / WIP Monitors
 #############
-output * bg $HOME/media/pictures/backdrops/backdrop1.png fill
+output * bg $HOME/.X/backdrop1.png fill

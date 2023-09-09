@@ -113,7 +113,7 @@ install_wm() {
 
     # Install sway/i3 WM, and supporting tools.
     sudo pacman -S --needed --noconfirm sway i3-wm i3blocks dmenu rofi feh \
-        sysstat acpi xautolock deepin-screenshot swayidle
+        sysstat acpi xautolock deepin-screenshot swayidle swaybg
     yaourt -S --needed --noconfirm swaylock-effects-git
     yaourt -S --needed --noconfirm i3lock-color
     yaourt -S --needed --noconfirm light
