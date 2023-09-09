@@ -11,8 +11,10 @@ fi
 # Start a window manager if we should.
 if [[ $USER != "root" ]]; then
     if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+        set -x XDG_SESSION_TYPE wayland
         exec sway &> $HOME/.sway_output
     elif [[ ! $DISPLAY && $XDG_VTNR -eq 2 ]]; then
+        set -x XDG_SESSION_TYPE x11
         exec startx &> $HOME/.Xoutput
     fi
 fi
