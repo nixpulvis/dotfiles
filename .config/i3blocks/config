@@ -23,6 +23,7 @@ interval=1
 label= 
 
 # System
+
 [temperature]
 label= 
 separator=false

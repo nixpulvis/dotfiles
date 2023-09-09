@@ -27,4 +27,5 @@ else
   echo "${percent}%"
   echo "${percent}%"
   [[ "${percent}" -le "${URGENT}" ]] && exit 33
+  exit 0
 fi
