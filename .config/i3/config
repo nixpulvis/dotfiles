@@ -177,7 +177,7 @@ bindsym $mod+u workspace 
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
-bindsym --release Print exec import "$HOME/desktop/screenshot-$(date -u +'%Y-%m-%dT%H:%M:%SZ').png"
+bindsym Print exec deepin-screenshot -s "$HOME/desktop/screenshot-$(date -Iseconds).png"
 
 ##############
 # Status Bar #

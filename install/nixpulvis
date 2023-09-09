@@ -145,6 +145,8 @@ install_wm() {
     # Add a `~/Desktop` directory, this is the default location for
     # screenshots.
     mkdir -p $HOME/Desktop
+
+    yaourt -S --noconfirm grim slurp
 }
 
 install_browser() {

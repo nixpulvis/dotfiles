@@ -141,6 +141,9 @@ mode "resize" {
 # Enter resize mode.
 bindsym $mod+r mode "resize"
 
+# Take screenshots.
+bindsym Print --release exec grim -g "$(slurp)" "$HOME/desktop/screenshot-$(date -Iseconds).png"
+
 # Audio media keys.
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
 bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
