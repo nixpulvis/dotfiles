@@ -1,0 +1,46 @@
+[[hints.enabled]]
+command = "xdg-open"
+post_processing = true
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+"
+
+[hints.enabled.binding]
+key = "G"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+
+[[hints.enabled]]
+command = "wl-copy"
+regex = '[^\s]+'
+
+[hints.enabled.binding]
+key = "D"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "CreateNewWindow"
+key = "N"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "Last"
+key = 5
+mode = "Vi"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "Bracket"
+key = 6
+mode = "Vi"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "FirstOccupied"
+key = 7
+mode = "Vi"
+mods = "Shift"

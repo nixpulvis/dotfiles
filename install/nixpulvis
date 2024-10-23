@@ -29,7 +29,7 @@ install_terminal() {
     # Install our terminal, Alacritty.
     yaourt -S --needed --noconfirm alacritty
     mkdir -p $HOME/.config/alacritty
-    ln -frs .config/alacritty/{alacritty,colors,bindings}.yml $HOME/.config/alacritty/
+    ln -frs .config/alacritty/{alacritty,colors,bindings}.toml $HOME/.config/alacritty/
 
     # Fallback terminal(s)
     sudo pacman -S --needed --noconfirm xterm rxvt-unicode
