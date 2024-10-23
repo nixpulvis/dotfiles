@@ -121,7 +121,7 @@ install_wm() {
         sysstat acpi xautolock deepin-screenshot swayidle swaybg htop
     yaourt -S --needed --noconfirm swaylock-effects-git
     yaourt -S --needed --noconfirm i3lock-color
-    yaourt -S --needed --noconfirm light
+    yaourt -S --needed --noconfirm brightnessctl
     yaourt -S --needed --noconfirm rofimoji
 
     # Install font-awesome for icons.
