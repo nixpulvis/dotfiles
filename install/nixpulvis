@@ -56,6 +56,8 @@ install_bin() {
 }
 
 install_editor() {
+    sudo pacman -S --needed --noconfirm ripgrep
+
     ln -frs .vimrc $HOME/.vimrc
     mkdir -p $HOME/.vim/after/syntax/
     ln -frs .vim/after/syntax/{rust,syncolor}.vim $HOME/.vim/after/syntax/
