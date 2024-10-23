@@ -14,25 +14,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+DEFAULT_SOURCE=$(pactl info | grep "Default Source" | cut -d' ' -f3)
 
 # Check mouse event
 case $BLOCK_BUTTON in
     3)
-    /usr/bin/pactl set-source-mute 1 toggle;  # PulseAudio
+    /usr/bin/pactl set-source-mute $DEFAULT_SOURCE toggle;  # PulseAudio
 esac
 
 # Determine mic's state
-pactl list sources | grep -q "Mute: yes" && [[ $? -eq 0 ]] && state="off";
+state=$(pactl get-source-mute $DEFAULT_SOURCE | cut -d' ' -f2)
 
 # Toggle mic's state
 case $state in
-    off)
+    yes)
     echo "  mute";
     exit 0;
     ;;
-    *)
+    no)
     echo "  open ";
     exit 33;
+    ;;
+    *)
+    echo "no audio";
+    exit 0;
     ;;
 esac
 
