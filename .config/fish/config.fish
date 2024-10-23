@@ -20,8 +20,11 @@ set -x RUST_SRC_PATH $HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/l
 
 alias l "ls -l"
 
-# Remap caps lock to escape.
-setxkbmap -option caps:escape
+if [ $XDG_SESSION_TYPE = "tty" ]
+    # Remap caps lock to escape.
+    setxkbmap -option caps:escape
+end
+# See also .config/sway/config input "type:keyboard".
 
 # Fish git config.
 set __fish_git_prompt_showdirtystate 'yes'
