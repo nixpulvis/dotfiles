@@ -35,6 +35,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 Plug 'wlangstroth/vim-racket'
+Plug 'jasonccox/vim-wayland-clipboard'
 call plug#end()
 
 " Syntax color scheme
