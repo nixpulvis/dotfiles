@@ -49,3 +49,5 @@ ln -frs .vimrc $HOME/.vimrc
 # Install needed tools to allow users to connect to WiFi using wifi-menu.
 pacman -S --needed --noconfirm dialog wpa_supplicant
 
+# Install DNS tools (mainly `dig`).
+pacman -S --needed --noconfirm bind
