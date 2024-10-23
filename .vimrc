@@ -90,7 +90,7 @@ set colorcolumn=+1,+2
 " Allow some languages a bit more space.
 augroup rust,cc
     au!
-    autocmd FileType c,cpp,rust set textwidth=99
+    autocmd FileType c,cpp,rust set textwidth=79
 augroup END
 
 augroup ott
