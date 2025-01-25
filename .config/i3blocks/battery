@@ -29,7 +29,7 @@ $acpi = <ACPI>;
 close(ACPI);
 
 # fail on unexpected output
-if ($acpi !~ /: (\w+), (\d+)%/) {
+if ($acpi !~ /: ([\w|\s]+), (\d+)%/) {
 	die "$acpi\n";
 }
 
