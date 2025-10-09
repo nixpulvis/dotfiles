@@ -20,7 +20,7 @@ set -x RUST_SRC_PATH $HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/l
 
 alias l "ls -l"
 
-if [ $XDG_SESSION_TYPE = "tty" ]
+if [ "$XDG_SESSION_TYPE" = "tty" ]
     # Remap caps lock to escape.
     setxkbmap -option caps:escape
 end
