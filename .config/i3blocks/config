@@ -10,7 +10,6 @@ command=bash -c 'echo ""; if [ -n "$BLOCK_BUTTON" ]; then firefox --private >
 interval=once
 
 [volume]
-command=$HOME/.config/i3blocks/volume 5% pulse
 interval=1
 separator=false
 separator_block_width=0

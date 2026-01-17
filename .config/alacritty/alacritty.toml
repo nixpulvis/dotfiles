@@ -4,6 +4,9 @@ import = [
     "/home/nixpulvis/.config/alacritty/colors.toml"
 ]
 
+# [scrollbar]
+# mode = "Always"
+
 [env]
 WINIT_X11_SCALE_FACTOR = "1"
 
@@ -20,4 +23,4 @@ multiplier = 3
 [window]
 decorations = "full"
 dynamic_padding = true
-
+# padding = { x = 20, y = 20 }

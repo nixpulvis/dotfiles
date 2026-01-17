@@ -221,4 +221,4 @@ exec swayidle -w \
 #############
 # Wallpaper / WIP Monitors
 #############
-output * bg $HOME/.X/backdrop1.png fill
+output * bg $HOME/.X/backdrop.jpg fill

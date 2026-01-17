@@ -36,7 +36,7 @@ case $state in
     exit 33;
     ;;
     *)
-    echo "no audio";
+    echo "no mic";
     exit 0;
     ;;
 esac
