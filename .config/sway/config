@@ -10,8 +10,7 @@ font pango: $font
 # Colors #
 ##########
 
-# One dark, from the one vim theme.
-set $foreground #afafaf
+set $foreground #cacaca
 set $background #161616
 set $black      #000000
 set $red        #FE340A
@@ -36,7 +35,7 @@ client.background       $background
 # Keybindings #
 ###############
 
-# Use the OS key for i3's modifier.
+# Use the OS key for sway's modifier.
 set $mod Mod4
 
 # Use Mouse+$mod to drag floating windows to their wanted position
@@ -52,8 +51,8 @@ bindsym $mod+grave exec --no-startup-id "$HOME/.config/i3/terminal"
 bindsym $mod+Shift+q kill
 bindsym --release button2 kill
 
-# TODO: Theme not working atm
 bindsym $mod+d exec --no-startup-id "$HOME/.config/i3/launch"
+# TODO: Not working.
 bindsym $mod+m exec --no-startup-id "$HOME/.config/i3/rofimoji"
 
 # Change current focus.
@@ -116,13 +115,12 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# Restart i3 inplace.
+# Restart sway inplace.
 bindsym $mod+Shift+r reload; restart
-# Exit i3 from the keyboard.
-bindsym $mod+Shift+e exec "$HOME/.config/i3/exit i3"
-# Lock i3.
-# TODO: https://unix.stackexchange.com/questions/336363/changing-the-lock-screen-in-xscreensaver-to-i3lock
-bindsym $mod+Ctrl+l exec "$HOME/.config/i3/lock"
+# Exit sway from the keyboard.
+bindsym $mod+Shift+e exec "$HOME/.config/i3/exit sway"
+# Lock sway.
+bindsym $mod+Ctrl+l exec loginctl lock-session
 
 # Resize window.
 mode "resize" {
@@ -143,6 +141,9 @@ mode "resize" {
 # Enter resize mode.
 bindsym $mod+r mode "resize"
 
+# Take screenshots.
+bindsym Print --release exec grim -g "$(slurp)" "$HOME/desktop/screenshot-$(date -Iseconds).png"
+
 # Audio media keys.
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
 bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
@@ -156,8 +157,8 @@ bindsym XF86Bluetooth exec blueman-applet
 
 # Brightness media keys.
 # TODO: Support other forms of backlights (like my desktop).
-bindsym XF86MonBrightnessUp exec brightnessctl set +10%
-bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
+bindsym XF86MonBrightnessUp exec brightnessctl -q s "+10%"
+bindsym XF86MonBrightnessDown exec brightnessctl -q s "10%-"
 
 # TODO: Scratchpad Terminal
 
@@ -177,7 +178,7 @@ bindsym $mod+u workspace 
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
-bindsym Print exec deepin-screenshot -s "$HOME/desktop/screenshot-$(date -Iseconds).png"
+bindsym --release Print exec "$HOME/.config/sway/screenshot"
 
 ##############
 # Status Bar #
@@ -201,8 +202,23 @@ bar {
     }
 }
 
-#############
-# Wallpaper #
-#############
-exec --no-startup-id feh --bg-scale $HOME/.X/backdrop.png
+input "type:keyboard" {
+    xkb_layout us
+    xkb_options caps:escape
+}
 
+input "type:touchpad" {
+    scroll_factor 0.5
+}
+
+##################
+# Sway Idle/Lock #
+##################
+exec swayidle -w \
+    lock $HOME/.config/sway/lock \
+    before-sleep $HOME/.config/sway/lock
+
+#############
+# Wallpaper / WIP Monitors
+#############
+output * bg $HOME/.X/backdrop.jpg fill

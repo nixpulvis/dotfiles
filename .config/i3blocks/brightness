@@ -27,5 +27,9 @@ echo "${current}%"
 
 if [[ "${current}" -le "${URGENT_VALUE}" ]]; then
   exit 33
+else
+  echo "${percent}%"
+  echo "${percent}%"
+  [[ "${percent}" -le "${URGENT}" ]] && exit 33
+  exit 0
 fi
-

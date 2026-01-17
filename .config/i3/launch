@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# TODO: Support X11 as well.
+SCREEN_POS=$(swaymsg -t get_outputs \
+    | jq -r \
+    '.[] | select(.focused).rect | "\(.width)x\(.height)\\+\(.x)\\+\(.y)"')
+MONITOR_ID=$(xrandr | rg -oP "[A-Z]+[0-9]+(?= [a-z]+ $SCREEN_POS)")
+
 rofi \
+    -m $MONITOR_ID \
     -show drun \
-    -location 1 -width 100 \
-    -lines 5 -columns 5 \
-    -hide-scrollbar \
+    -location 1 \
     -matching fuzzy \
     -display-drun "Launch: " \
     -font "Fira Mono 13" \

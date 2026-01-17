@@ -13,13 +13,18 @@ if type -q rbenv
     source (rbenv init -|psub)
 end
 
+eval (ssh-agent -c) &>/dev/null
+
 # Setup rust src.
 set -x RUST_SRC_PATH $HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src
 
 alias l "ls -l"
 
-# Remap caps lock to escape.
-setxkbmap -option caps:escape
+if [ "$XDG_SESSION_TYPE" = "tty" ]
+    # Remap caps lock to escape.
+    setxkbmap -option caps:escape
+end
+# See also .config/sway/config input "type:keyboard".
 
 # Fish git config.
 set __fish_git_prompt_showdirtystate 'yes'
@@ -39,7 +44,7 @@ function fish_right_prompt
     if test $last_status -ne 0
         echo -n '('(set_color red)$last_status(set_color normal)') '
     end
-    printf '%s%s%s' (set_color -d white) (date '+%D %T %Z') (set_color normal)
+    printf '%s%s%s' (set_color -d white) (date '+%Y-%m-%d %T%z') (set_color normal)
 end
 
 # Print a nice startup message.

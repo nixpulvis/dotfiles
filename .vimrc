@@ -18,11 +18,8 @@ Plug 'elixir-lang/vim-elixir'
 Plug 'elzr/vim-json'
 Plug 'ervandew/supertab'
 Plug 'itchyny/lightline.vim'
-Plug 'jiangmiao/auto-pairs'
 Plug 'jremmen/vim-ripgrep'
 Plug 'junegunn/goyo.vim'
-" TODO: Need to figure out a way to dim without 256 colors.
-" Plug 'junegunn/limelight.vim'
 Plug 'jvoorhis/coq.vim'
 Plug 'kmyk/brainfuck-highlight.vim'
 Plug 'mbbill/undotree'
@@ -37,6 +34,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 Plug 'wlangstroth/vim-racket'
+Plug 'jasonccox/vim-wayland-clipboard'
 call plug#end()
 
 " Syntax color scheme
@@ -92,7 +90,7 @@ set colorcolumn=+1,+2
 " Allow some languages a bit more space.
 augroup rust,cc
     au!
-    autocmd FileType c,cpp,rust set textwidth=99
+    autocmd FileType c,cpp,rust set textwidth=79
 augroup END
 
 augroup ott

@@ -44,3 +44,5 @@
     tool = vimdiff
 [merge]
     tool = vimdiff
+[safe]
+    directory = /dotfiles

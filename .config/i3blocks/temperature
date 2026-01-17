@@ -44,7 +44,7 @@ GetOptions("help|h" => \&help,
            "chip=s" => \$chip);
 
 # Get chip temperature
-open (SENSORS, "sensors -u $chip |") or die;
+open (SENSORS, "sensors -u $chip 2>/dev/null |") or die;
 while (<SENSORS>) {
     if (/^\s+temp1_input:\s+[\+]*([\-]*\d+\.\d)/) {
         $temperature = $1;

@@ -86,8 +86,11 @@ is also an advantage, as finding packages is pretty reliable.
 
 ### Window Manager
 
+- [sway](https://swaywm.org/) is a [wlroot](https://github.com/swaywm/wlroots)
+    based Wayland tiling window manager with roughly the same interface as i3
+    (see below).
 - [i3](https://i3wm.org/) is simple and keyboard-centric. Being a tiling WM
-means I don't waste space or thought with overlapping windows normally.
+    means I don't waste space or thought with overlapping windows normally.
 
 
 ### Terminal

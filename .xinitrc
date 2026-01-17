@@ -27,11 +27,10 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
     unset f
 fi
 
-# Start xautolock: TODO: systemd unit.
+# Start xautolock:
+# TODO: systemd unit?
+# TODO: Mirror swaylock.
 exec xautolock -time 3 -locker $HOME/.config/i3/lock &
-
-
 
 # Start our window manager.
 exec i3
-

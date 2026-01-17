@@ -1,0 +1,16 @@
+#!/bin/bash
+
+swaylock \
+    --clock \
+    --timestr '%H:%M:%S' \
+    --datestr '%a %Y-%m-%d' \
+    --indicator \
+    --indicator-radius 150 \
+    --color 070707 \
+    --font 'Fira Mono' \
+    --text-color=cacacaff \
+    --inside-color=282c34ff --ring-color=cacacaff \
+    --inside-ver-color=00A3FEff --ring-ver-color=00A3FEff \
+    --inside-wrong-color=FE340Aff --ring-wrong-color=FE340Aff \
+    --line-color=161616ff --key-hl-color=CACACAff --bs-hl-color=FF8000ff \
+    --separator-color=cacacaff

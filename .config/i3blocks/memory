@@ -42,7 +42,7 @@ END {
 	if (type == "swap")
 		printf("%.1fG/%.1fG\n", (mem_total - mem_free)/1024/1024, mem_total/1024/1024)
 	else
-		printf("%.1fG/%.1fG (%d\%)\n",
+		printf("%.1fG/%.1fG (%d%)\n",
 			   (mem_total - mem_free)/1024/1024,
 			   mem_total/1024/1024,
 		   	   mem_percent)

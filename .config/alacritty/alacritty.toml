@@ -1,0 +1,26 @@
+[general]
+import = [
+    "/home/nixpulvis/.config/alacritty/bindings.toml",
+    "/home/nixpulvis/.config/alacritty/colors.toml"
+]
+
+# [scrollbar]
+# mode = "Always"
+
+[env]
+WINIT_X11_SCALE_FACTOR = "1"
+
+[font]
+size = 13
+
+[font.normal]
+family = "Fira Mono"
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[window]
+decorations = "full"
+dynamic_padding = true
+# padding = { x = 20, y = 20 }
