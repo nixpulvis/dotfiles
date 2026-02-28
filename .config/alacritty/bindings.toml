@@ -10,11 +10,6 @@ binding = { key = "O", mods = "Control|Shift" }
 regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
 
 [[keyboard.bindings]]
-action = "CreateNewWindow"
-key = "N"
-mods = "Control"
-
-[[keyboard.bindings]]
 action = "Last"
 key = 5
 mode = "Vi"
