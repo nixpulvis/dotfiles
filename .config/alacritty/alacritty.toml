@@ -4,8 +4,8 @@ import = [
     "/home/nixpulvis/.config/alacritty/colors.toml"
 ]
 
-# [scrollbar]
-# mode = "Always"
+[terminal.shell]
+program = "/usr/bin/fish"
 
 [env]
 WINIT_X11_SCALE_FACTOR = "1"
