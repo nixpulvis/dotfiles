@@ -14,24 +14,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-DEFAULT_SOURCE=$(pactl info | grep "Default Source" | cut -d' ' -f3)
-
 # Check mouse event
 case $BLOCK_BUTTON in
     3)
-    /usr/bin/pactl set-source-mute $DEFAULT_SOURCE toggle;  # PulseAudio
+    amixer set Capture toggle 2>&1 > /dev/null
 esac
 
 # Determine mic's state
-state=$(pactl get-source-mute $DEFAULT_SOURCE | cut -d' ' -f2)
+channels=$(amixer get Capture | sed -nE "s/Capture channels: (.*)/\1/p")
+mic_active=0
+IFS='-'
+for channel in $channels; do
+    channel=$(echo $channel | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    if [[ -n $(amixer get Capture | grep "$channel:.*\[on\]") ]]; then
+        mic_active=1
+    fi
+done
 
 # Toggle mic's state
-case $state in
-    yes)
+case $mic_active in
+    0)
     echo "  mute";
     exit 0;
     ;;
-    no)
+    1)
     echo "  open ";
     exit 33;
     ;;
