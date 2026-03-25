@@ -162,13 +162,6 @@ bindsym XF86MonBrightnessDown exec brightnessctl -q s "10%-"
 
 # TODO: Scratchpad Terminal
 
-for_window [title="^Signal$"] move container to workspace 
-bindsym $mod+c workspace 
-bindsym Shift+$mod+c move container to workspace 
-
-for_window [title="Trello$"] move container to workspace 
-bindsym $mod+u workspace 
-
 # TODO: Visor Terminal
 #exec --no-startup-id alacritty --title visor --dimensions 100 100
 #for_window [class="visor"] move scratchpad, fullscreen toggle
