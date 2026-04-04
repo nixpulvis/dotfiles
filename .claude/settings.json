@@ -1,0 +1,22 @@
+{
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash $HOME/.claude/statusline-command.sh"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r FILE; BASENAME=$(basename \"$FILE\"); PARENT=$(dirname \"$FILE\"); if [ \"$BASENAME\" = \"CLAUDE.md\" ] && [ \"$(basename \"$PARENT\")\" != \".claude\" ] && [ \"$(basename \"$PARENT\")\" != \"rules\" ]; then mkdir -p \"$PARENT/.claude\" && mv \"$FILE\" \"$PARENT/.claude/CLAUDE.md\"; fi; }"
+          }
+        ]
+      }
+    ]
+  }
+}
