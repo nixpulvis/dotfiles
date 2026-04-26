@@ -178,6 +178,13 @@ install_torrent() {
     sudo pacman -S --needed --noconfirm transmission-cli
 }
 
+install_claude() {
+    mkdir -p $HOME/.claude
+    ln -frs .claude/CLAUDE.md $HOME/.claude/
+    ln -frs .claude/settings.json $HOME/.claude/
+    ln -frs .claude/statusline-command.sh $HOME/.claude/
+}
+
 
 # Here be the magic, in order.
 
@@ -200,3 +207,4 @@ install_wm
 install_browser
 install_pdf
 install_torrent
+install_claude
