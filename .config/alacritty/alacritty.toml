@@ -24,3 +24,8 @@ multiplier = 3
 decorations = "full"
 dynamic_padding = true
 # padding = { x = 20, y = 20 }
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"
