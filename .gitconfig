@@ -46,3 +46,5 @@
     tool = vimdiff
 [safe]
     directory = /dotfiles
+[pull]
+    ff = only
