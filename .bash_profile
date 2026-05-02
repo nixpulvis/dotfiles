@@ -1,6 +1,9 @@
 # Setup cargo's binary path.
 export PATH=$HOME/.cargo/bin:$PATH
 
+# TODO: https://github.com/zed-industries/zed/issues/32792
+export WLR_RENDER_NO_EXPLICIT_SYNC=1
+
 # Set the terminal variable helps i3 decide what to do.
 if type alacritty > /dev/null; then
     export TERMINAL=alacritty
