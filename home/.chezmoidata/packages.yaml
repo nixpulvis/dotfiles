@@ -1,0 +1,38 @@
+# Single source of truth for packages, grouped by component (base/graphical/wm).
+# Each entry maps a logical package to its name in each package manager. Omit a
+# manager key when the package doesn't exist / isn't wanted there; the install
+# scripts skip missing keys. `brew_cask` installs via `brew install --cask`.
+#
+# Loaded by chezmoi as `.packages`; consumed by
+# run_once_before_10-install-packages.{sh,ps1}.tmpl.
+packages:
+  base:
+    - {name: fish,     brew: fish,       pacman: fish,      apt: fish}
+    - {name: neovim,   brew: neovim,     pacman: neovim,    apt: neovim,       winget: Neovim.Neovim}
+    - {name: ripgrep,  brew: ripgrep,    pacman: ripgrep,   apt: ripgrep,      winget: BurntSushi.ripgrep.MSVC}
+    - {name: git,      brew: git,        pacman: git,       apt: git,          winget: Git.Git}
+    - {name: jq,       brew: jq,         pacman: jq,        apt: jq,           winget: jqlang.jq}
+    - {name: fzf,      brew: fzf,        pacman: fzf,       apt: fzf,          winget: junegunn.fzf}
+    - {name: borg,     brew: borgbackup, pacman: borg,      apt: borgbackup}
+    - {name: pass,     brew: pass,       pacman: pass,      apt: pass}
+    - {name: fortune,  brew: fortune,    pacman: fortune-mod, apt: fortune-mod}
+
+  graphical:
+    - {name: alacritty, brew_cask: alacritty,      pacman: alacritty,    apt: alacritty,      winget: Alacritty.Alacritty}
+    - {name: fira-mono, brew_cask: font-fira-mono, pacman: ttf-fira-mono, apt: fonts-firacode}
+    - {name: fira-sans, brew_cask: font-fira-sans, pacman: ttf-fira-sans}
+
+  wm:
+    - {name: sway,          pacman: sway,                 apt: sway}
+    - {name: i3,            pacman: i3-wm,                apt: i3}
+    - {name: i3blocks,      pacman: i3blocks,             apt: i3blocks}
+    - {name: dmenu,         pacman: dmenu}
+    - {name: rofi,          pacman: rofi,                 apt: rofi}
+    - {name: feh,           pacman: feh,                  apt: feh}
+    - {name: swaybg,        pacman: swaybg}
+    - {name: swayidle,      pacman: swayidle}
+    - {name: grim,          pacman: grim,                 apt: grim}
+    - {name: slurp,         pacman: slurp,                apt: slurp}
+    - {name: zathura,       pacman: zathura,              apt: zathura}
+    - {name: zathura-pdf,   pacman: zathura-pdf-poppler,  apt: zathura-pdf-poppler}
+    - {name: brightnessctl, pacman: brightnessctl,        apt: brightnessctl}

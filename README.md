@@ -54,9 +54,19 @@ their OS-aware defaults live in
 [`home/.chezmoi.toml.tmpl`](home/.chezmoi.toml.tmpl). WSL is detected
 automatically and defaults to a headless (non-`graphical`) profile.
 
-Packages for the selected groups are installed by
-`home/run_once_before_10-install-packages.{sh,ps1}.tmpl` (Homebrew on macOS,
-`pacman`/`apt` on Linux, `winget` on Windows).
+Package names are declared once in
+[`home/.chezmoidata/packages.yaml`](home/.chezmoidata/packages.yaml), grouped
+by component, with a column per package manager:
+
+```yaml
+- {name: ripgrep, brew: ripgrep, pacman: ripgrep, apt: ripgrep, winget: BurntSushi.ripgrep.MSVC}
+```
+
+The `run_once_before_10-install-packages.{sh,ps1}.tmpl` scripts iterate that
+table and emit one install command per manager (Homebrew on macOS, `pacman`/`apt`
+on Linux, `winget` on Windows). Omit a manager key when a package doesn't exist
+there and it's skipped. To add a tool, add one line to the YAML — never edit the
+scripts.
 
 ## Layout
 
@@ -64,11 +74,13 @@ Packages for the selected groups are installed by
 .chezmoiroot                 -> points chezmoi at home/
 install.sh / install.ps1     bootstrap entrypoints
 home/                        chezmoi source (generates ~/)
-  .chezmoi.toml.tmpl         per-machine prompts (name/email/gui/desktop)
+  .chezmoi.toml.tmpl         per-machine prompts (name/email, graphical/wm)
   .chezmoiignore             component gating
+  .chezmoidata/packages.yaml package name table (single source of truth)
   dot_*                      files that become ~/.*
   run_once_*                 one-time setup scripts
   AppData/*                  Windows-only path symlinks (see below)
+test/                        sandbox.sh + docker.sh (safe test harness)
 ```
 
 ## Daily use

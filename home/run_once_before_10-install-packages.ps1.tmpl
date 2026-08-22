@@ -1,19 +1,17 @@
 {{- if eq .chezmoi.os "windows" -}}
-# Install packages on Windows via winget. Runs once per machine.
+# Install packages via winget. Package IDs come from .chezmoidata/packages.yaml
+# (single source of truth) — edit that, not this. Runs once per machine.
 $ErrorActionPreference = 'Stop'
 
 function Install-Pkg($id) {
     winget install --id $id -e --accept-source-agreements --accept-package-agreements
 }
 
-# base
-Install-Pkg 'Git.Git'
-Install-Pkg 'Neovim.Neovim'
-Install-Pkg 'BurntSushi.ripgrep.MSVC'
-Install-Pkg 'jqlang.jq'
-Install-Pkg 'junegunn.fzf'
-{{ if .graphical }}
-# graphical
-Install-Pkg 'Alacritty.Alacritty'
-{{ end }}
+{{- $groups := list "base" -}}
+{{- if .graphical }}{{ $groups = append $groups "graphical" }}{{ end -}}
+{{- range $g := $groups }}{{ range $p := index $.packages $g -}}
+{{- if hasKey $p "winget" }}
+Install-Pkg '{{ $p.winget }}'
+{{- end -}}
+{{- end }}{{ end }}
 {{ end -}}

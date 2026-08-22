@@ -1,8 +1,13 @@
 {{- if ne .chezmoi.os "windows" -}}
 #!/bin/sh
-# Install packages for the selected component groups.
-# Runs once per machine (re-runs only if this script's contents change).
+# Install packages for the active component groups. Package names come from
+# .chezmoidata/packages.yaml (single source of truth) — edit that, not this.
+# Runs once per machine (re-runs if the rendered command changes).
 set -eu
+
+{{- $groups := list "base" -}}
+{{- if .graphical }}{{ $groups = append $groups "graphical" }}{{ end -}}
+{{- if .wm }}{{ $groups = append $groups "wm" }}{{ end }}
 
 {{ if eq .chezmoi.os "darwin" -}}
 # ---- macOS (Homebrew) ------------------------------------------------------
@@ -11,41 +16,32 @@ if ! command -v brew >/dev/null 2>&1; then
     if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
     if [ -x /usr/local/bin/brew ]; then eval "$(/usr/local/bin/brew shellenv)"; fi
 fi
-
-# base
-brew install fish neovim ripgrep git jq fzf borgbackup pass fortune
-{{ if .graphical -}}
-# graphical
-brew install --cask alacritty
-brew install --cask font-fira-mono font-fira-sans
+{{ $formulae := list -}}
+{{ $casks := list -}}
+{{- range $g := $groups }}{{ range $p := index $.packages $g -}}
+{{- if hasKey $p "brew" }}{{ $formulae = append $formulae $p.brew }}{{ end -}}
+{{- if hasKey $p "brew_cask" }}{{ $casks = append $casks $p.brew_cask }}{{ end -}}
+{{- end }}{{ end -}}
+{{ if $formulae }}brew install {{ $formulae | join " " }}
+{{ end -}}
+{{ if $casks }}brew install --cask {{ $casks | join " " }}
 {{ end -}}
 
 {{ else if eq .chezmoi.os "linux" -}}
 # ---- Linux -----------------------------------------------------------------
 {{ if lookPath "pacman" -}}
-# Arch (pacman)
-sudo pacman -S --needed --noconfirm \
-    fish neovim ripgrep git jq fzf borg pass fortune-mod
-{{ if .wm -}}
-sudo pacman -S --needed --noconfirm \
-    sway i3-wm i3blocks dmenu rofi feh swaybg swayidle grim slurp \
-    zathura zathura-pdf-poppler brightnessctl \
-    ttf-fira-mono ttf-fira-sans
-{{ else if .graphical -}}
-sudo pacman -S --needed --noconfirm alacritty ttf-fira-mono ttf-fira-sans
-{{ end -}}
+{{ $pkgs := list -}}
+{{- range $g := $groups }}{{ range $p := index $.packages $g -}}
+{{- if hasKey $p "pacman" }}{{ $pkgs = append $pkgs $p.pacman }}{{ end -}}
+{{- end }}{{ end -}}
+sudo pacman -S --needed --noconfirm {{ $pkgs | join " " }}
 {{ else if lookPath "apt-get" -}}
-# Debian / Ubuntu (apt)
+{{ $pkgs := list -}}
+{{- range $g := $groups }}{{ range $p := index $.packages $g -}}
+{{- if hasKey $p "apt" }}{{ $pkgs = append $pkgs $p.apt }}{{ end -}}
+{{- end }}{{ end -}}
 sudo apt-get update
-sudo apt-get install -y \
-    fish neovim ripgrep git jq fzf borgbackup pass fortune-mod
-{{ if .wm -}}
-sudo apt-get install -y \
-    sway i3 i3blocks rofi feh grim slurp \
-    zathura zathura-pdf-poppler brightnessctl fonts-firacode
-{{ else if .graphical -}}
-sudo apt-get install -y alacritty fonts-firacode
-{{ end -}}
+sudo apt-get install -y {{ $pkgs | join " " }}
 {{ else -}}
 echo "No supported package manager (pacman/apt) found; install packages manually." >&2
 {{ end -}}
