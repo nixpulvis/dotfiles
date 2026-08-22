@@ -24,7 +24,7 @@ fi
 {{- end }}{{ end -}}
 {{ if $formulae }}brew install {{ $formulae | join " " }}
 {{ end -}}
-{{ if $casks }}brew install --cask {{ $casks | join " " }}
+{{ if $casks }}brew install --cask --adopt {{ $casks | join " " }}
 {{ end -}}
 
 {{ else if eq .chezmoi.os "linux" -}}
