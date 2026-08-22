@@ -3,7 +3,7 @@
 #   irm https://raw.githubusercontent.com/nixpulvis/dotfiles/master/install.ps1 | iex
 #
 # Extra args are passed to `chezmoi init`, e.g. to track a branch:
-#   .\install.ps1 --branch next
+#   .\install.ps1 --branch <branch>
 $ErrorActionPreference = 'Stop'
 
 if (-not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {

@@ -4,7 +4,7 @@
 #   sh -c "$(curl -fsLS https://raw.githubusercontent.com/nixpulvis/dotfiles/master/install.sh)"
 #
 # Any extra args are passed to `chezmoi init`, e.g. to track a branch:
-#   ./install.sh --branch next
+#   ./install.sh --branch <branch>
 set -eu
 
 # macOS: the git that `chezmoi init` clones with ships with the Xcode Command

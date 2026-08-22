@@ -30,7 +30,7 @@ per-machine settings, and applies. On a machine that already has chezmoi:
 chezmoi init --apply nixpulvis
 ```
 
-To track a work-in-progress branch, pass it through: `./install.sh --branch next`.
+To track a work-in-progress branch, pass it through: `./install.sh --branch <branch>`.
 
 ## Components
 
