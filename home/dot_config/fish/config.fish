@@ -1,12 +1,6 @@
-# Prefer Neovim, fall back to Vim, then POSIX vi. Set EDITOR and VISUAL to the
-# first one installed so nothing points at a missing binary.
-for editor in nvim vim vi
-    if type -q $editor
-        set -x EDITOR $editor
-        set -x VISUAL $editor
-        break
-    end
-end
+# We edit with Neovim.
+set -x EDITOR nvim
+set -x VISUAL nvim
 
 # Executables in our home directory.
 set -x PATH $HOME/.bin $PATH
