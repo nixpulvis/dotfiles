@@ -1,8 +1,11 @@
-# Prefer Neovim, fall back to Vim (only set if one is installed).
-if type -q nvim
-    set -x EDITOR nvim
-else if type -q vim
-    set -x EDITOR vim
+# Prefer Neovim, fall back to Vim, then POSIX vi. Set EDITOR and VISUAL to the
+# first one installed so nothing points at a missing binary.
+for editor in nvim vim vi
+    if type -q $editor
+        set -x EDITOR $editor
+        set -x VISUAL $editor
+        break
+    end
 end
 
 # Executables in our home directory.
