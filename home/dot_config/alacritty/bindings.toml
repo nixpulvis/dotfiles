@@ -26,3 +26,15 @@ action = "FirstOccupied"
 key = 7
 mode = "Vi"
 mods = "Shift"
+
+# Option+Delete: delete previous word (matches Option+Arrow word-move)
+[[keyboard.bindings]]
+key = "Back"
+mods = "Alt"
+chars = "\u001B\u007F"
+
+# Command+Delete: delete to start of line (macOS convention)
+[[keyboard.bindings]]
+key = "Back"
+mods = "Command"
+chars = "\u0015"
