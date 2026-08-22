@@ -1,13 +1,14 @@
 {{- /* Component gating. `base` (everything not listed here) applies everywhere.
-       Groups are toggled per-machine by `chezmoi init` (see .chezmoi.toml.tmpl). */ -}}
+       Groups are chosen per-machine by `chezmoi init` (see .chezmoi.toml.tmpl):
+       `graphical` (GUI apps) and `wm` (the Linux window-manager stack). */ -}}
 
-{{- if not .gui }}
+{{- if not .graphical }}
 .config/alacritty
 AppData/Roaming/alacritty
 {{- end }}
 
-{{- /* The Linux desktop stack only makes sense on a graphical Linux box. */ -}}
-{{- if or (ne .chezmoi.os "linux") (not .desktop) }}
+{{- /* The window-manager stack only makes sense on a graphical Linux box. */ -}}
+{{- if or (ne .chezmoi.os "linux") (not .wm) }}
 .config/i3
 .config/i3blocks
 .config/sway

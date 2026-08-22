@@ -11,28 +11,30 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* OS-aware defaults for the opt-in component groups. */}}
-{{- $guiDefault := false -}}
-{{- if or (eq $os "darwin") (eq $os "windows") -}}
-{{-   $guiDefault = true -}}
-{{- else if and (eq $os "linux") (not $wsl) -}}
-{{-   $guiDefault = true -}}
+{{/* Component groups.
+     - base       : applied everywhere, never gated.
+     - graphical  : GUI apps (alacritty + fonts). Implicit on macOS/Windows;
+                    only a question on Linux, where a box may be headless (WSL,
+                    servers).
+     - wm         : the Linux window-manager stack (i3/sway/rofi/zathura). A
+                    Linux-only option that implies `graphical`. macOS/Windows
+                    have their own window managers, so it is always false there. */}}
+{{- $graphical := true -}}
+{{- $wm := false -}}
+{{- if eq $os "linux" -}}
+{{-   $graphical = promptBoolOnce . "graphical" "Graphical machine? (install alacritty + fonts)" (not $wsl) -}}
+{{-   $wm = promptBoolOnce . "wm" "Install the Linux window-manager stack? (i3/sway/rofi/zathura)" false -}}
+{{-   if $wm -}}{{- $graphical = true -}}{{- end -}}
 {{- end -}}
-{{- $desktopDefault := false -}}
 
-{{- $name       := promptStringOnce . "name"       "Git user name"            "Nathan Lilienthal" -}}
+{{- $name       := promptStringOnce . "name"       "Git user name"             "Nathan Lilienthal" -}}
 {{- $email      := promptStringOnce . "email"      "Git email (personal/work)" "nathan@nixpulvis.com" -}}
-{{- $signingkey := promptStringOnce . "signingkey" "Git signing key"          "Nathan Lilienthal" -}}
-{{- $gui        := promptBoolOnce   . "gui"        "Install GUI apps (alacritty)?"                 $guiDefault -}}
-{{- $desktop    := false -}}
-{{- if and (eq $os "linux") (not $wsl) -}}
-{{-   $desktop = promptBoolOnce . "desktop" "Install the Linux desktop stack (i3/sway/rofi/zathura)?" $desktopDefault -}}
-{{- end -}}
+{{- $signingkey := promptStringOnce . "signingkey" "Git signing key"           "Nathan Lilienthal" -}}
 
 [data]
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     signingkey = {{ $signingkey | quote }}
     wsl = {{ $wsl }}
-    gui = {{ $gui }}
-    desktop = {{ $desktop }}
+    graphical = {{ $graphical }}
+    wm = {{ $wm }}

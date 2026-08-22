@@ -34,20 +34,25 @@ To track a work-in-progress branch, pass it through: `./install.sh --branch next
 
 ## Components
 
-Every machine gets the **base** layer. Extra groups are opt-in and chosen once
-during `chezmoi init` (answers persist per machine; re-run `chezmoi init` to
-change them).
+Every machine gets the **base** layer. The other groups reflect what a machine
+actually is:
 
-| Group     | Applies to                     | Contents                                              |
-| --------- | ------------------------------ | ----------------------------------------------------- |
-| `base`    | everywhere                     | git, bash, fish, vim/nvim, claude, ssh, `bin/`        |
-| `gui`     | opt-in (default: desktop OSes) | alacritty + fonts                                     |
-| `desktop` | opt-in (Linux only)            | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X`   |
+| Group       | Applies to                                  | Contents                                            |
+| ----------- | ------------------------------------------- | --------------------------------------------------- |
+| `base`      | everywhere                                  | git, bash, fish, vim/nvim, claude, ssh, `bin/`      |
+| `graphical` | macOS/Windows always; Linux by prompt       | alacritty + fonts                                   |
+| `wm`        | Linux only, by prompt (implies `graphical`) | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X` |
+
+macOS and Windows are inherently graphical, so `graphical` is implicit there
+with no prompt — `chezmoi init` only asks for git identity. On Linux you are
+asked whether the machine is `graphical` (a server or WSL box may not be) and
+whether to install the `wm` stack. Answers persist per machine; re-run
+`chezmoi init` to change them.
 
 Gating lives in [`home/.chezmoiignore`](home/.chezmoiignore); the prompts and
 their OS-aware defaults live in
 [`home/.chezmoi.toml.tmpl`](home/.chezmoi.toml.tmpl). WSL is detected
-automatically and defaults to a headless (no `gui`/`desktop`) profile.
+automatically and defaults to a headless (non-`graphical`) profile.
 
 Packages for the selected groups are installed by
 `home/run_once_before_10-install-packages.{sh,ps1}.tmpl` (Homebrew on macOS,

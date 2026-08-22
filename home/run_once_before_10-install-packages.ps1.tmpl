@@ -12,8 +12,8 @@ Install-Pkg 'Neovim.Neovim'
 Install-Pkg 'BurntSushi.ripgrep.MSVC'
 Install-Pkg 'jqlang.jq'
 Install-Pkg 'junegunn.fzf'
-{{ if .gui }}
-# gui
+{{ if .graphical }}
+# graphical
 Install-Pkg 'Alacritty.Alacritty'
 {{ end }}
 {{ end -}}

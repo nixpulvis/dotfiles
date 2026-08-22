@@ -14,8 +14,8 @@ fi
 
 # base
 brew install fish neovim ripgrep git jq fzf borgbackup pass fortune
-{{ if .gui -}}
-# gui
+{{ if .graphical -}}
+# graphical
 brew install --cask alacritty
 brew install --cask font-fira-mono font-fira-sans
 {{ end -}}
@@ -26,12 +26,12 @@ brew install --cask font-fira-mono font-fira-sans
 # Arch (pacman)
 sudo pacman -S --needed --noconfirm \
     fish neovim ripgrep git jq fzf borg pass fortune-mod
-{{ if .desktop -}}
+{{ if .wm -}}
 sudo pacman -S --needed --noconfirm \
     sway i3-wm i3blocks dmenu rofi feh swaybg swayidle grim slurp \
     zathura zathura-pdf-poppler brightnessctl \
     ttf-fira-mono ttf-fira-sans
-{{ else if .gui -}}
+{{ else if .graphical -}}
 sudo pacman -S --needed --noconfirm alacritty ttf-fira-mono ttf-fira-sans
 {{ end -}}
 {{ else if lookPath "apt-get" -}}
@@ -39,11 +39,11 @@ sudo pacman -S --needed --noconfirm alacritty ttf-fira-mono ttf-fira-sans
 sudo apt-get update
 sudo apt-get install -y \
     fish neovim ripgrep git jq fzf borgbackup pass fortune-mod
-{{ if .desktop -}}
+{{ if .wm -}}
 sudo apt-get install -y \
     sway i3 i3blocks rofi feh grim slurp \
     zathura zathura-pdf-poppler brightnessctl fonts-firacode
-{{ else if .gui -}}
+{{ else if .graphical -}}
 sudo apt-get install -y alacritty fonts-firacode
 {{ end -}}
 {{ else -}}
