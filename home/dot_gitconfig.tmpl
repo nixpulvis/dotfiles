@@ -38,7 +38,18 @@
     whitespace = warn
 
 [credential]
-    helper = store
+{{- if eq .chezmoi.os "darwin" }}
+    helper = osxkeychain
+{{- else if eq .chezmoi.os "windows" }}
+    helper = manager
+{{- else }}
+    {{- /* Linux/WSL: in-memory only, no plaintext on disk, no extra deps.
+           Upgrade to `libsecret` (GNOME Keyring) or GCM if a Secret Service
+           is available. Or `pass-git-helper` (helper = /usr/bin/pass-git-helper)
+           to back credentials with the `pass` store already installed here;
+           needs the pass-git-helper package (AUR / pip). */}}
+    helper = cache --timeout=86400
+{{- end }}
 
 [diff]
     tool = nvimdiff
