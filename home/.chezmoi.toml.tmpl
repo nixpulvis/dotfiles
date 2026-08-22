@@ -1,0 +1,38 @@
+{{/* Per-machine configuration. Answered once on `chezmoi init`, then persisted
+     in this machine's chezmoi config file. Re-run `chezmoi init` to change. */}}
+
+{{- $os := .chezmoi.os -}}
+{{- $wsl := false -}}
+{{- if eq $os "linux" -}}
+{{-   if hasKey .chezmoi.kernel "osrelease" -}}
+{{-     if or (contains "microsoft" (lower .chezmoi.kernel.osrelease)) (contains "wsl" (lower .chezmoi.kernel.osrelease)) -}}
+{{-       $wsl = true -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* OS-aware defaults for the opt-in component groups. */}}
+{{- $guiDefault := false -}}
+{{- if or (eq $os "darwin") (eq $os "windows") -}}
+{{-   $guiDefault = true -}}
+{{- else if and (eq $os "linux") (not $wsl) -}}
+{{-   $guiDefault = true -}}
+{{- end -}}
+{{- $desktopDefault := false -}}
+
+{{- $name       := promptStringOnce . "name"       "Git user name"            "Nathan Lilienthal" -}}
+{{- $email      := promptStringOnce . "email"      "Git email (personal/work)" "nathan@nixpulvis.com" -}}
+{{- $signingkey := promptStringOnce . "signingkey" "Git signing key"          "Nathan Lilienthal" -}}
+{{- $gui        := promptBoolOnce   . "gui"        "Install GUI apps (alacritty)?"                 $guiDefault -}}
+{{- $desktop    := false -}}
+{{- if and (eq $os "linux") (not $wsl) -}}
+{{-   $desktop = promptBoolOnce . "desktop" "Install the Linux desktop stack (i3/sway/rofi/zathura)?" $desktopDefault -}}
+{{- end -}}
+
+[data]
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    signingkey = {{ $signingkey | quote }}
+    wsl = {{ $wsl }}
+    gui = {{ $gui }}
+    desktop = {{ $desktop }}

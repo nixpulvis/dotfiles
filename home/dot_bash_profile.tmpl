@@ -1,6 +1,12 @@
 # Setup cargo's binary path.
-export PATH=$HOME/.cargo/bin:$PATH
+export PATH=$HOME/.bin:$HOME/.cargo/bin:$PATH
+{{ if eq .chezmoi.os "darwin" }}
+# Homebrew.
+[[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+[[ -x /usr/local/bin/brew ]] && eval "$(/usr/local/bin/brew shellenv)"
+{{ end }}
 
+{{ if eq .chezmoi.os "linux" }}
 # TODO: https://github.com/zed-industries/zed/issues/32792
 export WLR_RENDER_NO_EXPLICIT_SYNC=1
 
@@ -19,5 +25,6 @@ if [[ $USER != "root" ]]; then
         exec startx &> $HOME/.Xoutput
     fi
 fi
+{{ end }}
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc

@@ -1,0 +1,19 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Install packages on Windows via winget. Runs once per machine.
+$ErrorActionPreference = 'Stop'
+
+function Install-Pkg($id) {
+    winget install --id $id -e --accept-source-agreements --accept-package-agreements
+}
+
+# base
+Install-Pkg 'Git.Git'
+Install-Pkg 'Neovim.Neovim'
+Install-Pkg 'BurntSushi.ripgrep.MSVC'
+Install-Pkg 'jqlang.jq'
+Install-Pkg 'junegunn.fzf'
+{{ if .gui }}
+# gui
+Install-Pkg 'Alacritty.Alacritty'
+{{ end }}
+{{ end -}}

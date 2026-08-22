@@ -1,0 +1,23 @@
+{{- /* Component gating. `base` (everything not listed here) applies everywhere.
+       Groups are toggled per-machine by `chezmoi init` (see .chezmoi.toml.tmpl). */ -}}
+
+{{- if not .gui }}
+.config/alacritty
+{{- end }}
+
+{{- /* The Linux desktop stack only makes sense on a graphical Linux box. */ -}}
+{{- if or (ne .chezmoi.os "linux") (not .desktop) }}
+.config/i3
+.config/i3blocks
+.config/sway
+.config/rofi
+.config/zathura
+.config/user-dirs.dirs
+.xinitrc
+.X
+{{- end }}
+
+{{- /* Linux-only helper. */ -}}
+{{- if ne .chezmoi.os "linux" }}
+.bin/share-network
+{{- end }}

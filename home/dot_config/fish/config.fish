@@ -15,12 +15,14 @@ end
 
 eval (ssh-agent -c) &>/dev/null
 
-# Setup rust src.
-set -x RUST_SRC_PATH $HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src
+# Setup rust src (resolved from the active toolchain).
+if type -q rustc
+    set -x RUST_SRC_PATH (rustc --print sysroot)/lib/rustlib/src/rust/library
+end
 
 alias l "ls -l"
 
-if [ "$XDG_SESSION_TYPE" = "tty" ]
+if type -q setxkbmap; and [ "$XDG_SESSION_TYPE" = "tty" ]
     # Remap caps lock to escape.
     setxkbmap -option caps:escape
 end

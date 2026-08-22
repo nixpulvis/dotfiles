@@ -1,7 +1,7 @@
 [user]
-    name = Nathan Lilienthal
-    email = nathan@nixpulvis.com
-    signingkey = Nathan Lilienthal
+    name = {{ .name }}
+    email = {{ .email }}
+    signingkey = {{ .signingkey }}
 
 [alias]
     up = !git remote update -p
@@ -44,7 +44,5 @@
     tool = vimdiff
 [merge]
     tool = vimdiff
-[safe]
-    directory = /dotfiles
 [pull]
     ff = only
