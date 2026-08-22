@@ -26,6 +26,14 @@ fi
 {{ end -}}
 {{ if $casks }}brew install --cask --adopt {{ $casks | join " " }}
 {{ end -}}
+{{ if .graphical -}}
+# Alacritty has no macOS package here (the Homebrew cask is deprecated and being
+# disabled). Remind the user to install it by hand if it isn't already present.
+if ! command -v alacritty >/dev/null 2>&1 && [ ! -d /Applications/Alacritty.app ]; then
+    echo "NOTE: Alacritty is not installed. Its Homebrew cask is deprecated on macOS;" >&2
+    echo "      install manually: https://github.com/alacritty/alacritty/releases" >&2
+fi
+{{ end -}}
 
 {{ else if eq .chezmoi.os "linux" -}}
 # ---- Linux -----------------------------------------------------------------

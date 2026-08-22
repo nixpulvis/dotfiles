@@ -18,7 +18,7 @@ packages:
     - {name: fortune,  brew: fortune,    pacman: fortune-mod, apt: fortune-mod}
 
   graphical:
-    - {name: alacritty, brew_cask: alacritty,      pacman: alacritty,    apt: alacritty,      winget: Alacritty.Alacritty}
+    - {name: alacritty,                            pacman: alacritty,    apt: alacritty,      winget: Alacritty.Alacritty}
     - {name: fira-mono, brew_cask: font-fira-mono, pacman: ttf-fira-mono, apt: fonts-firacode}
     - {name: fira-sans, brew_cask: font-fira-sans, pacman: ttf-fira-sans}
 
