@@ -17,8 +17,8 @@ DISTRO=${1:-arch}
 
 # Arch publishes no arm64 image, so emulate x86-64 there; Ubuntu is multi-arch.
 case "$DISTRO" in
-    arch)          IMAGE=archlinux:latest; PLAT=${PLATFORM:-linux/amd64}; PREP='pacman -Sy --noconfirm --needed git curl sudo' ;;
-    ubuntu|debian) IMAGE=ubuntu:latest;    PLAT=${PLATFORM:-};           PREP='apt-get update && apt-get install -y git curl sudo ca-certificates' ;;
+    arch)          IMAGE=archlinux:latest; PLAT=${PLATFORM:-linux/amd64}; PREP='pacman -Sy --noconfirm --needed git curl sudo'; ARCH=1 ;;
+    ubuntu|debian) IMAGE=ubuntu:latest;    PLAT=${PLATFORM:-};           PREP='apt-get update && apt-get install -y git curl sudo ca-certificates'; ARCH=0 ;;
     *) echo "unknown distro: $DISTRO (use arch|ubuntu)" >&2; exit 2 ;;
 esac
 
@@ -32,8 +32,19 @@ fi
 EXCLUDE='--exclude=scripts'
 [ "${INSTALL:-0}" = "1" ] && EXCLUDE=''
 
-docker run --rm -it $PLATARG -v "$REPO":/dotfiles:ro "$IMAGE" bash -c "
+# pacman 7's download sandbox (alpm user + seccomp filter) can't initialize
+# under qemu emulation, so disable it in the container and relax Docker's
+# seccomp for the emulated run. Real (native) Arch machines are unaffected.
+SECARG=''
+PACFIX=':'
+if [ "$ARCH" = "1" ]; then
+    SECARG='--security-opt seccomp=unconfined'
+    PACFIX="sed -i '/^\\[options\\]/a DisableSandbox' /etc/pacman.conf"
+fi
+
+docker run --rm -it $PLATARG $SECARG -v "$REPO":/dotfiles:ro "$IMAGE" bash -c "
     set -e
+    $PACFIX
     $PREP
     useradd -m -s /bin/bash tester
     echo 'tester ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/tester
