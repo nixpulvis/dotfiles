@@ -3,6 +3,7 @@
 
 {{- if not .gui }}
 .config/alacritty
+AppData/Roaming/alacritty
 {{- end }}
 
 {{- /* The Linux desktop stack only makes sense on a graphical Linux box. */ -}}
@@ -20,4 +21,9 @@
 {{- /* Linux-only helper. */ -}}
 {{- if ne .chezmoi.os "linux" }}
 .bin/share-network
+{{- end }}
+
+{{- /* Windows-only config-path symlinks (%LOCALAPPDATA%, %APPDATA%). */ -}}
+{{- if ne .chezmoi.os "windows" }}
+AppData
 {{- end }}

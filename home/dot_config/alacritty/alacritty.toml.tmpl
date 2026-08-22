@@ -1,7 +1,8 @@
 [general]
+{{- $home := .chezmoi.homeDir | replace "\\" "/" }}
 import = [
-    "{{ .chezmoi.homeDir }}/.config/alacritty/bindings.toml",
-    "{{ .chezmoi.homeDir }}/.config/alacritty/colors.toml"
+    "{{ $home }}/.config/alacritty/bindings.toml",
+    "{{ $home }}/.config/alacritty/colors.toml"
 ]
 {{ if ne .chezmoi.os "windows" }}
 [terminal.shell]

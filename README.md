@@ -63,6 +63,7 @@ home/                        chezmoi source (generates ~/)
   .chezmoiignore             component gating
   dot_*                      files that become ~/.*
   run_once_*                 one-time setup scripts
+  AppData/*                  Windows-only path symlinks (see below)
 ```
 
 ## Daily use
@@ -74,6 +75,20 @@ chezmoi apply                # write changes to $HOME
 chezmoi update               # git pull + apply
 chezmoi cd                   # shell in the source dir, then git commit/push
 ```
+
+## Windows
+
+Neovim and Alacritty read from `%LOCALAPPDATA%` / `%APPDATA%` on Windows, not
+`~/.config`. The config is authored once under `dot_config/`; on Windows chezmoi
+creates symlinks (`home/AppData/Local/nvim`, `home/AppData/Roaming/alacritty`)
+pointing back at it, so there is a single source of truth. Creating symlinks on
+Windows requires **Developer Mode** (Settings -> Privacy & security -> For
+developers) or an elevated shell.
+
+The Unix shell files (`.bash_profile`, `.bashrc`, fish, `bin/`) are still
+written on native Windows but are inert unless Git Bash is present (which does
+read `.bash_profile`/`.bashrc`). WSL is detected as Linux and gets the full
+Linux treatment.
 
 ## Notes
 
