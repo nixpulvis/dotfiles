@@ -1,5 +1,9 @@
-# We edit files with Vim.
-set -x EDITOR vim
+# Prefer Neovim, fall back to Vim (only set if one is installed).
+if type -q nvim
+    set -x EDITOR nvim
+else if type -q vim
+    set -x EDITOR vim
+end
 
 # Executables in our home directory.
 set -x PATH $HOME/.bin $PATH
@@ -13,7 +17,9 @@ if type -q rbenv
     source (rbenv init -|psub)
 end
 
-eval (ssh-agent -c) &>/dev/null
+if type -q ssh-agent; and not set -q SSH_AUTH_SOCK
+    eval (ssh-agent -c) &>/dev/null
+end
 
 # Setup rust src (resolved from the active toolchain).
 if type -q rustc
@@ -51,7 +57,9 @@ end
 
 # Print a nice startup message.
 function fish_greeting
-  fortune
+  if type -q fortune
+      fortune
+  end
   echo "><_> tick... tock..."
 end
 
