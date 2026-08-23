@@ -1,0 +1,8 @@
+# Default IRC channels chezmoi keeps you joined to, enforced on every `chezmoi
+# apply` by modify_private_irc.conf.tmpl (rendered into znc.autojoin). Edit this
+# list, then apply. Additive against the bouncer: listing a channel guarantees
+# you join it; ZNC keeps you in any others you /join until you /part them.
+weechat:
+  autojoin:
+    - "#alacritty"
+    - "#rust"

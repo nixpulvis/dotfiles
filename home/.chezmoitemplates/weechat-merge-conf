@@ -1,0 +1,19 @@
+# Shared merge engine for the WeeChat modify_ scripts. Contract: the caller sets
+# two shell variables, then includes this file:
+#   $managed -- the "key = value" lines chezmoi owns (newline-separated)
+#   $seed    -- the whole file to write on a fresh machine (empty stdin)
+# We read the current file from stdin, rewrite each managed line wherever it
+# appears (matched by the key before the first space), and pass every other line
+# through. Empty stdin -> print $seed.
+MANAGED="$managed" SEED="$seed" awk '
+    BEGIN {
+        n = split(ENVIRON["MANAGED"], line, "\n")
+        for (i = 1; i <= n; i++) {
+            if (line[i] == "") continue
+            key = line[i]; sub(/ .*/, "", key)
+            want[key] = line[i]
+        }
+    }
+    { seen = 1; if ($1 in want) print want[$1]; else print $0 }
+    END { if (!seen) printf "%s\n", ENVIRON["SEED"] }
+'

@@ -57,17 +57,21 @@ echo "No supported package manager (pacman/apt) found; install packages manually
 
 {{- if .libera }}
 # ---- WeeChat: ZNC bouncer login --------------------------------------------
-# The ZNC password was stored in the OS keyring at init and rendered into
-# ~/.config/weechat/irc.conf. This just prints a reminder; it changes nothing.
+# chezmoi configures the connection + channels and points WeeChat's secured data
+# at a keyring-stored passphrase (no prompt on launch). You store the ZNC
+# password once, encrypted, with `/secure set`.
 cat >&2 <<'EOF'
 
-NOTE: WeeChat is configured to log in to your ZNC bouncer as "{{ .ircnick }}". The
-      ZNC password is read from your OS keyring and rendered into irc.conf, so
-      just launch weechat -- it autoconnects; ZNC identifies to Libera and
-      replays history. Verify with:  /msg *status ListNetworks
-      To change the ZNC password, re-store it (prompts, hidden), then apply:
-        chezmoi secret keyring set --service znc --user {{ .ircnick }}
-        chezmoi apply
+NOTE: WeeChat is set up for your ZNC bouncer (ref8.net) as "{{ .ircnick }}",
+      autojoining: {{ .weechat.autojoin | join ", " }}. It reads its secured-data
+      passphrase from the OS keyring automatically -- no prompt on launch. Store
+      your ZNC password ONCE (the first encrypted entry needs the passphrase in
+      the environment; after that plain `weechat` just works):
+        env WEECHAT_PASSPHRASE="$(chezmoi secret keyring get --service weechat --user {{ .ircnick }})" weechat
+      then, inside WeeChat:
+        /secure set znc <ZNC password>
+        /save
+      The password option is already ${sec.data.znc}. Verify: /msg *status ListNetworks
 EOF
 {{- end }}
 {{ end -}}

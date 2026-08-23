@@ -29,6 +29,12 @@ AppData/Roaming/alacritty
 AppData
 {{ end -}}
 
+{{- /* WeeChat isn't used on Windows, and irc.conf is applied via a POSIX
+       modify_ script; keep the whole config off Windows. */ -}}
+{{- if eq .chezmoi.os "windows" }}
+.config/weechat
+{{- end }}
+
 {{- /* OMP coding agent: track ONLY agent/config.yml and agent/themes/.
        Ignore everything else under agent/ (fails closed) so volatile state and
        secrets -- auth tokens, sessions, caches, *.db -- can never be swept in,

@@ -1,0 +1,41 @@
+{{- /* modify_ script: chezmoi feeds the current irc.conf on stdin; our stdout
+       replaces it. WeeChat owns the file; we rewrite only the managed znc.* lines
+       below (the ZNC connection + your default channels from
+       .chezmoidata/weechat.yaml) and pass every other line through. Fresh
+       machine: stdin is empty, so the shared engine prints $seed. The password is
+       ${sec.data.znc}, decrypted from WeeChat secured data (see
+       modify_private_sec.conf.tmpl). autojoin is additive against the bouncer:
+       listed channels are guaranteed joined; ZNC keeps any others you /join
+       until you /part them. The merge engine lives in
+       .chezmoitemplates/weechat-merge-conf. */ -}}
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+
+# The exact lines chezmoi owns; each key is unique to [server].
+managed=$(cat <<'EOF'
+znc.addresses = "ref8.net/6697"
+znc.tls = on
+znc.tls_verify = off
+znc.tls_fingerprint = "85a9e90cfd85fc7fc5ded00ef660100cbf08c18050d2979959c86d26c7722184"
+znc.nicks = "{{ .ircnick }}"
+znc.username = "{{ .ircnick }}"
+znc.realname = "{{ .name }}"
+{{- if .libera }}
+znc.password = "{{ .ircnick }}/libera:${sec.data.znc}"
+znc.autoconnect = on
+znc.autojoin = "{{ .weechat.autojoin | join "," }}"
+{{- else }}
+znc.autoconnect = off
+{{- end }}
+EOF
+)
+seed=$(cat <<EOF
+[server_default]
+
+[server]
+$managed
+EOF
+)
+{{ includeTemplate "weechat-merge-conf" . -}}
+{{- end -}}

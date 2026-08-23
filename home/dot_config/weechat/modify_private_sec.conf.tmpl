@@ -1,0 +1,25 @@
+{{- /* modify_ script: enforce sec.crypt.passphrase_command so WeeChat reads its
+       secured-data passphrase from the OS keyring (stored by run_once_before_05)
+       and decrypts with no prompt on launch. WeeChat owns the rest of sec.conf
+       (crypt defaults + the encrypted [data] you add with /secure set); we pass
+       it all through. Fresh machine: stdin is empty, so the shared engine prints
+       $seed. Absolute chezmoi path so it resolves regardless of WeeChat's PATH.
+       The merge engine lives in .chezmoitemplates/weechat-merge-conf. */ -}}
+{{- if and .libera (ne .chezmoi.os "windows") -}}
+#!/bin/sh
+set -eu
+
+# The one line chezmoi owns; WeeChat owns everything else (crypt defaults, [data]).
+managed=$(cat <<'EOF'
+passphrase_command = "{{ .chezmoi.executable }} secret keyring get --service weechat --user {{ .ircnick }}"
+EOF
+)
+seed=$(cat <<EOF
+[crypt]
+$managed
+
+[data]
+EOF
+)
+{{ includeTemplate "weechat-merge-conf" . -}}
+{{- end -}}
