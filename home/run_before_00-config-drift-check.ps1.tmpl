@@ -1,0 +1,25 @@
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $current := include ".chezmoi.toml.tmpl" | sha256sum -}}
+{{-   $stored := "" -}}
+{{-   if hasKey . "configTemplateHash" }}{{ $stored = .configTemplateHash }}{{ end -}}
+{{-   if ne $stored $current -}}
+# Loud counterpart to chezmoi's own easy-to-miss "config file template has
+# changed" warning. Renders to an empty (skipped) script while the persisted
+# config is current; the Go-template guard above compares the config template's
+# hash at last `chezmoi init` (.configTemplateHash, absent -> treated as drift)
+# against the template's hash right now (recomputed every apply via include +
+# sha256sum). On drift it prints this banner. Never fails the apply.
+Write-Warning ''
+Write-Warning '########################################################################'
+Write-Warning '#  chezmoi: CONFIG FILE TEMPLATE HAS CHANGED -- your config is STALE.   #'
+Write-Warning '#                                                                      #'
+Write-Warning '#  Regenerate it (reuses your saved answers, won''t re-prompt):          #'
+Write-Warning '#                                                                      #'
+Write-Warning '#      chezmoi update --init      # pull + regenerate config + apply    #'
+Write-Warning '#      chezmoi init               # regenerate config only             #'
+Write-Warning '#                                                                      #'
+Write-Warning '#  Until then, dotfiles are applied from OUTDATED config values.       #'
+Write-Warning '########################################################################'
+Write-Warning ''
+{{-   end -}}
+{{- end -}}

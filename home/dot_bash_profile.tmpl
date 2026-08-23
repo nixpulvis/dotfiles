@@ -1,5 +1,10 @@
 # Setup cargo's binary path.
 export PATH=$HOME/.bin:$HOME/.cargo/bin:$PATH
+
+# Update dotfiles, always regenerating the per-machine config from its template
+# so it never goes stale (reuses saved answers, so no re-prompt). Plain
+# `chezmoi apply` is still backstopped by the config drift-check banner.
+alias czup='chezmoi update --init'
 {{ if eq .chezmoi.os "darwin" }}
 # Homebrew.
 [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"

@@ -36,6 +36,10 @@
 {{- $libera     := promptBoolOnce . "libera" "Set up WeeChat ZNC bouncer login? (stores the ZNC password in the OS keyring)" $liberaDefault -}}
 
 [data]
+    # SHA256 of this config template at last `chezmoi init`. The drift-check
+    # run_before script recomputes the current template's hash and compares:
+    # a mismatch means the persisted config is stale (re-run `chezmoi init`).
+    configTemplateHash = {{ include ".chezmoi.toml.tmpl" | sha256sum | quote }}
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     signingkey = {{ $signingkey | quote }}
