@@ -28,7 +28,13 @@ if ! pass=$(openssl rand -base64 32 2>/dev/null) || [ -z "$pass" ]; then
 fi
 pass=$(printf '%s' "$pass" | tr -d '\n')
 
-chezmoi secret keyring set --service "$service" --user "$account" --value "$pass"
+if ! err=$(chezmoi secret keyring set --service "$service" --user "$account" --value "$pass" 2>&1); then
+    echo "NOTE: Skipping WeeChat passphrase storage -- OS keyring unavailable." >&2
+    echo "      (${err})" >&2
+    echo "      Install/enable a Secret Service provider, then re-run:" >&2
+    echo "        chezmoi state delete-bucket --bucket=scriptState && chezmoi apply" >&2
+    exit 0
+fi
 
 echo "NOTE: WeeChat secured-data passphrase generated and stored in the OS keyring." >&2
 echo "      Store your ZNC password once (see the reminder after package install)." >&2

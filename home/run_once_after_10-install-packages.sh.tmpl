@@ -42,13 +42,16 @@ fi
 {{- range $g := $groups }}{{ range $p := index $.packages $g -}}
 {{- if hasKey $p "pacman" }}{{ $pkgs = append $pkgs $p.pacman }}{{ end -}}
 {{- end }}{{ end -}}
+echo "sudo: installing system packages via pacman (root required to write to /usr and /var)." >&2
 sudo pacman -S --needed --noconfirm {{ $pkgs | join " " }}
 {{ else if lookPath "apt-get" -}}
 {{ $pkgs := list -}}
 {{- range $g := $groups }}{{ range $p := index $.packages $g -}}
 {{- if hasKey $p "apt" }}{{ $pkgs = append $pkgs $p.apt }}{{ end -}}
 {{- end }}{{ end -}}
+echo "sudo: refreshing apt package index (root required for /var/lib/apt)." >&2
 sudo apt-get update
+echo "sudo: installing system packages via apt (root required to write to /usr and /var)." >&2
 sudo apt-get install -y {{ $pkgs | join " " }}
 {{ else -}}
 echo "No supported package manager (pacman/apt) found; install packages manually." >&2

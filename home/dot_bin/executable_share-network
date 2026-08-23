@@ -15,14 +15,17 @@ while getopts "f:t:" opt; do
 done
 
 # Bring up the $to interface.
+echo "sudo: configuring interface $to with 192.168.0.1/24 (root required for network config)." >&2
 sudo ip link set up dev $to
 sudo ip addr flush dev $to
 sudo ip addr add 192.168.0.1/24 dev $to
 
+echo "sudo: enabling IPv4 forwarding (root required to write /proc/sys)." >&2
 sudo sysctl net.ipv4.ip_forward=1 > /dev/null
 
 # Reset and setup new iptables configuration.
 # TODO: Only revert the needed settings.
+echo "sudo: rewriting iptables rules to NAT $to -> $from (root required for netfilter)." >&2
 sudo iptables -t filter -F
 sudo iptables -t nat -F
 sudo iptables -X
@@ -31,6 +34,7 @@ sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -A FORWARD -i $to -o $from -j ACCEPT
 
 # Enable DHCP server.
+echo "sudo: starting dhcpd4.service (root required to manage systemd units)." >&2
 sudo systemctl start dhcpd4.service
 
 echo "$from -> $to"
