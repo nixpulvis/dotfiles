@@ -36,6 +36,10 @@ set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showstashstate 'yes'
 set __fish_git_prompt_showcolorhints
 
+# Autosuggestions default to brblack, which our Alacritty theme renders as
+# #0C0C0C (invisible on the #161616 background). Use a readable gray instead.
+set -g fish_color_autosuggestion 666666
+
 function fish_prompt
   printf '%s%s%s@%s%s%s:%s%s%s%s $ ' \
   (set_color red) (whoami) (set_color normal) \
