@@ -1,7 +1,11 @@
 [[hints.enabled]]
-command = "xdg-open" # On Linux/BSD
-# command = "open" # On macOS
-# command = { program = "cmd", args = [ "/c", "start", "" ] } # On Windows
+{{- if eq .chezmoi.os "windows" }}
+command = { program = "cmd", args = [ "/c", "start", "" ] }
+{{- else if eq .chezmoi.os "darwin" }}
+command = "open"
+{{- else }}
+command = "xdg-open"
+{{- end }}
 hyperlinks = true
 post_processing = true
 persist = false
