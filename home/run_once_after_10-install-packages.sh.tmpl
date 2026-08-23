@@ -54,4 +54,23 @@ sudo apt-get install -y {{ $pkgs | join " " }}
 echo "No supported package manager (pacman/apt) found; install packages manually." >&2
 {{ end -}}
 {{ end -}}
+
+{{- if .libera }}
+# ---- WeeChat: Libera.Chat login --------------------------------------------
+# The SASL password was stored in the OS keychain at init and rendered into
+# ~/.config/weechat/irc.conf. This just prints a reminder; it changes nothing.
+cat >&2 <<'EOF'
+
+NOTE: WeeChat is configured for Libera.Chat as "{{ .ircnick }}". Its SASL password
+      is read from your OS keychain and rendered into ~/.config/weechat/irc.conf,
+      so just launch weechat -- it autoconnects and identifies via SASL.
+      Verify with:  /msg NickServ status
+      To change the password, re-store it in the keychain then run: chezmoi apply
+{{- if eq .chezmoi.os "darwin" }}
+        security add-generic-password -U -s libera -a {{ .ircnick }} -w '<password>'
+{{- else }}
+        printf %s '<password>' | secret-tool store --label=WeeChat service libera username {{ .ircnick }}
+{{- end }}
+EOF
+{{- end }}
 {{ end -}}

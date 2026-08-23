@@ -37,11 +37,11 @@ To track a work-in-progress branch, pass it through: `./install.sh --branch <bra
 Every machine gets the **base** layer. The other groups reflect what a machine
 actually is:
 
-| Group       | Applies to                                  | Contents                                            |
-| ----------- | ------------------------------------------- | --------------------------------------------------- |
-| `base`      | everywhere                                  | git, bash, fish, vim/nvim, claude, omp, ssh, `bin/` |
-| `graphical` | macOS/Windows always; Linux by prompt       | alacritty + fonts                                   |
-| `wm`        | Linux only, by prompt (implies `graphical`) | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X` |
+| Group       | Applies to                                  | Contents                                                |
+| ----------- | ------------------------------------------- | ------------------------------------------------------- |
+| `base`      | everywhere                                  | git, bash, fish, vim/nvim, weechat, claude, omp, ssh, `bin/` |
+| `graphical` | macOS/Windows always; Linux by prompt       | alacritty + fonts                                       |
+| `wm`        | Linux only, by prompt (implies `graphical`) | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X`     |
 
 macOS and Windows are inherently graphical, so `graphical` is implicit there
 with no prompt — `chezmoi init` only asks for git identity. On Linux you are
@@ -121,3 +121,33 @@ Per-machine identity (personal vs work email, signing key) is answered at
 `init` and written into `~/.gitconfig` from a template — no secrets and no
 host-specific branches. System-level provisioning (locale, `sudoers`,
 `pacman.conf`) that used to live here is out of scope; these are user dotfiles.
+
+No secret ever lands in this repo. WeeChat's Libera.Chat SASL password lives in
+the **OS keychain** (macOS Keychain / Linux Secret Service), and chezmoi reads it
+at apply time via the `keyring` template function, rendering it into
+`~/.config/weechat/irc.conf` (mode 0600). `irc.conf.tmpl` only contains a
+`{{ keyring "libera" .ircnick }}` call — never the password itself.
+
+Setup is driven by `chezmoi init`: if you answer yes to the **Libera** prompt
+(default on macOS and graphical Linux), the `run_once_before_05-weechat-libera-secret`
+script asks for the password once and stores it in the keychain *before* any file
+is written, so `irc.conf` resolves on the same run. Afterwards just launch
+`weechat` — it autoconnects, identifies via SASL, and autojoins `#alacritty` and
+`#rust`. Verify with `/msg NickServ status`.
+
+To set or change the password by hand (then `chezmoi apply` to re-render):
+
+**macOS** — Keychain:
+
+```sh
+security add-generic-password -U -s libera -a <nick> -w '<password>'
+```
+
+**Linux** — Secret Service (libsecret + a running keyring daemon required):
+
+```sh
+printf %s '<password>' | secret-tool store --label=WeeChat service libera username <nick>
+```
+
+On headless/WSL/Windows machines answer no to the Libera prompt; `irc.conf` is
+then written without SASL/autoconnect and nothing reads the keychain.

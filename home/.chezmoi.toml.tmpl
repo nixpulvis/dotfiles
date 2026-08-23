@@ -30,11 +30,17 @@
 {{- $name       := promptStringOnce . "name"       "Git user name"             "Nathan Lilienthal" -}}
 {{- $email      := promptStringOnce . "email"      "Git email (personal/work)" "nathan@nixpulvis.com" -}}
 {{- $signingkey := promptStringOnce . "signingkey" "Git signing key"           "Nathan Lilienthal" -}}
+{{- $ircnick    := promptStringOnce . "ircnick"    "IRC nick / username"       "nixpulvis" -}}
+{{- $liberaDefault := false -}}
+{{- if eq $os "darwin" }}{{ $liberaDefault = true }}{{ else if eq $os "linux" }}{{ $liberaDefault = $graphical }}{{ end -}}
+{{- $libera     := promptBoolOnce . "libera" "Set up WeeChat Libera.Chat login? (stores SASL password in the OS keychain)" $liberaDefault -}}
 
 [data]
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     signingkey = {{ $signingkey | quote }}
+    ircnick = {{ $ircnick | quote }}
+    libera = {{ $libera }}
     wsl = {{ $wsl }}
     graphical = {{ $graphical }}
     wm = {{ $wm }}
