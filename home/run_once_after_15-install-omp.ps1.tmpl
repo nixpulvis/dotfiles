@@ -1,0 +1,45 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Install/update the omp (oh-my-pi) coding agent on Windows. omp isn't on winget
+# (only a Homebrew tap + raw release binaries), so we fetch the pinned release
+# .exe directly into ~\.bin and put that dir on the user PATH. Version and
+# checksum come from .chezmoidata/omp.yaml -- edit that, not this. Re-runs once
+# per machine and again whenever the rendered version/checksum changes.
+$ErrorActionPreference = 'Stop'
+
+$version = '{{ .omp.version }}'
+$sha     = '{{ index .omp.sha256 "windows-x64" }}'
+$binDir  = Join-Path $HOME '.bin'
+$dest    = Join-Path $binDir 'omp.exe'
+
+# Already at the pinned version? Nothing to do.
+if (Test-Path $dest) {
+    $current = & $dest --version 2>$null
+    if ($current -match [regex]::Escape($version)) { return }
+}
+
+$url = "https://github.com/can1357/oh-my-pi/releases/download/v$version/omp-windows-x64.exe"
+$tmp = New-TemporaryFile
+try {
+    Write-Host "Installing omp $version..."
+    Invoke-WebRequest -Uri $url -OutFile $tmp
+
+    $got = (Get-FileHash -Algorithm SHA256 -Path $tmp).Hash.ToLower()
+    if ($got -ne $sha) {
+        throw "omp: checksum mismatch (expected $sha, got $got)"
+    }
+
+    New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+    Move-Item -Force $tmp $dest
+} finally {
+    if (Test-Path $tmp) { Remove-Item $tmp -Force }
+}
+
+# Ensure ~\.bin is on the user PATH so `omp` resolves in new shells.
+$userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+if (($userPath -split ';') -notcontains $binDir) {
+    $newPath = if ($userPath) { "$userPath;$binDir" } else { $binDir }
+    [Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
+    Write-Host "Added $binDir to your user PATH (restart your shell to pick it up)."
+}
+Write-Host "omp $version installed to $dest"
+{{ end -}}

@@ -16,6 +16,7 @@ packages:
     - {name: borg,     brew: borgbackup, pacman: borg,      apt: borgbackup}
     - {name: pass,     brew: pass,       pacman: pass,      apt: pass}
     - {name: fortune,  brew: fortune,    pacman: fortune-mod, apt: fortune-mod}
+    - {name: omp,      brew: can1357/tap/omp}
 
   graphical:
     - {name: alacritty,                            pacman: alacritty,    apt: alacritty,      winget: Alacritty.Alacritty}

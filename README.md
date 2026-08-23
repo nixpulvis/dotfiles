@@ -39,7 +39,7 @@ actually is:
 
 | Group       | Applies to                                  | Contents                                            |
 | ----------- | ------------------------------------------- | --------------------------------------------------- |
-| `base`      | everywhere                                  | git, bash, fish, vim/nvim, claude, ssh, `bin/`      |
+| `base`      | everywhere                                  | git, bash, fish, vim/nvim, claude, omp, ssh, `bin/` |
 | `graphical` | macOS/Windows always; Linux by prompt       | alacritty + fonts                                   |
 | `wm`        | Linux only, by prompt (implies `graphical`) | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X` |
 
@@ -62,11 +62,19 @@ by component, with a column per package manager:
 - {name: ripgrep, brew: ripgrep, pacman: ripgrep, apt: ripgrep, winget: BurntSushi.ripgrep.MSVC}
 ```
 
-The `run_once_before_10-install-packages.{sh,ps1}.tmpl` scripts iterate that
+The `run_once_after_10-install-packages.{sh,ps1}.tmpl` scripts iterate that
 table and emit one install command per manager (Homebrew on macOS, `pacman`/`apt`
 on Linux, `winget` on Windows). Omit a manager key when a package doesn't exist
 there and it's skipped. To add a tool, add one line to the YAML — never edit the
 scripts.
+
+One exception: **omp** (the oh-my-pi coding agent) isn't in any distro package
+manager or winget. macOS installs it via a Homebrew tap (the `omp` line in the
+YAML), while Linux and Windows fetch the pinned release binary directly into
+`~/.bin` via `run_once_after_15-install-omp.{sh,ps1}.tmpl`. Its version and
+checksums live in
+[`home/.chezmoidata/omp.yaml`](home/.chezmoidata/omp.yaml); bump them there to
+upgrade.
 
 ## Layout
 

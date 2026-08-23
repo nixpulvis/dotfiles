@@ -1,0 +1,44 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+# Install/update the omp (oh-my-pi) coding agent on Linux. omp isn't in pacman or
+# apt (only a Homebrew tap + raw release binaries), so we fetch the pinned
+# release binary directly into ~/.bin (first on PATH; see fish config). Version
+# and checksums come from .chezmoidata/omp.yaml -- edit that, not this. Re-runs
+# once per machine and again whenever the rendered version/checksum changes.
+set -eu
+
+version="{{ .omp.version }}"
+dest="$HOME/.bin/omp"
+
+# Already at the pinned version? Nothing to do.
+if [ -x "$dest" ] && "$dest" --version 2>/dev/null | grep -q "$version"; then
+    exit 0
+fi
+
+# Map uname arch -> release asset + its checksum. glibc builds (the tap's Linux
+# default); switch to omp-linux-musl-* on a musl distro if ever needed.
+arch=$(uname -m)
+case "$arch" in
+    x86_64|amd64)  asset="omp-linux-x64";   sha="{{ index .omp.sha256 "linux-x64" }}" ;;
+    aarch64|arm64) asset="omp-linux-arm64"; sha="{{ index .omp.sha256 "linux-arm64" }}" ;;
+    *) echo "omp: unsupported architecture '$arch'; install manually from https://omp.sh" >&2; exit 1 ;;
+esac
+
+url="https://github.com/can1357/oh-my-pi/releases/download/v${version}/${asset}"
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+
+echo "Installing omp ${version} (${asset})..." >&2
+curl -fsSL "$url" -o "$tmp"
+
+# Verify the checksum before trusting the binary.
+if command -v sha256sum >/dev/null 2>&1; then
+    echo "${sha}  ${tmp}" | sha256sum -c - >/dev/null
+else
+    echo "${sha}  ${tmp}" | shasum -a 256 -c - >/dev/null
+fi
+
+mkdir -p "$HOME/.bin"
+install -m 0555 "$tmp" "$dest"
+echo "omp ${version} installed to ${dest}" >&2
+{{ end -}}
