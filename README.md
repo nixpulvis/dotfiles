@@ -122,32 +122,48 @@ Per-machine identity (personal vs work email, signing key) is answered at
 host-specific branches. System-level provisioning (locale, `sudoers`,
 `pacman.conf`) that used to live here is out of scope; these are user dotfiles.
 
-No secret ever lands in this repo. WeeChat's Libera.Chat SASL password lives in
-the **OS keychain** (macOS Keychain / Linux Secret Service), and chezmoi reads it
-at apply time via the `keyring` template function, rendering it into
-`~/.config/weechat/irc.conf` (mode 0600). `irc.conf.tmpl` only contains a
-`{{ keyring "libera" .ircnick }}` call — never the password itself.
+No secret ever lands in this repo. WeeChat connects to a **ZNC bouncer** (which
+holds the Libera account credentials server-side, stays connected, and replays
+history) rather than to Libera directly. The only client-side secret is the ZNC
+login password; it lives in the **OS keyring**, and chezmoi reads it via the
+`keyring` template function when it seeds `~/.config/weechat/irc.conf`. The source
+(`dot_config/weechat/create_private_irc.conf.tmpl`) contains only a
+`{{ keyring "znc" .ircnick }}` call — never the password. Read and write go through
+the same store (`go-keyring`: macOS login keychain, Linux Secret Service, Windows
+Credential Manager), so it is cross-platform and the seeded value always matches
+what the template reads. The bouncer host/port and its self-signed TLS cert
+fingerprint (pinned via `znc.tls_fingerprint`) are set directly in the template
+(`create_private_irc.conf.tmpl`) — not secrets; edit them if the bouncer moves or
+the cert is regenerated.
 
-Setup is driven by `chezmoi init`: if you answer yes to the **Libera** prompt
-(default on macOS and graphical Linux), the `run_once_before_05-weechat-libera-secret`
-script asks for the password once and stores it in the keychain *before* any file
-is written, so `irc.conf` resolves on the same run. Afterwards just launch
-`weechat` — it autoconnects, identifies via SASL, and autojoins `#alacritty` and
-`#rust`. Verify with `/msg NickServ status`.
+The `create_` prefix makes this a **seed-once** file: chezmoi writes it (mode
+0600) only when it does not already exist. After first load WeeChat owns it —
+filling in defaults and rewriting on `/save` — and chezmoi never overwrites it.
+To re-seed from scratch, delete `irc.conf` and `chezmoi apply`.
 
-To set or change the password by hand (then `chezmoi apply` to re-render):
+Setup is driven by `chezmoi init`: if you answer yes to the **ZNC** prompt
+(default on macOS and graphical Linux), `run_once_before_05-weechat-znc-secret`
+prompts once for the ZNC password (hidden, via `chezmoi secret keyring`) *before*
+any file is written, so `irc.conf` resolves on the same run. Afterwards just
+launch `weechat` — it autoconnects to ZNC, which identifies to Libera and replays
+the channel buffers. Verify with `/msg *status ListNetworks`.
 
-**macOS** — Keychain:
+To set or change the password, store it in the keyring (prompts on the terminal
+with input hidden, so it never lands in shell history or argv):
 
 ```sh
-security add-generic-password -U -s libera -a <nick> -w '<password>'
+chezmoi secret keyring set --service znc --user <nick>
 ```
 
-**Linux** — Secret Service (libsecret + a running keyring daemon required):
+Because `irc.conf` is seed-once, updating the keyring does **not** re-render an
+existing `irc.conf`. Either change it live in WeeChat
+(`/set irc.server.znc.password "<nick>/libera:..."`), or delete `irc.conf` and
+`chezmoi apply` to re-seed from the new keyring value.
 
-```sh
-printf %s '<password>' | secret-tool store --label=WeeChat service libera username <nick>
-```
-
-On headless/WSL/Windows machines answer no to the Libera prompt; `irc.conf` is
-then written without SASL/autoconnect and nothing reads the keychain.
+Note: the value must live in a keyring the CLI can reach — the login keychain on
+macOS, not iCloud/Passwords.app (those are sandboxed from the CLI, so `keyring`
+cannot read them). Linux needs a running Secret Service provider (gnome-keyring
+or kwallet). On native Windows the `run_once` seed script (POSIX `sh`) does not
+run, so seed manually with the command above; the `keyring` read itself works.
+On headless machines without a keyring, answer no to the ZNC prompt; `irc.conf`
+is then written with the bouncer server but `autoconnect` off and no password.

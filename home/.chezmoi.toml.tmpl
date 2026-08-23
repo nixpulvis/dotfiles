@@ -33,7 +33,7 @@
 {{- $ircnick    := promptStringOnce . "ircnick"    "IRC nick / username"       "nixpulvis" -}}
 {{- $liberaDefault := false -}}
 {{- if eq $os "darwin" }}{{ $liberaDefault = true }}{{ else if eq $os "linux" }}{{ $liberaDefault = $graphical }}{{ end -}}
-{{- $libera     := promptBoolOnce . "libera" "Set up WeeChat Libera.Chat login? (stores SASL password in the OS keychain)" $liberaDefault -}}
+{{- $libera     := promptBoolOnce . "libera" "Set up WeeChat ZNC bouncer login? (stores the ZNC password in the OS keyring)" $liberaDefault -}}
 
 [data]
     name = {{ $name | quote }}
