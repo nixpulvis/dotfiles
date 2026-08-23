@@ -20,6 +20,7 @@ paste:
 error:
   notify: "on"
 proseOnlyThinking: true
+hideThinkingBlock: true
 statusLine:
   preset: default
   sessionAccent: true
