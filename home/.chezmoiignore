@@ -27,4 +27,12 @@ AppData/Roaming/alacritty
 {{- /* Windows-only config-path symlinks (%LOCALAPPDATA%, %APPDATA%). */ -}}
 {{- if ne .chezmoi.os "windows" }}
 AppData
-{{- end }}
+{{ end -}}
+
+{{- /* OMP coding agent: track ONLY agent/config.yml and agent/themes/.
+       Ignore everything else under agent/ (fails closed) so volatile state and
+       secrets -- auth tokens, sessions, caches, *.db -- can never be swept in,
+       even ones that don't exist yet. */ -}}
+.omp/agent/*
+!.omp/agent/config.yml
+!.omp/agent/themes

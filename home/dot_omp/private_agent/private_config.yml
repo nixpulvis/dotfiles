@@ -1,0 +1,31 @@
+providers:
+  webSearchOrder:
+    []
+setupVersion: 2
+modelRoles:
+  default: anthropic/claude-opus-4-8
+symbolPreset: ascii
+composer:
+  shape: rail
+theme:
+  dark: titanium-me
+  light: light
+steeringMode: one-at-a-time
+followUpMode: one-at-a-time
+interruptMode: immediate
+doubleEscapeAction: branch
+emojiAutocomplete: false
+paste:
+  largeMenuThreshold: 0
+error:
+  notify: "on"
+proseOnlyThinking: true
+statusLine:
+  preset: default
+  sessionAccent: true
+  separator: block
+tui:
+  tight: false
+display:
+  shimmer: kitt
+  showTokenUsage: true
