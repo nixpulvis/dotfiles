@@ -8,7 +8,10 @@
 # config is current; the Go-template guard above compares the config template's
 # hash at last `chezmoi init` (.configTemplateHash, absent -> treated as drift)
 # against the template's hash right now (recomputed every apply via include +
-# sha256sum). On drift it prints this banner. Never fails the apply.
+# sha256sum). On drift it prints this banner, then aborts `chezmoi update`
+# (proceeding with stale data defeats update; `chezmoi update --init`
+# regenerates config first, so it never reaches here) but only warns for
+# `apply`. If CHEZMOI_COMMAND is unset (older chezmoi), it degrades to warn.
 Write-Warning ''
 Write-Warning '########################################################################'
 Write-Warning '#  chezmoi: CONFIG FILE TEMPLATE HAS CHANGED -- your config is STALE.   #'
@@ -21,5 +24,10 @@ Write-Warning '#                                                                
 Write-Warning '#  Until then, dotfiles are applied from OUTDATED config values.       #'
 Write-Warning '########################################################################'
 Write-Warning ''
+if ($env:CHEZMOI_COMMAND -eq 'update') {
+    Write-Warning 'Refusing to update with a stale config. Run: chezmoi update --init'
+    Write-Warning ''
+    exit 1
+}
 {{-   end -}}
 {{- end -}}

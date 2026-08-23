@@ -9,8 +9,11 @@
 # config is current; the Go-template guard above compares the config template's
 # hash at last `chezmoi init` (.configTemplateHash, absent -> treated as drift)
 # against the template's hash right now (recomputed every apply via include +
-# sha256sum). On drift it emits this banner to the terminal. Never fails the
-# apply -- it only warns -- so it always exits 0.
+# sha256sum). On drift it emits this banner, then: aborts `chezmoi update`
+# (whose whole job is to sync to latest -- proceeding with stale data is wrong;
+# `chezmoi update --init` regenerates config first, so it never reaches here),
+# but only warns for `apply` so the local edit/apply loop is not broken. If
+# CHEZMOI_COMMAND is unset (older chezmoi), it degrades to warn-only.
 banner() { printf '%s\n' "$1" >&2; }
 banner ""
 banner "########################################################################"
@@ -24,6 +27,11 @@ banner "#                                                                      #
 banner "#  Until then, dotfiles are applied from OUTDATED config values.       #"
 banner "########################################################################"
 banner ""
+if [ "${CHEZMOI_COMMAND-}" = "update" ]; then
+    banner "Refusing to update with a stale config. Run: chezmoi update --init"
+    banner ""
+    exit 1
+fi
 exit 0
 {{-   end -}}
 {{- end -}}
