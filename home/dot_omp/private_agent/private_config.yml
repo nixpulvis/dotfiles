@@ -22,9 +22,36 @@ error:
 proseOnlyThinking: true
 hideThinkingBlock: true
 statusLine:
-  preset: default
+  preset: custom
   sessionAccent: true
   separator: block
+  # Default preset's segments, plus a `usage` segment on the right that shows
+  # the Claude subscription rate-limit windows: 5h (rolling session) and 7d
+  # (weekly), each as "<pct>% (<reset>)".
+  leftSegments:
+    - pi
+    - model
+    - mode
+    - collab
+    - path
+    - git
+    - pr
+    - context_pct
+  rightSegments:
+    - usage
+    - session_name
+  segmentOptions:
+    model:
+      showThinkingLevel: true
+    path:
+      abbreviate: true
+      maxLength: 40
+      stripWorkPrefix: true
+    git:
+      showBranch: true
+      showStaged: true
+      showUnstaged: true
+      showUntracked: true
 tui:
   tight: false
 display:

@@ -83,6 +83,14 @@
     "statusLineSubagents": "electricBlue",
     "pythonMode": "#f0c040"
   },
+  "symbols": {
+    "overrides": {
+      "icon.model": "",
+      "icon.folder": "",
+      "icon.worktree": "",
+      "icon.scratchFolder": ""
+    }
+  },
   "export": {
     "pageBg": "brushedTitanium",
     "cardBg": "darkTitanium",
