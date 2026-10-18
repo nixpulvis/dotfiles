@@ -62,7 +62,9 @@ echo "No supported package manager (pacman/apt) found; install packages manually
 # ---- WeeChat: ZNC bouncer login --------------------------------------------
 # `chezmoi` sets up the connection and channels, and WeeChat reads its secured
 # data passphrase from the keyring, so there's no prompt on launch. The ZNC
-# password still has to be stored once by hand with `/secure set`.
+# password still has to be stored once by hand with `/secure set`. Only remind
+# when sec.conf has no `znc` entry yet; this script reruns whenever it changes.
+if ! grep -q '^znc = ' "$HOME/.config/weechat/sec.conf" 2>/dev/null; then
 cat >&2 <<'EOF'
 
 NOTE: WeeChat is set up for your ZNC bouncer (ref8.net) as "{{ .ircnick }}",
@@ -76,5 +78,6 @@ NOTE: WeeChat is set up for your ZNC bouncer (ref8.net) as "{{ .ircnick }}",
         /save
       The password option is already ${sec.data.znc}. Verify: /msg *status ListNetworks
 EOF
+fi
 {{- end }}
 {{ end -}}
