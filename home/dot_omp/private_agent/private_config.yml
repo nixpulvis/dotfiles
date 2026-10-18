@@ -1,9 +1,6 @@
-providers:
-  webSearchOrder:
-    []
 setupVersion: 2
 modelRoles:
-  default: anthropic/claude-opus-4-8
+  default: anthropic/claude-opus-5-5:high
 symbolPreset: ascii
 composer:
   shape: rail
@@ -13,7 +10,7 @@ theme:
 steeringMode: one-at-a-time
 followUpMode: one-at-a-time
 interruptMode: immediate
-doubleEscapeAction: branch
+doubleEscapeAction: rewind
 emojiAutocomplete: false
 paste:
   largeMenuThreshold: 0
