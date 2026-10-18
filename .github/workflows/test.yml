@@ -1,0 +1,30 @@
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # Render and apply into a throwaway HOME on each OS. Package scripts are skipped.
+  sandbox:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - run: sh test/sandbox.sh
+      - run: sh test/sandbox.sh apply
+
+  # Full bootstrap with `chezmoi init --apply` inside a fresh Linux container.
+  docker:
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [arch, ubuntu]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: sh test/docker.sh ${{ matrix.distro }}

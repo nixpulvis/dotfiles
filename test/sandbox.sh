@@ -61,7 +61,7 @@ esac
 
 echo
 echo "=== package script that WOULD run on this OS (previewed, not executed) ==="
-cm execute-template < "$REPO/home/run_once_before_10-install-packages.sh.tmpl" 2>/dev/null | grep -v '^$' | head -40 || true
+cm execute-template < "$REPO/home/run_once_after_10-install-packages.sh.tmpl" 2>/dev/null | grep -v '^$' | head -40 || true
 
 if [ "${KEEP:-0}" = "1" ]; then
     printf '\nkept sandbox: %s\n' "$D"

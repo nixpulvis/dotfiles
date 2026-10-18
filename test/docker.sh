@@ -17,9 +17,11 @@ REPO=$(CDPATH= cd "$(dirname "$0")/.." && pwd)
 DISTRO=${1:-arch}
 
 # Arch has no arm64 image, so emulate x86-64 there. Ubuntu is multi-arch.
+# Ubuntu's tzdata asks for a region and city on install. Pointing /etc/localtime
+# at $TZ first and installing noninteractively skips both prompts.
 case "$DISTRO" in
     arch)          IMAGE=archlinux:latest; PLAT=${PLATFORM:-linux/amd64}; PREP='pacman -Sy --noconfirm --needed git curl sudo'; ARCH=1 ;;
-    ubuntu|debian) IMAGE=ubuntu:latest;    PLAT=${PLATFORM:-};           PREP='apt-get update && apt-get install -y git curl sudo ca-certificates'; ARCH=0 ;;
+    ubuntu|debian) IMAGE=ubuntu:latest;    PLAT=${PLATFORM:-};           PREP='ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git curl sudo ca-certificates'; ARCH=0 ;;
     *) echo "unknown distro: $DISTRO (use arch|ubuntu)" >&2; exit 2 ;;
 esac
 
@@ -43,7 +45,11 @@ if [ "$ARCH" = "1" ]; then
     PACFIX="sed -i '/^\\[options\\]/a DisableSandbox' /etc/pacman.conf"
 fi
 
-docker run --rm -it $PLATARG $SECARG -v "$REPO":/dotfiles:ro "$IMAGE" bash -c "
+# Only ask Docker for a TTY when we have one. CI runners don't.
+TTYARG=''
+[ -t 0 ] && [ -t 1 ] && TTYARG='-t'
+
+docker run --rm -i $TTYARG -e TZ=America/New_York $PLATARG $SECARG -v "$REPO":/dotfiles:ro "$IMAGE" bash -c "
     set -e
     $PACFIX
     $PREP

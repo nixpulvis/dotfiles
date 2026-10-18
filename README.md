@@ -97,6 +97,7 @@ home/                        chezmoi source (renders to ~/)
   run_once_*                 one-time setup scripts
   AppData/                   Windows config-path symlinks (see below)
 test/                        sandbox.sh (throwaway HOME), docker.sh (Linux container)
+.github/workflows/test.yml   CI: sandbox.sh on macOS + Linux, docker.sh on Arch + Ubuntu
 ```
 
 ## Daily use
