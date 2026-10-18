@@ -29,6 +29,9 @@ multiplier = 3
 [window]
 decorations = "full"
 dynamic_padding = true
+{{- if eq .chezmoi.os "darwin" }}
+option_as_alt = "OnlyLeft"
+{{- end }}
 # padding = { x = 20, y = 20 }
 
 [[keyboard.bindings]]

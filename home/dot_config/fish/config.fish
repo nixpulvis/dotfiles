@@ -14,6 +14,8 @@ if type -q rbenv
     source (rbenv init -|psub)
 end
 
+set -x PIPX_HOME $HOME/.local/pipx
+
 if type -q ssh-agent; and not set -q SSH_AUTH_SOCK
     eval (ssh-agent -c) &>/dev/null
 end

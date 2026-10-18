@@ -1,5 +1,6 @@
 setupVersion: 2
 modelRoles:
+  commit: anthropic/claude-haiku-5-5
   default: anthropic/claude-opus-5-5:high
 symbolPreset: ascii
 composer:
@@ -54,3 +55,8 @@ tui:
 display:
   shimmer: kitt
   showTokenUsage: true
+defaultThinkingLevel: auto
+dev:
+  autoqaConsent: denied
+startup:
+  changelogMode: hidden
