@@ -1,11 +1,11 @@
 # omp (oh-my-pi coding agent) release pin for the direct-download install path.
 #
-# omp is not in any distro package manager or winget -- only a Homebrew tap
-# (macOS/Linux) and raw GitHub release binaries. macOS installs via the tap
-# (see packages.yaml `base`); Linux and Windows fetch the pinned binary below in
-# run_once_after_15-install-omp.{sh,ps1}.tmpl. Bump `version` and refresh the
-# checksums from the release's SHA256SUMS.txt to upgrade; the scripts re-run
-# whenever this version changes.
+# omp isn't in any distro package manager or winget. It only ships as a
+# Homebrew tap (macOS/Linux) and GitHub release binaries. macOS uses the tap
+# (see packages.yaml `base`). Linux and Windows download the pinned binary below
+# in run_once_after_15-install-omp.{sh,ps1}.tmpl. To upgrade, bump `version` and
+# copy the checksums from the release's SHA256SUMS.txt. The scripts re-run
+# when the version changes.
 omp:
   version: "18.0.0"
   sha256:

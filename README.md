@@ -2,12 +2,10 @@
 
 <img src=".img/dots.jpg" height=150 /><img src=".img/more_dots.gif" height=150 /><img src=".img/circle_circle.png" height=150 />
 
-My configuration files, managed with [chezmoi](https://www.chezmoi.io/) so a
-single repo drives every machine I use: macOS, Linux, Windows, and WSL.
-
-chezmoi does not symlink; it *generates* your real dotfiles from a source tree,
-transforming them per-machine via Go templates. That lets one branch serve all
-environments instead of a branch per host.
+My config files for macOS, Linux, Windows, and WSL, managed with
+[`chezmoi`](https://www.chezmoi.io/). `chezmoi` renders the real files from
+[Go templates](https://masterminds.github.io/sprig/) instead of symlinking, so
+one branch covers every machine.
 
 ## Install
 
@@ -23,72 +21,82 @@ Windows (PowerShell):
 irm https://raw.githubusercontent.com/nixpulvis/dotfiles/master/install.ps1 | iex
 ```
 
-Either bootstrap installs chezmoi (if missing), clones this repo, prompts for
-per-machine settings, and applies. On a machine that already has chezmoi:
+Both install `chezmoi` to `~/.local/bin` if it's missing, then run
+`chezmoi init --apply nixpulvis`. On macOS, `install.sh` first installs the
+Xcode Command Line Tools, since a new Mac has no working git. Extra arguments go
+to `chezmoi init`, so `./install.sh --branch <branch>` tracks a branch.
+
+If `chezmoi` is already installed:
 
 ```sh
 chezmoi init --apply nixpulvis
 ```
 
-To track a work-in-progress branch, pass it through: `./install.sh --branch <branch>`.
-
 ## Components
 
-Every machine gets the **base** layer. The other groups reflect what a machine
-actually is:
+| Group       | Applies to                                  | Contents                                               |
+| ----------- | ------------------------------------------- | ------------------------------------------------------ |
+| `base`      | everywhere                                  | git, bash, fish, vim/nvim, weechat, omp, `~/.bin`      |
+| `graphical` | macOS/Windows always, Linux by prompt       | alacritty + fonts                                      |
+| `wm`        | Linux only, by prompt (implies `graphical`) | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X`    |
 
-| Group       | Applies to                                  | Contents                                                |
-| ----------- | ------------------------------------------- | ------------------------------------------------------- |
-| `base`      | everywhere                                  | git, bash, fish, vim/nvim, weechat, claude, omp, ssh, `bin/` |
-| `graphical` | macOS/Windows always; Linux by prompt       | alacritty + fonts                                       |
-| `wm`        | Linux only, by prompt (implies `graphical`) | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X`     |
+`chezmoi init` asks for git name, email, and signing key, an IRC nick, and
+whether to set up the WeeChat ZNC login. On Linux it also asks whether the
+machine is graphical (defaults to no on WSL) and whether to install the `wm`
+stack. The answers are saved per machine and reused on later runs. Use
+`chezmoi init --prompt` to answer them again.
 
-macOS and Windows are inherently graphical, so `graphical` is implicit there
-with no prompt — `chezmoi init` only asks for git identity. On Linux you are
-asked whether the machine is `graphical` (a server or WSL box may not be) and
-whether to install the `wm` stack. Answers persist per machine; re-run
-`chezmoi init` to change them.
+The gating is in [`home/.chezmoiignore`](home/.chezmoiignore) and the prompts
+are in [`home/.chezmoi.toml.tmpl`](home/.chezmoi.toml.tmpl). A few things are
+also gated by OS: `~/.bin/share-network` is Linux only and WeeChat is skipped
+on Windows.
 
-Gating lives in [`home/.chezmoiignore`](home/.chezmoiignore); the prompts and
-their OS-aware defaults live in
-[`home/.chezmoi.toml.tmpl`](home/.chezmoi.toml.tmpl). WSL is detected
-automatically and defaults to a headless (non-`graphical`) profile.
+`.chezmoi.toml.tmpl` is the template for this machine's `chezmoi` config,
+`~/.config/chezmoi/chezmoi.toml`. `chezmoi init` renders it, which asks the
+questions above and detects WSL, and saves the results in the config's `[data]`
+section. Every other template reads them from there (e.g. `.graphical` or
+`.ircnick`). Only `chezmoi init` renders it, so when it changes (your edit or a
+pull) the saved config is stale until you re-run init. The
+`run_before_00-config-drift-check` script catches this and prints a banner.
+`chezmoi apply` keeps going, `chezmoi update` stops. Run `chezmoi update --init`
+(or `chezmoi init`) to regenerate the config from your saved answers.
 
-Package names are declared once in
+### Packages
+
+Packages are listed in
 [`home/.chezmoidata/packages.yaml`](home/.chezmoidata/packages.yaml), grouped
-by component, with a column per package manager:
+by component, with the name for each package manager:
 
 ```yaml
 - {name: ripgrep, brew: ripgrep, pacman: ripgrep, apt: ripgrep, winget: BurntSushi.ripgrep.MSVC}
 ```
 
-The `run_once_after_10-install-packages.{sh,ps1}.tmpl` scripts iterate that
-table and emit one install command per manager (Homebrew on macOS, `pacman`/`apt`
-on Linux, `winget` on Windows). Omit a manager key when a package doesn't exist
-there and it's skipped. To add a tool, add one line to the YAML — never edit the
-scripts.
+`run_once_after_10-install-packages.{sh,ps1}.tmpl` installs them with Homebrew
+on macOS, `pacman` or `apt` on Linux, and `winget` on Windows. Leave out a
+manager's key and the package is skipped there. To add a tool, add a line to
+the YAML.
 
-One exception: **omp** (the oh-my-pi coding agent) isn't in any distro package
-manager or winget. macOS installs it via a Homebrew tap (the `omp` line in the
-YAML), while Linux and Windows fetch the pinned release binary directly into
-`~/.bin` via `run_once_after_15-install-omp.{sh,ps1}.tmpl`. Its version and
-checksums live in
-[`home/.chezmoidata/omp.yaml`](home/.chezmoidata/omp.yaml); bump them there to
-upgrade.
+omp (the oh-my-pi coding agent) isn't in any distro repo or winget. macOS gets
+it from a Homebrew tap (the `omp` line in `packages.yaml`). Linux and Windows
+download a pinned release binary into `~/.bin` with
+`run_once_after_15-install-omp.{sh,ps1}.tmpl`. To upgrade, bump the version and
+checksums in [`home/.chezmoidata/omp.yaml`](home/.chezmoidata/omp.yaml).
 
 ## Layout
 
 ```
-.chezmoiroot                 -> points chezmoi at home/
-install.sh / install.ps1     bootstrap entrypoints
-home/                        chezmoi source (generates ~/)
-  .chezmoi.toml.tmpl         per-machine prompts (name/email, graphical/wm)
+.chezmoiroot                 points chezmoi at home/
+install.sh / install.ps1     bootstrap scripts
+home/                        chezmoi source (renders to ~/)
+  .chezmoi.toml.tmpl         per-machine prompts
   .chezmoiignore             component gating
-  .chezmoidata/packages.yaml package name table (single source of truth)
+  .chezmoidata/              packages.yaml, omp.yaml, weechat.yaml
+  .chezmoitemplates/         shared merge script for the WeeChat modify_ files
   dot_*                      files that become ~/.*
+  run_before_*               config drift check, runs on every apply
   run_once_*                 one-time setup scripts
-  AppData/*                  Windows-only path symlinks (see below)
-test/                        sandbox.sh + docker.sh (safe test harness)
+  AppData/                   Windows config-path symlinks (see below)
+test/                        sandbox.sh (throwaway HOME), docker.sh (Linux container)
 ```
 
 ## Daily use
@@ -103,67 +111,74 @@ chezmoi cd                   # shell in the source dir, then git commit/push
 
 ## Windows
 
-Neovim and Alacritty read from `%LOCALAPPDATA%` / `%APPDATA%` on Windows, not
-`~/.config`. The config is authored once under `dot_config/`; on Windows chezmoi
-creates symlinks (`home/AppData/Local/nvim`, `home/AppData/Roaming/alacritty`)
-pointing back at it, so there is a single source of truth. Creating symlinks on
-Windows requires **Developer Mode** (Settings -> Privacy & security -> For
-developers) or an elevated shell.
+On Windows, Neovim and Alacritty read their config from `%LOCALAPPDATA%` and
+`%APPDATA%` instead of `~/.config`. `home/AppData/Local/symlink_nvim.tmpl` and
+`home/AppData/Roaming/symlink_alacritty.tmpl` create symlinks from there back to
+`~/.config`, so the config only lives in `dot_config/`. Making symlinks on
+Windows needs Developer Mode (Settings > Privacy & security > For developers)
+or an elevated shell.
 
-The Unix shell files (`.bash_profile`, `.bashrc`, fish, `bin/`) are still
-written on native Windows but are inert unless Git Bash is present (which does
-read `.bash_profile`/`.bashrc`). WSL is detected as Linux and gets the full
-Linux treatment.
+The Unix shell files (`.bash_profile`, `.bashrc`, fish, `~/.bin`) are still
+written on Windows. Git Bash reads `.bash_profile` and `.bashrc`, otherwise
+they do nothing. WSL counts as Linux.
 
 ## Notes
 
-Per-machine identity (personal vs work email, signing key) is answered at
-`init` and written into `~/.gitconfig` from a template — no secrets and no
-host-specific branches. System-level provisioning (locale, `sudoers`,
-`pacman.conf`) that used to live here is out of scope; these are user dotfiles.
+Git identity (personal or work email, signing key) comes from the `init`
+prompts and is templated into `~/.gitconfig`. System setup like locale,
+`sudoers`, and `pacman.conf` isn't managed here.
 
-No secret ever lands in this repo. WeeChat connects to a **ZNC bouncer** (which
-holds the Libera account credentials server-side, stays connected, and replays
-history) rather than to Libera directly. The only client-side secret is the ZNC
-login password; it lives in the **OS keyring**, and chezmoi reads it via the
-`keyring` template function when it seeds `~/.config/weechat/irc.conf`. The source
-(`dot_config/weechat/create_private_irc.conf.tmpl`) contains only a
-`{{ keyring "znc" .ircnick }}` call — never the password. Read and write go through
-the same store (`go-keyring`: macOS login keychain, Linux Secret Service, Windows
-Credential Manager), so it is cross-platform and the seeded value always matches
-what the template reads. The bouncer host/port and its self-signed TLS cert
-fingerprint (pinned via `znc.tls_fingerprint`) are set directly in the template
-(`create_private_irc.conf.tmpl`) — not secrets; edit them if the bouncer moves or
-the cert is regenerated.
+### WeeChat
 
-The `create_` prefix makes this a **seed-once** file: chezmoi writes it (mode
-0600) only when it does not already exist. After first load WeeChat owns it —
-filling in defaults and rewriting on `/save` — and chezmoi never overwrites it.
-To re-seed from scratch, delete `irc.conf` and `chezmoi apply`.
+WeeChat connects to a ZNC bouncer (ref8.net) instead of Libera directly. ZNC
+holds the Libera credentials, stays connected, and replays history. The bouncer
+address and its pinned TLS fingerprint are in
+`home/dot_config/weechat/modify_private_irc.conf.tmpl`. Edit them there if the
+bouncer moves or its cert changes.
 
-Setup is driven by `chezmoi init`: if you answer yes to the **ZNC** prompt
-(default on macOS and graphical Linux), `run_once_before_05-weechat-znc-secret`
-prompts once for the ZNC password (hidden, via `chezmoi secret keyring`) *before*
-any file is written, so `irc.conf` resolves on the same run. Afterwards just
-launch `weechat` — it autoconnects to ZNC, which identifies to Libera and replays
-the channel buffers. Verify with `/msg *status ListNetworks`.
+WeeChat owns its config files, so `chezmoi` uses `modify_` scripts instead of
+plain files. On each apply they rewrite only the lines `chezmoi` manages and pass
+the rest through unchanged. On a new machine they write a minimal file. The
+shared logic is in `home/.chezmoitemplates/weechat-merge-conf`.
 
-To set or change the password, store it in the keyring (prompts on the terminal
-with input hidden, so it never lands in shell history or argv):
+- `modify_private_irc.conf.tmpl` manages the `znc.*` server lines: address,
+  TLS, nick, and, if you said yes to the ZNC prompt, the password reference,
+  autoconnect, and autojoin.
+- `modify_private_sec.conf.tmpl` sets `sec.crypt.passphrase_command` so WeeChat
+  gets its secured-data passphrase from the OS keyring and doesn't prompt on
+  launch.
+
+The channel list is in
+[`home/.chezmoidata/weechat.yaml`](home/.chezmoidata/weechat.yaml) and is
+applied to `znc.autojoin` on every `chezmoi apply`. Listed channels are always
+joined. Channels you `/join` by hand stay joined on ZNC until you `/part` them.
+
+No password is stored in this repo or in the keyring. If you answer yes to the
+ZNC prompt, `run_once_before_05-weechat-sec-passphrase.sh.tmpl` generates a
+random passphrase and stores it in the keyring (service `weechat`, user = your
+IRC nick) before any files are written. If one already exists it's kept, since
+a new one would make existing secrets unreadable. You then store the ZNC
+password once, encrypted in `sec.conf`:
 
 ```sh
-chezmoi secret keyring set --service znc --user <nick>
+env WEECHAT_PASSPHRASE="$(chezmoi secret keyring get --service weechat --user <nick>)" weechat
 ```
 
-Because `irc.conf` is seed-once, updating the keyring does **not** re-render an
-existing `irc.conf`. Either change it live in WeeChat
-(`/set irc.server.znc.password "<nick>/libera:..."`), or delete `irc.conf` and
-`chezmoi apply` to re-seed from the new keyring value.
+and inside WeeChat:
 
-Note: the value must live in a keyring the CLI can reach — the login keychain on
-macOS, not iCloud/Passwords.app (those are sandboxed from the CLI, so `keyring`
-cannot read them). Linux needs a running Secret Service provider (gnome-keyring
-or kwallet). On native Windows the `run_once` seed script (POSIX `sh`) does not
-run, so seed manually with the command above; the `keyring` read itself works.
-On headless machines without a keyring, answer no to the ZNC prompt; `irc.conf`
-is then written with the bouncer server but `autoconnect` off and no password.
+```
+/secure set znc <ZNC password>
+/save
+```
+
+The first encrypted entry needs the passphrase in the environment. After that,
+plain `weechat` works. `irc.conf` already points the password at
+`${sec.data.znc}`. Check the connection with `/msg *status ListNetworks`. The
+package install script prints these steps too.
+
+The keyring has to be one the `chezmoi` CLI can reach: the login keychain on
+macOS (not iCloud Keychain or Passwords.app), or a running Secret Service
+provider (gnome-keyring or kwallet) on Linux. If no keyring is available the
+passphrase script skips itself and prints how to retry. On headless machines,
+answer no to the ZNC prompt. You still get the bouncer server in `irc.conf`,
+with autoconnect off and no password.

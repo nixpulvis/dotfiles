@@ -1,10 +1,9 @@
 {{- if eq .chezmoi.os "linux" -}}
 #!/bin/sh
-# Install/update the omp (oh-my-pi) coding agent on Linux. omp isn't in pacman or
-# apt (only a Homebrew tap + raw release binaries), so we fetch the pinned
-# release binary directly into ~/.bin (first on PATH; see fish config). Version
-# and checksums come from .chezmoidata/omp.yaml -- edit that, not this. Re-runs
-# once per machine and again whenever the rendered version/checksum changes.
+# Install or update omp (oh-my-pi) on Linux. It isn't packaged for pacman or apt,
+# so download the pinned release binary into ~/.bin, which fish puts first on
+# PATH. The version and checksums live in .chezmoidata/omp.yaml. `chezmoi` runs
+# this once per machine, and again when the version or checksum changes.
 set -eu
 
 version="{{ .omp.version }}"
@@ -15,8 +14,8 @@ if [ -x "$dest" ] && "$dest" --version 2>/dev/null | grep -q "$version"; then
     exit 0
 fi
 
-# Map uname arch -> release asset + its checksum. glibc builds (the tap's Linux
-# default); switch to omp-linux-musl-* on a musl distro if ever needed.
+# Pick the release asset and checksum for this CPU. These are the glibc builds.
+# A musl distro would need the omp-linux-musl-* assets instead.
 arch=$(uname -m)
 case "$arch" in
     x86_64|amd64)  asset="omp-linux-x64";   sha="{{ index .omp.sha256 "linux-x64" }}" ;;

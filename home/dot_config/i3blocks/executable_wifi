@@ -20,8 +20,8 @@ INTERFACE="${BLOCK_INSTANCE:-`ip route list default | cut -d ' ' -f5`}"
 
 #------------------------------------------------------------------------
 
-# As per #36 -- It is transparent: e.g. if the machine has no battery or wireless
-# connection (think desktop), the corresponding block should not be displayed.
+# Per #36, hide the block when the machine has no wireless interface or it's
+# down (e.g. a desktop).
 [[ ! -d /sys/class/net/${INTERFACE}/wireless ]] ||
     [[ "$(cat /sys/class/net/$INTERFACE/operstate)" = 'down' ]] && exit
 

@@ -1,22 +1,21 @@
 {{- if and .libera (ne .chezmoi.os "windows") -}}
 #!/bin/sh
-# Store a random passphrase in the OS keyring so WeeChat can decrypt its secured
-# data (sec.conf) non-interactively via sec.crypt.passphrase_command (enforced by
-# modify_private_sec.conf.tmpl) -- no master-password prompt on launch. Runs once
-# per machine, before files are applied. The passphrase is generated here, stored
-# only in the keyring (macOS login keychain / Linux Secret Service via chezmoi's
-# cross-platform go-keyring), and never written to this repo.
+# Generate a random passphrase for WeeChat's secured data (sec.conf) and store it
+# in the OS keyring. modify_private_sec.conf.tmpl sets sec.crypt.passphrase_command
+# to read it back, so WeeChat never asks for a password on launch. This runs once
+# per machine, before files are applied. The passphrase only ever lives in the
+# keyring (macOS login keychain or Linux Secret Service), never in this repo.
 #
-# This does NOT store the ZNC password. That is entered once inside WeeChat with
-# `/secure set znc <password>`, which encrypts it into sec.conf under this
-# passphrase -- see the post-install note and irc.conf's header.
+# The ZNC password is separate. Enter it once inside WeeChat with
+# `/secure set znc <password>` and it gets encrypted into sec.conf with this
+# passphrase. The post-install note and irc.conf's header explain the steps.
 set -eu
 
 service=weechat
 account={{ .ircnick | quote }}
 
-# Already have a passphrase? Keep it -- regenerating would make any existing
-# sec.conf secrets impossible to decrypt.
+# Keep an existing passphrase. A new one would make anything already stored in
+# sec.conf impossible to decrypt.
 if v=$(chezmoi secret keyring get --service "$service" --user "$account" 2>/dev/null) \
    && [ -n "$v" ]; then
     exit 0

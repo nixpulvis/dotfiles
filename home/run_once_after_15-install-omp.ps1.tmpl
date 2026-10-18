@@ -1,9 +1,8 @@
 {{- if eq .chezmoi.os "windows" -}}
-# Install/update the omp (oh-my-pi) coding agent on Windows. omp isn't on winget
-# (only a Homebrew tap + raw release binaries), so we fetch the pinned release
-# .exe directly into ~\.bin and put that dir on the user PATH. Version and
-# checksum come from .chezmoidata/omp.yaml -- edit that, not this. Re-runs once
-# per machine and again whenever the rendered version/checksum changes.
+# Install or update omp (oh-my-pi) on Windows. It isn't on winget, so download
+# the pinned release .exe into ~\.bin and add that folder to the user PATH. The
+# version and checksum live in .chezmoidata/omp.yaml. `chezmoi` runs this once
+# per machine, and again when the version or checksum changes.
 $ErrorActionPreference = 'Stop'
 
 $version = '{{ .omp.version }}'

@@ -1,10 +1,10 @@
-# Single source of truth for packages, grouped by component (base/graphical/wm).
-# Each entry maps a logical package to its name in each package manager. Omit a
-# manager key when the package doesn't exist / isn't wanted there; the install
-# scripts skip missing keys. `brew_cask` installs via `brew install --cask`.
+# Packages, grouped by component (base/graphical/wm). Each entry maps a package
+# to its name in each package manager. Leave out a manager key if the package
+# isn't available or wanted there, and the install scripts skip it.
+# `brew_cask` installs with `brew install --cask`.
 #
-# Loaded by chezmoi as `.packages`; consumed by
-# run_once_before_10-install-packages.{sh,ps1}.tmpl.
+# `chezmoi` loads this as `.packages`. Used by
+# run_once_after_10-install-packages.{sh,ps1}.tmpl.
 packages:
   base:
     - {name: fish,     brew: fish,       pacman: fish,      apt: fish}

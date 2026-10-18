@@ -4,16 +4,15 @@
 {{-   if hasKey . "configTemplateHash" }}{{ $stored = .configTemplateHash }}{{ end -}}
 {{-   if ne $stored $current -}}
 #!/bin/sh
-# Loud counterpart to chezmoi's own easy-to-miss "config file template has
-# changed" warning. Renders to an empty (skipped) script while the persisted
-# config is current; the Go-template guard above compares the config template's
-# hash at last `chezmoi init` (.configTemplateHash, absent -> treated as drift)
-# against the template's hash right now (recomputed every apply via include +
-# sha256sum). On drift it emits this banner, then: aborts `chezmoi update`
-# (whose whole job is to sync to latest -- proceeding with stale data is wrong;
-# `chezmoi update --init` regenerates config first, so it never reaches here),
-# but only warns for `apply` so the local edit/apply loop is not broken. If
-# CHEZMOI_COMMAND is unset (older chezmoi), it degrades to warn-only.
+# A louder version of `chezmoi`'s easy-to-miss "config file template has
+# changed" warning. The template guard above compares the config template's
+# hash from the last `chezmoi init` (.configTemplateHash, missing counts as
+# drift) with its current hash. If they match, this renders empty and is
+# skipped. On drift it prints the banner, then aborts `chezmoi update`, since
+# updating with stale config is wrong. (`chezmoi update --init` regenerates
+# config first, so it never gets here.) For `apply` it only warns, so the
+# edit/apply loop keeps working. Older `chezmoi` without CHEZMOI_COMMAND only
+# gets the warning.
 banner() { printf '%s\n' "$1" >&2; }
 banner ""
 banner "########################################################################"

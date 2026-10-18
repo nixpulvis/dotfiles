@@ -26,8 +26,8 @@ fi
 
 #------------------------------------------------------------------------
 
-# As per #36 -- It is transparent: e.g. if the machine has no battery or wireless
-# connection (think desktop), the corresponding block should not be displayed.
+# Per #36, hide the block when the machine has no such interface (e.g. a desktop
+# with no wireless).
 [[ ! -d /sys/class/net/${IF} ]] && exit
 
 #------------------------------------------------------------------------

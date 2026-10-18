@@ -1,6 +1,6 @@
 {{- if eq .chezmoi.os "windows" -}}
-# Install packages via winget. Package IDs come from .chezmoidata/packages.yaml
-# (single source of truth) — edit that, not this. Runs once per machine.
+# Install packages with winget. The package IDs live in .chezmoidata/packages.yaml,
+# so edit that instead of this script. `chezmoi` runs this once per machine.
 $ErrorActionPreference = 'Stop'
 
 function Install-Pkg($id) {

@@ -7,7 +7,7 @@
 #   test/sandbox.sh apply    # apply into the sandbox HOME (scripts skipped)
 #   KEEP=1 test/sandbox.sh   # keep the sandbox dir afterwards for inspection
 #
-# Run it on whichever OS you want to check (macOS, Linux, or WSL); the gating
+# Run it on whichever OS you want to check (macOS, Linux, or WSL). The gating
 # is evaluated for that OS.
 set -eu
 
@@ -18,7 +18,7 @@ D=$(mktemp -d)
 SBHOME="$D/home"; mkdir -p "$SBHOME"
 CFGDIR="$D/cfg"; CFG="$CFGDIR/chezmoi/chezmoi.toml"
 
-# Locate chezmoi, or fetch it into the sandbox so nothing global is installed.
+# Locate `chezmoi`, or fetch it into the sandbox so nothing global is installed.
 if command -v chezmoi >/dev/null 2>&1; then
     CM=$(command -v chezmoi)
 elif [ -x "$HOME/.local/bin/chezmoi" ]; then

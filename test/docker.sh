@@ -1,21 +1,22 @@
 #!/bin/sh
-# End-to-end test of the real bootstrap inside a disposable Linux container.
-# Verifies the Linux gating/templating you can't exercise from macOS. The
-# container is removed on exit (--rm); your machine is untouched.
+# End-to-end test of the real bootstrap inside a throwaway Linux container, for
+# the Linux gating and templating you can't exercise from macOS. The container
+# is removed on exit (--rm), so your machine isn't touched.
 #
 #   test/docker.sh              # Arch (pacman)   [emulates x86-64 on arm64 hosts]
 #   test/docker.sh ubuntu       # Debian/Ubuntu (apt)   [native multi-arch]
 #   INSTALL=1 test/docker.sh    # also run the real package installs
 #   PLATFORM=linux/amd64 ...    # force a platform (needs qemu/binfmt)
 #
-# Without INSTALL=1 the package scripts are skipped (fast; just proves the
-# dotfiles render and gate correctly on a real Linux box). Requires docker.
+# Without INSTALL=1 the package scripts are skipped. That's fast and just
+# proves the dotfiles render and gate correctly on a real Linux box.
+# Requires docker.
 set -eu
 
 REPO=$(CDPATH= cd "$(dirname "$0")/.." && pwd)
 DISTRO=${1:-arch}
 
-# Arch publishes no arm64 image, so emulate x86-64 there; Ubuntu is multi-arch.
+# Arch has no arm64 image, so emulate x86-64 there. Ubuntu is multi-arch.
 case "$DISTRO" in
     arch)          IMAGE=archlinux:latest; PLAT=${PLATFORM:-linux/amd64}; PREP='pacman -Sy --noconfirm --needed git curl sudo'; ARCH=1 ;;
     ubuntu|debian) IMAGE=ubuntu:latest;    PLAT=${PLATFORM:-};           PREP='apt-get update && apt-get install -y git curl sudo ca-certificates'; ARCH=0 ;;

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Bootstrap chezmoi + these dotfiles on macOS, Linux, or WSL.
+# Bootstrap `chezmoi` + these dotfiles on macOS, Linux, or WSL.
 #
 #   sh -c "$(curl -fsLS https://raw.githubusercontent.com/nixpulvis/dotfiles/master/install.sh)"
 #
@@ -10,7 +10,7 @@ set -eu
 # macOS: the git that `chezmoi init` clones with ships with the Xcode Command
 # Line Tools, which a brand-new Mac lacks (/usr/bin/git is only a stub). Install
 # them first and block until the GUI installer finishes, otherwise the clone
-# below has no working git. chezmoi's builtin git isn't used here because the
+# below has no working git. `chezmoi`'s builtin git isn't used here because the
 # stub is in $PATH, so `useBuiltinGit = auto` still picks the broken system git.
 if [ "$(uname -s)" = "Darwin" ] && ! xcode-select -p >/dev/null 2>&1; then
     echo "Installing Xcode Command Line Tools (provides git)..."

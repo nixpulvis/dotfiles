@@ -1,4 +1,4 @@
-# Bootstrap chezmoi + these dotfiles on native Windows.
+# Bootstrap `chezmoi` + these dotfiles on native Windows.
 #
 #   irm https://raw.githubusercontent.com/nixpulvis/dotfiles/master/install.ps1 | iex
 #

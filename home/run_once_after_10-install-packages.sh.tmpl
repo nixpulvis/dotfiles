@@ -1,8 +1,8 @@
 {{- if ne .chezmoi.os "windows" -}}
 #!/bin/sh
-# Install packages for the active component groups. Package names come from
-# .chezmoidata/packages.yaml (single source of truth) — edit that, not this.
-# Runs once per machine (re-runs if the rendered command changes).
+# Install packages for the enabled component groups. The package list lives in
+# .chezmoidata/packages.yaml, so edit that instead of this script. `chezmoi`
+# runs this once per machine, and again whenever the rendered script changes.
 set -eu
 
 {{- $groups := list "base" -}}
@@ -27,8 +27,8 @@ fi
 {{ if $casks }}brew install --cask --adopt {{ $casks | join " " }}
 {{ end -}}
 {{ if .graphical -}}
-# Alacritty has no macOS package here (the Homebrew cask is deprecated and being
-# disabled). Remind the user to install it by hand if it isn't already present.
+# There's no Alacritty package to install here because the Homebrew cask is
+# deprecated. Print a reminder if it isn't already installed.
 if ! command -v alacritty >/dev/null 2>&1 && [ ! -d /Applications/Alacritty.app ]; then
     echo "NOTE: Alacritty is not installed. Its Homebrew cask is deprecated on macOS;" >&2
     echo "      install manually: https://github.com/alacritty/alacritty/releases" >&2
@@ -60,9 +60,9 @@ echo "No supported package manager (pacman/apt) found; install packages manually
 
 {{- if .libera }}
 # ---- WeeChat: ZNC bouncer login --------------------------------------------
-# chezmoi configures the connection + channels and points WeeChat's secured data
-# at a keyring-stored passphrase (no prompt on launch). You store the ZNC
-# password once, encrypted, with `/secure set`.
+# `chezmoi` sets up the connection and channels, and WeeChat reads its secured
+# data passphrase from the keyring, so there's no prompt on launch. The ZNC
+# password still has to be stored once by hand with `/secure set`.
 cat >&2 <<'EOF'
 
 NOTE: WeeChat is set up for your ZNC bouncer (ref8.net) as "{{ .ircnick }}",
