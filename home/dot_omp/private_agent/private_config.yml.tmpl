@@ -7,7 +7,9 @@ modelRoles:
   default: anthropic/claude-opus-5-5:high
 symbolPreset: ascii
 composer:
-  shape: rail
+  # Custom shape from extensions/rail-tight.ts: built-in rail minus the gap
+  # between the rail glyph and the prompt text.
+  shape: nate.rail-tight
 theme:
   dark: titanium-me
   light: light
