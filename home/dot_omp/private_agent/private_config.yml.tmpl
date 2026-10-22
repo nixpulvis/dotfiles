@@ -28,11 +28,10 @@ statusLine:
   preset: custom
   sessionAccent: true
   separator: block
-  # Default preset's segments, plus a `usage` segment on the right that shows
-  # the Claude subscription rate-limit windows: 5h (rolling session) and 7d
-  # (weekly), each as "<pct>% (<reset>)".
+  # Default preset's segments minus the leading `pi` logo, plus a `usage`
+  # segment on the right that shows the Claude subscription rate-limit
+  # windows: 5h (rolling session) and 7d (weekly), each as "<pct>% (<reset>)".
   leftSegments:
-    - pi
     - model
     - mode
     - collab
