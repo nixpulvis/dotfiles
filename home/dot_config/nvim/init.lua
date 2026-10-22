@@ -1,16 +1,16 @@
-local plug_path = "~/.local/share/nvim/site/autoload/plug.vim"
+-- stdpath('data') is ~/.local/share/nvim on Linux/macOS and
+-- %LOCALAPPDATA%\nvim-data on Windows; its site/ dir is on 'runtimepath'.
+local plug_path = vim.fn.stdpath('data') .. '/site/autoload/plug.vim'
 if vim.fn.empty(vim.fn.glob(plug_path)) ~= 0 then
     print("Install Plug...")
-    vim.fn.system("sh -c 'curl -fLo " .. plug_path .. " --create-dirs " ..
-        "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'")
+    -- List form runs curl directly (no shell), so it works under cmd.exe too.
+    vim.fn.system({ 'curl', '-fLo', plug_path, '--create-dirs',
+        'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' })
+    if vim.v.shell_error ~= 0 then
+        error("Failed to download vim-plug to " .. plug_path)
+    end
 
-    vim.cmd("source " .. plug_path)
-    vim.api.nvim_create_autocmd("VimEnter", {
-        pattern = "*",
-        callback = function()
-            vim.cmd("PlugInstall --sync")
-        end,
-    })
+    vim.cmd.source(vim.fn.fnameescape(plug_path))
 end
 
 local Plug = vim.fn['plug#']
@@ -55,6 +55,15 @@ Plug('tpope/vim-surround')
 Plug('wlangstroth/vim-racket')
 
 vim.call('plug#end')
+
+-- Install missing plugins now, before the config below requires them (e.g.
+-- onedark, cmp), so a first launch doesn't error. Closes vim-plug's window.
+for _, plug in pairs(vim.g.plugs) do
+    if vim.fn.isdirectory(plug.dir) == 0 then
+        vim.cmd('PlugInstall --sync | close')
+        break
+    end
+end
 
 -- Syntax color scheme
 -- TODO: Switch based on system mode.
