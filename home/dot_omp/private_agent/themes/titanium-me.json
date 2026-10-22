@@ -88,7 +88,9 @@
       "icon.model": "",
       "icon.folder": "",
       "icon.worktree": "",
-      "icon.scratchFolder": ""
+      "icon.scratchFolder": "",
+      "icon.context": "",
+      "icon.time": ""
     }
   },
   "export": {

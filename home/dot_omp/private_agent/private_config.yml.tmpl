@@ -31,18 +31,23 @@ statusLine:
   # Default preset's segments minus the leading `pi` logo, with model and
   # context moved to the right, plus a `usage` segment that shows the Claude
   # subscription rate-limit windows: 5h (rolling session) and 7d (weekly),
-  # each as "<pct>% (<reset>)".
+  # each as "<pct>% (<reset>)". The theme blanks the `ctx:`/`t:` labels.
+  #
+  # `status` shows the session name, length-capped by
+  # extensions/session-title.ts (built-in `session_name` has no cap).
+  # showHookStatus: false stops it repeating as a line below the bar.
+  showHookStatus: false
   leftSegments:
     - mode
     - collab
     - path
     - git
     - pr
+    - status
   rightSegments:
     - model
     - context_pct
     - usage
-    - session_name
   segmentOptions:
     model:
       showThinkingLevel: true
