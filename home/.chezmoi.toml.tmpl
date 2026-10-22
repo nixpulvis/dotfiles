@@ -48,3 +48,11 @@
     wsl = {{ $wsl }}
     graphical = {{ $graphical }}
     wm = {{ $wm }}
+{{- if eq $os "windows" }}
+
+# Run run_ scripts with -ExecutionPolicy Bypass so they work under Windows'
+# default Restricted policy, without loosening the policy for anything else.
+[interpreters.ps1]
+    command = "powershell"
+    args = ["-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass"]
+{{- end }}
