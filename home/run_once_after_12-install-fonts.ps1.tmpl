@@ -1,0 +1,39 @@
+{{- if and (eq .chezmoi.os "windows") .graphical -}}
+# Install Fira Mono (Alacritty's font) per-user on Windows. It isn't on winget
+# or winget-font, so download the pinned TTFs from google/fonts. The pin and
+# checksums live in .chezmoidata/fonts.yaml. `chezmoi` runs this once per
+# machine, and again when the pin changes. No admin needed.
+$ErrorActionPreference = 'Stop'
+
+$fontDir = Join-Path $env:LOCALAPPDATA 'Microsoft\Windows\Fonts'
+$regKey  = 'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts'
+$base    = 'https://raw.githubusercontent.com/google/fonts/{{ .fonts.firaMono.commit }}/{{ .fonts.firaMono.path }}'
+
+New-Item -ItemType Directory -Force -Path $fontDir | Out-Null
+# Never New-Item -Force an existing registry key: that recreates it empty.
+if (-not (Test-Path $regKey)) { New-Item -Path $regKey | Out-Null }
+
+function Install-Font($name, $face, $sha) {
+    $dest = Join-Path $fontDir $name
+    if ((Test-Path $dest) -and ((Get-FileHash -Algorithm SHA256 $dest).Hash.ToLower() -eq $sha)) {
+        Write-Host "$face already installed"
+    } else {
+        $tmp = New-TemporaryFile
+        try {
+            Invoke-WebRequest -Uri "$base/$name" -OutFile $tmp
+            $got = (Get-FileHash -Algorithm SHA256 -Path $tmp).Hash.ToLower()
+            if ($got -ne $sha) { throw "${name}: checksum mismatch (expected $sha, got $got)" }
+            Move-Item -Force $tmp $dest
+        } finally {
+            if (Test-Path $tmp) { Remove-Item $tmp -Force }
+        }
+        Write-Host "Installed $face"
+    }
+    # Per-user fonts are registered by full path under HKCU.
+    Set-ItemProperty -Path $regKey -Name "$face (TrueType)" -Value $dest
+}
+{{ range .fonts.firaMono.files }}
+Install-Font '{{ .name }}' '{{ .face }}' '{{ .sha256 }}'
+{{- end }}
+Write-Host 'Restart apps (e.g. Alacritty) to pick up new fonts.'
+{{ end -}}

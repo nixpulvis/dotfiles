@@ -1,0 +1,13 @@
+# Fonts for the direct-download install path on Windows, where neither winget
+# nor its winget-font source packages Fira Mono. macOS and Linux install fonts
+# from packages.yaml `graphical`. Files come from a pinned google/fonts commit;
+# installed per-user by run_once_after_12-install-fonts.ps1.tmpl, which re-runs
+# when this pin changes. To upgrade, bump `commit` and recompute the checksums.
+fonts:
+  firaMono:
+    commit: "d74f7e8db499e84477ad0af4140ad25cf573091c"
+    path: "ofl/firamono"
+    files:
+      - {name: "FiraMono-Regular.ttf", face: "Fira Mono Regular", sha256: "2e00b0cf3106a3d792f35711b7722740b76c02ee7300ea8c60f940584b7a8ac9"}
+      - {name: "FiraMono-Medium.ttf",  face: "Fira Mono Medium",  sha256: "a5bc1a2db2f65946049de615ecc08603d788eb0c02b520f4ed95f05a5cc58532"}
+      - {name: "FiraMono-Bold.ttf",    face: "Fira Mono Bold",    sha256: "61f0ca3ae72a83deb807040f314e1b8b4e40b08213df243db9fd430095cab305"}

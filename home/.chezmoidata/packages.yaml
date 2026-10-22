@@ -21,6 +21,7 @@ packages:
 
   graphical:
     - {name: alacritty,                            pacman: alacritty,    apt: alacritty,      winget: Alacritty.Alacritty}
+    # No winget package; Windows installs Fira Mono via fonts.yaml.
     - {name: fira-mono, brew_cask: font-fira-mono, pacman: ttf-fira-mono, apt: fonts-firacode}
     - {name: fira-sans, brew_cask: font-fira-sans, pacman: ttf-fira-sans}
 
