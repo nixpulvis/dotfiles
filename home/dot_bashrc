@@ -1,2 +1,80 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+
+# Prompt: port of the nixpulvis fish_prompt / fish_right_prompt.
+
+# Load __git_ps1. Its location varies by platform.
+if ! type __git_ps1 &>/dev/null; then
+	if [[ $OSTYPE == msys ]]; then
+		# Git Bash: git-prompt.sh ships alongside git's own install. Git for
+		# Windows' /etc/profile.d/git-prompt.sh normally loads it with its
+		# default prompt; since we replace that prompt, load it ourselves.
+		__git_completion="$(git --exec-path 2>/dev/null)"
+		__git_completion="${__git_completion%/libexec/git-core}"
+		__git_completion="${__git_completion%/lib/git-core}"
+		__git_completion="$__git_completion/share/git/completion"
+		[[ -f $__git_completion/git-completion.bash ]] && . "$__git_completion/git-completion.bash" 2>/dev/null
+		[[ -f $__git_completion/git-prompt.sh ]] && . "$__git_completion/git-prompt.sh"
+		unset __git_completion
+	else
+		for f in \
+			/usr/share/git/completion/git-prompt.sh \
+			/usr/lib/git-core/git-sh-prompt \
+			/usr/share/git-core/contrib/completion/git-prompt.sh \
+			/opt/homebrew/etc/bash_completion.d/git-prompt.sh \
+			/usr/local/etc/bash_completion.d/git-prompt.sh \
+			/Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh
+		do
+			[[ -f $f ]] && { . "$f"; break; }
+		done
+		unset f
+	fi
+fi
+
+# No git-prompt.sh found: fall back to a prompt without the git segment.
+if ! type __git_ps1 &>/dev/null; then
+	__git_ps1() { PS1="$1$2"; }
+fi
+
+# Match the fish dotfiles git settings.
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWSTASHSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+GIT_PS1_SHOWCOLORHINTS=1
+
+# fish prompt_pwd: shorten every path component except the last to one char.
+__prompt_pwd() {
+	local p="${PWD/#$HOME/\~}"
+	printf '%s' "$p" | sed -e 's|\([^/]\)[^/]*/|\1/|g'
+}
+
+# fish_right_prompt: right-aligned "(exit-code) YYYY-MM-DD HH:MM:SS+ZZZZ".
+__rprompt() {
+	local st=$1 esc plain text pad
+	esc=$'\033'
+	local ts; ts=$(date '+%Y-%m-%d %T%z')
+	if test "$st" -ne 0; then
+		plain="($st) $ts"
+		text="(${esc}[31m${st}${esc}[0m) ${esc}[2;37m${ts}${esc}[0m"
+	else
+		plain="$ts"
+		text="${esc}[2;37m${ts}${esc}[0m"
+	fi
+	pad=$(( COLUMNS - ${#plain} ))
+	test "$pad" -lt 0 && pad=0
+	# Right-align, then carriage-return so the left prompt overprints column 0.
+	printf '%*s%s\r' "$pad" '' "$text"
+}
+
+__prompt_command() {
+	local st=$?
+	__rprompt "$st"
+	# 2-arg __git_ps1 (PROMPT_COMMAND mode) enables SHOWCOLORHINTS.
+	# pre : window title + red user @ blue host : green abbreviated pwd
+	# post: git segment is inserted between pre and post; end with " $ "
+	__git_ps1 \
+		"\[\033]0;\w\007\]\[\033[31m\]\u\[\033[0m\]@\[\033[34m\]\h\[\033[0m\]:\[\033[32m\]$(__prompt_pwd)\[\033[0m\]" \
+		" \\\$ "
+}
+
+PROMPT_COMMAND=__prompt_command

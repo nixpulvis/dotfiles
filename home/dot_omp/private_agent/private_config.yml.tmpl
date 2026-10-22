@@ -1,3 +1,6 @@
+{{ if eq .chezmoi.os "windows" -}}
+shellPath: C:\Program Files\Git\bin\bash.exe
+{{ end -}}
 setupVersion: 2
 modelRoles:
   commit: anthropic/claude-haiku-5-5

@@ -4,14 +4,19 @@ import = [
     "{{ $home }}/.config/alacritty/bindings.toml",
     "{{ $home }}/.config/alacritty/colors.toml"
 ]
-{{ if ne .chezmoi.os "windows" }}
+{{- if eq .chezmoi.os "windows" }}
+working_directory = {{ .chezmoi.homeDir | quote }}
+{{- end }}
+
 [terminal.shell]
-{{- if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "windows" }}
+program = "C:\\Program Files\\Git\\bin\\bash.exe"
+args = ["--login", "-i"]
+{{- else if eq .chezmoi.os "darwin" }}
 program = {{ if eq .chezmoi.arch "arm64" }}"/opt/homebrew/bin/fish"{{ else }}"/usr/local/bin/fish"{{ end }}
 {{- else }}
 program = "/usr/bin/fish"
 {{- end }}
-{{ end }}
 
 [env]
 WINIT_X11_SCALE_FACTOR = "1"
