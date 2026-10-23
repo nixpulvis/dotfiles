@@ -62,6 +62,10 @@ statusLine:
       showUntracked: true
 tui:
   tight: true
+  # Commit transcript rows to scrollback when a growing HUD/dialog pushes them
+  # off screen; otherwise they are dropped, which cut the bottom off framed
+  # cards (e.g. the todo box lost its last phase row and bottom border).
+  completeScrollback: true
 display:
   shimmer: kitt
   showTokenUsage: true
