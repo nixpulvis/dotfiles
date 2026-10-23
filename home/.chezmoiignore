@@ -35,11 +35,12 @@ AppData
 .config/weechat
 {{- end }}
 
-{{/* omp: track only agent/config.yml, agent/themes/ and agent/extensions/.
+{{/* omp: track only agent/config.yml, agent/AGENTS.md, agent/themes/ and agent/extensions/.
      Everything else under agent/ is ignored so auth tokens, sessions, caches
      and *.db files never get added, including ones that don't exist yet.
      No left trim here: it would glue this block onto the WeeChat line above. */ -}}
 .omp/agent/*
 !.omp/agent/config.yml
+!.omp/agent/AGENTS.md
 !.omp/agent/themes
 !.omp/agent/extensions
