@@ -11,14 +11,19 @@ return {
     end,
     capabilities = require('cmp_nvim_lsp').default_capabilities(),
     settings = {
-        -- completion = {
-        --     fullFunctionSignatures = {
-        --         enable = true
-        --     },
-        --     callable = {
-        --         snippets = "add_parentheses"
-        --     }
-        -- }
+        ['rust-analyzer'] = {
+            cargo = {
+                features = "all",
+            },
+            -- completion = {
+            --     fullFunctionSignatures = {
+            --         enable = true
+            --     },
+            --     callable = {
+            --         snippets = "add_parentheses"
+            --     }
+            -- }
+        },
     }
 }
 
