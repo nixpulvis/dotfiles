@@ -1,0 +1,49 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "languages": {
+    "Rust (record_args)": {
+      "language_servers": ["!rust-analyzer-record-args", "..."]
+    }
+  },
+
+  "cli_default_open_behavior": "new_window",
+  "git": {
+    "inline_blame": {
+      "enabled": false
+    }
+  },
+  "terminal": {
+    "font_family": "Fira Mono",
+    "option_as_meta": true
+  },
+  "diff_view_style": "unified",
+  "vim_mode": true,
+  "project_panel": {
+    "dock": "left"
+  },
+  "agent": {
+    "threads_sidebar": {
+      "position": "right"
+    },
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "buffer_font_features": {
+    "calt": false,
+    "liga": false
+  },
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "One Dark",
+  },
+}

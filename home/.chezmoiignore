@@ -4,6 +4,7 @@
 
 {{- if not .graphical }}
 .config/alacritty
+.config/zed
 AppData/Roaming/alacritty
 {{- end }}
 
