@@ -1,52 +1,18 @@
+# Environment shared with zsh. Loaded before the interactive check so
+# non-interactive shells (e.g. `ssh host cmd`) get PATH too.
+[[ -f ~/.config/sh/env.sh ]] && . ~/.config/sh/env.sh
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# macOS's /bin/bash prints a "default interactive shell is now zsh" notice on
+# every start unless this is set by the end of startup.
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# Aliases, fzf, rbenv, git prompt helpers and greeting, shared with zsh.
+[[ -f ~/.config/sh/rc.sh ]] && . ~/.config/sh/rc.sh
+
 # Prompt: port of the nixpulvis fish_prompt / fish_right_prompt.
-
-# Load __git_ps1. Its location varies by platform.
-if ! type __git_ps1 &>/dev/null; then
-	if [[ $OSTYPE == msys ]]; then
-		# Git Bash: git-prompt.sh ships alongside git's own install. Git for
-		# Windows' /etc/profile.d/git-prompt.sh normally loads it with its
-		# default prompt; since we replace that prompt, load it ourselves.
-		__git_completion="$(git --exec-path 2>/dev/null)"
-		__git_completion="${__git_completion%/libexec/git-core}"
-		__git_completion="${__git_completion%/lib/git-core}"
-		__git_completion="$__git_completion/share/git/completion"
-		[[ -f $__git_completion/git-completion.bash ]] && . "$__git_completion/git-completion.bash" 2>/dev/null
-		[[ -f $__git_completion/git-prompt.sh ]] && . "$__git_completion/git-prompt.sh"
-		unset __git_completion
-	else
-		for f in \
-			/usr/share/git/completion/git-prompt.sh \
-			/usr/lib/git-core/git-sh-prompt \
-			/usr/share/git-core/contrib/completion/git-prompt.sh \
-			/opt/homebrew/etc/bash_completion.d/git-prompt.sh \
-			/usr/local/etc/bash_completion.d/git-prompt.sh \
-			/Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh
-		do
-			[[ -f $f ]] && { . "$f"; break; }
-		done
-		unset f
-	fi
-fi
-
-# No git-prompt.sh found: fall back to a prompt without the git segment.
-if ! type __git_ps1 &>/dev/null; then
-	__git_ps1() { PS1="$1$2"; }
-fi
-
-# Match the fish dotfiles git settings.
-GIT_PS1_SHOWDIRTYSTATE=1
-GIT_PS1_SHOWSTASHSTATE=1
-GIT_PS1_SHOWUNTRACKEDFILES=1
-GIT_PS1_SHOWCOLORHINTS=1
-
-# fish prompt_pwd: shorten every path component except the last to one char.
-__prompt_pwd() {
-	local p="${PWD/#$HOME/\~}"
-	printf '%s' "$p" | sed -e 's|\([^/]\)[^/]*/|\1/|g'
-}
 
 # fish_right_prompt: right-aligned "(exit-code) YYYY-MM-DD HH:MM:SS+ZZZZ".
 __rprompt() {

@@ -1,0 +1,39 @@
+# zsh reads this for interactive shells only, after /etc/zprofile, whose
+# path_helper (macOS) would otherwise reorder the PATH set in env.sh.
+
+# Environment shared with bash.
+[[ -f ~/.config/sh/env.sh ]] && . ~/.config/sh/env.sh
+
+# Emacs-style line editing, like fish. Without this zsh picks vi mode because
+# $EDITOR contains "vi". Set before rc.sh so fzf binds keys in this keymap.
+bindkey -e
+
+# History, shared between running shells as they write it.
+HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE
+
+# Tab completion, including what Homebrew installs (e.g. git's).
+if [[ -n ${HOMEBREW_PREFIX-} ]]; then
+	fpath=("$HOMEBREW_PREFIX/share/zsh/site-functions" $fpath)
+fi
+autoload -Uz compinit && compinit
+
+# Aliases, fzf, rbenv, git prompt helpers and greeting, shared with bash.
+[[ -f ~/.config/sh/rc.sh ]] && . ~/.config/sh/rc.sh
+
+# Prompt: port of the nixpulvis fish_prompt / fish_right_prompt.
+# Left : red user @ blue host : green abbreviated pwd (git) $
+# Right: "(exit-code) YYYY-MM-DD HH:MM:SS+ZZZZ", dimmed date.
+__prompt_precmd() {
+	# Window title, like the bash prompt's.
+	print -Pn '\e]0;%~\a'
+	local pwd_short=$(__prompt_pwd)
+	# __git_ps1 sets PS1 to pre + git segment + post. % in a directory name
+	# would be read as a prompt escape, so double it.
+	__git_ps1 "%F{red}%n%f@%F{blue}%m%f:%F{green}${pwd_short//\%/%%}%f" " %(!.#.$) "
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd __prompt_precmd
+RPROMPT='%(?..(%F{red}%?%f%) )%{'$'\e''[2;37m%}%D{%Y-%m-%d %T%z}%{'$'\e''[0m%}'

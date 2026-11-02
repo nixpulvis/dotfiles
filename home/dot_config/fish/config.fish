@@ -1,3 +1,6 @@
+# bash and zsh get the same settings from ~/.config/sh/{env,rc}.sh. fish can't
+# read those, so keep this file and them in sync.
+
 # We edit with Neovim.
 set -x EDITOR nvim
 set -x VISUAL nvim

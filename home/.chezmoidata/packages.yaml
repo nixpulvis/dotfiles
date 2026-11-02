@@ -8,6 +8,8 @@
 packages:
   base:
     - {name: fish,     brew: fish,       pacman: fish,      apt: fish}
+    # macOS already ships zsh.
+    - {name: zsh,                        pacman: zsh,       apt: zsh}
     - {name: neovim,   brew: neovim,     pacman: neovim,    apt: neovim,       winget: Neovim.Neovim}
     - {name: ripgrep,  brew: ripgrep,    pacman: ripgrep,   apt: ripgrep,      winget: BurntSushi.ripgrep.MSVC}
     - {name: git,      brew: git,        pacman: git,       apt: git,          winget: Git.Git}

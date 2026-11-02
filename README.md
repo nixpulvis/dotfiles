@@ -36,7 +36,7 @@ chezmoi init --apply nixpulvis
 
 | Group       | Applies to                                  | Contents                                               |
 | ----------- | ------------------------------------------- | ------------------------------------------------------ |
-| `base`      | everywhere                                  | git, bash, fish, vim/nvim, weechat, omp, `~/.bin`      |
+| `base`      | everywhere                                  | git, bash, zsh, fish, vim/nvim, weechat, omp, `~/.bin` |
 | `graphical` | macOS/Windows always, Linux by prompt       | alacritty + fonts                                      |
 | `wm`        | Linux only, by prompt (implies `graphical`) | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X`    |
 
@@ -119,15 +119,26 @@ On Windows, Neovim and Alacritty read their config from `%LOCALAPPDATA%` and
 Windows needs Developer Mode (Settings > Privacy & security > For developers)
 or an elevated shell.
 
-The Unix shell files (`.bash_profile`, `.bashrc`, fish, `~/.bin`) are still
-written on Windows. Git Bash reads `.bash_profile` and `.bashrc`, otherwise
-they do nothing. WSL counts as Linux.
+The Unix shell files (`.bash_profile`, `.bashrc`, `.zshrc`, `~/.config/sh`,
+fish, `~/.bin`) are still written on Windows. Git Bash reads `.bash_profile`
+and `.bashrc` (and through them `~/.config/sh`), otherwise they do nothing. WSL
+counts as Linux.
 
 ## Notes
 
 Git identity (personal or work email, signing key) comes from the `init`
 prompts and is templated into `~/.gitconfig`. System setup like locale,
 `sudoers`, and `pacman.conf` isn't managed here.
+
+### Shells
+
+fish is the main shell. bash and zsh get the same environment, aliases, fzf
+key bindings and greeting from two shared files in `home/dot_config/sh/`:
+`env.sh` (PATH, Homebrew, `$EDITOR`; also loaded by non-interactive bash) and
+`rc.sh` (interactive setup). `.bashrc` and `.zshrc` only add each shell's
+prompt, and `.zshrc` its history and completion. fish can't read sh syntax, so
+`dot_config/fish/config.fish` keeps its own copy of the same settings. Change
+both when you change one.
 
 ### WeeChat
 
