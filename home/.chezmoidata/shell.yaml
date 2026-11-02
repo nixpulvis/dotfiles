@@ -43,6 +43,9 @@ shell:
     # already overstrikes and ignores it.
     - {name: MANPAGER, value: "sh -c 'col -bx | bat -plman'", requires: [bat, col]}
     - {name: GROFF_NO_SGR, value: "1", requires: [bat, col]}
+    # rg only reads a config file named by this; see dot_config/ripgrep/config.
+    # In env rather than interactive so editors and scripts get it too.
+    - {name: RIPGREP_CONFIG_PATH, value: $HOME/.config/ripgrep/config, requires: [rg]}
 
   # Interactive shells only.
   interactive:

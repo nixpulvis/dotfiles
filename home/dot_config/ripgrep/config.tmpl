@@ -1,0 +1,17 @@
+# ripgrep defaults, one flag per line. rg only reads this through
+# RIPGREP_CONFIG_PATH (set in .chezmoidata/shell.yaml). `rg --no-config`
+# ignores it for one search.
+
+# Lowercase patterns match any case; a pattern with a capital letter matches
+# exactly.
+--smart-case
+
+# Also search dotfiles and dot-directories (.github, .chezmoidata,
+# .cargo/config.toml, ~/.config), still skipping .gitignore'd files. --hidden
+# alone would also search git's own files, hence the .git exclusion.
+--hidden
+--glob=!.git
+
+# Skip the same big trees as fd (~/Library, toolchains, crate sources). rg
+# doesn't expand ~ here, so the path is filled in by chezmoi.
+--ignore-file={{ .chezmoi.homeDir }}/.config/fd/ignore
