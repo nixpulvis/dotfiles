@@ -1,0 +1,15 @@
+# Global fd ignores (gitignore syntax), on top of .gitignore and git's global
+# excludes. Keeps fd, and the fzf ctrl-t/alt-c/** lists built on it, fast from
+# ~. `fd -u` searches everything anyway.
+#
+# Patterns with a slash in the middle are anchored to the search root, so the
+# cargo ones need **/ to also apply when fd is given a path (fd . ~).
+
+# macOS app data. Also skips any other directory named Library.
+Library/
+
+# Rust toolchains and downloaded crate sources. Project .cargo/config.toml
+# files stay visible.
+.rustup/
+**/.cargo/registry/
+**/.cargo/git/
