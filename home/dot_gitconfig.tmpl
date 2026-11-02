@@ -30,6 +30,18 @@
 
 [core]
     excludesFile = ~/.gitignore
+    # delta pages diffs with syntax highlighting. Fall back to plain less (and
+    # an unfiltered `add -p`) where it isn't installed yet, e.g. before the
+    # package script has run. git runs both through sh, also on Windows.
+    pager = command -v delta >/dev/null && exec delta || exec less
+
+[interactive]
+    diffFilter = command -v delta >/dev/null && exec delta --color-only || exec cat
+
+[delta]
+    # n/N jump between files in a diff. Light/dark is detected from the
+    # terminal.
+    navigate = true
 
 [init]
     defaultBranch = master
@@ -58,5 +70,7 @@
     tool = nvimdiff
 [merge]
     tool = nvimdiff
+    # Conflict markers also show the common ancestor's version.
+    conflictStyle = zdiff3
 [pull]
     ff = only
