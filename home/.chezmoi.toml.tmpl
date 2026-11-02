@@ -48,6 +48,18 @@
     wsl = {{ $wsl }}
     graphical = {{ $graphical }}
     wm = {{ $wm }}
+
+# Page `chezmoi diff` through delta, like git diff.
+[diff]
+{{- if eq $os "windows" }}
+    # No sh outside Git Bash; winget installs delta with the base packages.
+    pager = "delta"
+{{- else }}
+    # Fall back to less where delta isn't installed yet. chezmoi runs the pager
+    # without a shell, hence sh -c.
+    pager = "sh"
+    pagerArgs = ["-c", "command -v delta >/dev/null && exec delta || exec less"]
+{{- end }}
 {{- if eq $os "windows" }}
 
 # Run run_ scripts with -ExecutionPolicy Bypass so they work under Windows'
