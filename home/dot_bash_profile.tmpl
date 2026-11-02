@@ -6,7 +6,7 @@
 export WLR_RENDER_NO_EXPLICIT_SYNC=1
 
 # Set the terminal variable helps i3 decide what to do.
-if type alacritty > /dev/null; then
+if command -v alacritty >/dev/null 2>&1; then
     export TERMINAL=alacritty
 fi
 
