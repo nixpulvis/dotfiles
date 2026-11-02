@@ -48,6 +48,32 @@
 
 [branch]
     autosetuprebase = always
+    # `git branch` lists the most recently committed-to branches first.
+    sort = -committerdate
+
+[commit]
+    # Show the diff below the message in the commit editor.
+    verbose = true
+
+[rerere]
+    # Record conflict resolutions and replay them when the same conflict comes
+    # back, e.g. rebasing the same branch again.
+    enabled = true
+
+[rebase]
+    # `git commit --fixup=<commit>` commits fold into their target on the next
+    # `git rebase -i`.
+    autoSquash = true
+    # Rebasing a branch also moves branches stacked on top of it.
+    updateRefs = true
+
+[push]
+    # The first push of a new branch sets its upstream; no `-u` needed.
+    autoSetupRemote = true
+
+[fetch]
+    # Drop remote-tracking branches that were deleted on the remote.
+    prune = true
 
 [apply]
     whitespace = warn
@@ -68,6 +94,9 @@
 
 [diff]
     tool = nvimdiff
+    # Usually more readable hunks than the default myers, e.g. around moved
+    # or repeated lines.
+    algorithm = histogram
 [merge]
     tool = nvimdiff
     # Conflict markers also show the common ancestor's version.
