@@ -43,7 +43,7 @@
     "mdLinkUrl": "deepBlue",
     "mdCode": "readoutGreen",
     "mdCodeBlock": "dimAluminum",
-    "mdCodeBlockBorder": "subtleGray",
+    "mdCodeBlockBorder": "#6b7280",
     "mdQuote": "dimAluminum",
     "mdQuoteBorder": "subtleGray",
     "mdHr": "subtleGray",
@@ -90,7 +90,8 @@
       "icon.worktree": "",
       "icon.scratchFolder": "",
       "icon.context": "",
-      "icon.time": ""
+      "icon.time": "",
+      "icon.branch": ""
     }
   },
   "export": {
