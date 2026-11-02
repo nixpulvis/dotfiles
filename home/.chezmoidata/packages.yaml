@@ -13,6 +13,12 @@ packages:
     - {name: git,      brew: git,        pacman: git,       apt: git,          winget: Git.Git}
     - {name: jq,       brew: jq,         pacman: jq,        apt: jq,           winget: jqlang.jq}
     - {name: fzf,      brew: fzf,        pacman: fzf,       apt: fzf,          winget: junegunn.fzf}
+    - {name: dust,     brew: dust,       pacman: dust,      apt: du-dust,      winget: bootandy.dust}
+    # apt installs fd-find and bat as `fdfind` and `batcat`.
+    - {name: fd,       brew: fd,         pacman: fd,        apt: fd-find,      winget: sharkdp.fd}
+    - {name: bat,      brew: bat,        pacman: bat,       apt: bat,          winget: sharkdp.bat}
+    - {name: eza,      brew: eza,        pacman: eza,       apt: eza,          winget: eza-community.eza}
+    - {name: delta,    brew: git-delta,  pacman: git-delta, apt: git-delta,    winget: dandavison.delta}
     - {name: borg,     brew: borgbackup, pacman: borg,      apt: borgbackup}
     - {name: pass,     brew: pass,       pacman: pass,      apt: pass}
     - {name: fortune,  brew: fortune,    pacman: fortune-mod, apt: fortune-mod}
