@@ -1,0 +1,16 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+# Enable the ssh-agent user service and (re)start it, so it runs the current
+# unit. `chezmoi` reruns this when the unit changes:
+#   unit {{ include "dot_config/systemd/user/ssh-agent.service" | sha256sum }}
+set -eu
+
+if ! systemctl --user show-environment >/dev/null 2>&1; then
+    echo "ssh-agent: no systemd user manager; log in to a systemd session, then 'chezmoi apply'" >&2
+    exit 1
+fi
+
+systemctl --user daemon-reload
+systemctl --user enable ssh-agent.service
+systemctl --user restart ssh-agent.service
+{{ end -}}

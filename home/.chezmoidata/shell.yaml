@@ -35,6 +35,10 @@ shell:
     # Rust src from the active toolchain. Asking rustc is slow, hence
     # keep_inherited.
     - {name: RUST_SRC_PATH, value: "$(rustc --print sysroot)/lib/rustlib/src/rust/library", requires: [rustc], keep_inherited: true}
+    # The ssh-agent systemd user service (dot_config/systemd/user/), one per
+    # login. macOS's launchd and forwarded SSH sessions already set it, so
+    # theirs wins. Git Bash has neither; rc.sh starts an agent there.
+    - {name: SSH_AUTH_SOCK, value: $XDG_RUNTIME_DIR/ssh-agent.socket, requires: [systemctl], keep_inherited: true}
     # Colorize man pages with bat. col -bx first strips man's backspace
     # overstrike (bold/underline); bat passes it through, and where its
     # highlighting splits a sequence, less shows a literal ^H (e.g. git-s^Hscm).

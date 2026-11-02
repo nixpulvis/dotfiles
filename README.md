@@ -146,8 +146,17 @@ in double quotes, which mean the same in both syntaxes, so they can't contain
 `"`, `\` or backticks; rendering fails if one does.
 
 Those three files, `.bashrc` and `.zshrc` keep only what needs per-shell code:
-prompts, tool hooks (`fzf --fish`, `rbenv init`, ssh-agent), and zsh's history
-and completion.
+prompts, tool hooks (`fzf --fish`, `rbenv init`, Git Bash's ssh-agent), and
+zsh's history and completion.
+
+Shells never start their own ssh-agent elsewhere, since one started from a
+terminal outlives it (and on macOS keeps the terminal listed as "Running in
+Background"). macOS's launchd provides `SSH_AUTH_SOCK`. On Linux,
+`dot_config/systemd/user/ssh-agent.service` runs one agent per login, enabled
+by `run_onchange_after_21-ssh-agent.sh.tmpl`, and `shell.yaml` points
+`SSH_AUTH_SOCK` at it unless it's already set (e.g. a forwarded agent). Git
+Bash has no such agent, so its first shell starts one and records it in
+`~/.ssh/agent.env` for the others to reuse.
 
 ### Colors
 

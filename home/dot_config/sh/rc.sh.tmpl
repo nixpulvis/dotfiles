@@ -29,11 +29,25 @@ if command -v rbenv >/dev/null 2>&1; then
 	eval "$(rbenv init - $__sh)"
 fi
 unset __sh
-
+{{ if eq .chezmoi.os "windows" }}
+# Git Bash has no session agent. The first shell starts one and records it in
+# ~/.ssh/agent.env; later shells reuse it while it still answers, so there's one
+# agent per Windows login, not one per shell (GitHub's "Auto-launching
+# ssh-agent on Git for Windows"). Elsewhere SSH_AUTH_SOCK comes from launchd
+# (macOS) or the ssh-agent systemd user service (Linux).
 if command -v ssh-agent >/dev/null 2>&1 && [[ -z ${SSH_AUTH_SOCK-} ]]; then
-	eval "$(ssh-agent -s)" >/dev/null
+	__agent_env=~/.ssh/agent.env
+	[[ -f $__agent_env ]] && . "$__agent_env" >/dev/null
+	# ssh-add exits 2 when it can't reach an agent.
+	ssh-add -l >/dev/null 2>&1
+	if [[ $? -eq 2 ]]; then
+		mkdir -p ~/.ssh
+		(umask 077; ssh-agent -s >"$__agent_env")
+		. "$__agent_env" >/dev/null
+	fi
+	unset __agent_env
 fi
-
+{{ end }}
 # Load __git_ps1. Its location varies by platform.
 if ! type __git_ps1 >/dev/null 2>&1; then
 	if [[ ${OSTYPE-} == msys ]]; then

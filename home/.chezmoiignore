@@ -20,9 +20,10 @@ AppData/Roaming/alacritty
 .X
 {{- end }}
 
-{{- /* Linux-only helper. */ -}}
+{{- /* Linux-only helper, and the ssh-agent systemd user service. */ -}}
 {{- if ne .chezmoi.os "linux" }}
 .bin/share-network
+.config/systemd
 {{- end }}
 
 {{- /* Alacritty's colors.toml links to nixpulvis-dark.toml or -light.toml. On

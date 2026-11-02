@@ -1,0 +1,10 @@
+# One ssh-agent per login session, shared by every shell. shell.yaml points
+# SSH_AUTH_SOCK here; run_onchange_after_21-ssh-agent.sh.tmpl enables it.
+[Unit]
+Description=SSH key agent
+
+[Service]
+ExecStart=/usr/bin/ssh-agent -D -a %t/ssh-agent.socket
+
+[Install]
+WantedBy=default.target

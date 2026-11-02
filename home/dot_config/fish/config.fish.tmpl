@@ -8,10 +8,6 @@ if type -q rbenv
     source (rbenv init -|psub)
 end
 
-if type -q ssh-agent; and not set -q SSH_AUTH_SOCK
-    eval (ssh-agent -c) &>/dev/null
-end
-
 {{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "interactive" "s" .shell) }}
 # fzf key bindings: ctrl-r searches history, ctrl-t inserts file paths, alt-c
 # (left Option on macOS) cds into a subdirectory, shift-tab runs completions
