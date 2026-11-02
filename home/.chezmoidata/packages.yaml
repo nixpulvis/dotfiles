@@ -14,7 +14,8 @@ packages:
     - {name: jq,       brew: jq,         pacman: jq,        apt: jq,           winget: jqlang.jq}
     - {name: fzf,      brew: fzf,        pacman: fzf,       apt: fzf,          winget: junegunn.fzf}
     - {name: dust,     brew: dust,       pacman: dust,      apt: du-dust,      winget: bootandy.dust}
-    # apt installs fd-find and bat as `fdfind` and `batcat`.
+    # apt installs fd-find and bat as `fdfind` and `batcat`. On those machines
+    # ~/.bin/fd and ~/.bin/bat point at them (gated in .chezmoiignore).
     - {name: fd,       brew: fd,         pacman: fd,        apt: fd-find,      winget: sharkdp.fd}
     - {name: bat,      brew: bat,        pacman: bat,       apt: bat,          winget: sharkdp.bat}
     - {name: eza,      brew: eza,        pacman: eza,       apt: eza,          winget: eza-community.eza}

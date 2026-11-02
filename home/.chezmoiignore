@@ -25,6 +25,14 @@ AppData/Roaming/alacritty
 .bin/share-network
 {{- end }}
 
+{{- /* ~/.bin/fd and ~/.bin/bat link to Debian/Ubuntu's renamed `fdfind` and
+       `batcat`. Same apt check as run_once_after_10-install-packages, so they
+       exist exactly where apt installed those packages. */ -}}
+{{- if or (ne .chezmoi.os "linux") (lookPath "pacman") (not (lookPath "apt-get")) }}
+.bin/fd
+.bin/bat
+{{- end }}
+
 {{- /* Windows-only config-path symlinks (%LOCALAPPDATA%, %APPDATA%). */ -}}
 {{- if ne .chezmoi.os "windows" }}
 AppData
