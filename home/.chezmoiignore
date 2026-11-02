@@ -25,6 +25,17 @@ AppData/Roaming/alacritty
 .bin/share-network
 {{- end }}
 
+{{- /* Alacritty's colors.toml links to nixpulvis-dark.toml or -light.toml. On
+       macOS the alacritty-color-mode login agent owns the link and flips it
+       with the system appearance, so chezmoi leaves it alone there. Elsewhere
+       chezmoi makes it a fixed link to the dark palette. */ -}}
+{{- if eq .chezmoi.os "darwin" }}
+.config/alacritty/colors.toml
+{{- else }}
+.config/alacritty/alacritty-color-mode.swift
+Library
+{{- end }}
+
 {{- /* ~/.bin/fd and ~/.bin/bat link to Debian/Ubuntu's renamed `fdfind` and
        `batcat`. Same apt check as run_once_after_10-install-packages, so they
        exist exactly where apt installed those packages. */ -}}

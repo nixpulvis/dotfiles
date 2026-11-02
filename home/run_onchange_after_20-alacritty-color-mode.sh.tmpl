@@ -1,0 +1,32 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+# Build alacritty-color-mode into ~/.bin and (re)start its login agent, which
+# points ~/.config/alacritty/colors.toml at the dark or light palette to match
+# the macOS appearance. `chezmoi` reruns this when either input changes:
+#   source {{ include "dot_config/alacritty/alacritty-color-mode.swift" | sha256sum }}
+#   agent  {{ include "private_Library/LaunchAgents/com.nixpulvis.alacritty-color-mode.plist.tmpl" | sha256sum }}
+set -eu
+
+if ! command -v swiftc >/dev/null 2>&1; then
+    echo "alacritty-color-mode: swiftc not found; run 'xcode-select --install', then 'chezmoi apply'" >&2
+    exit 1
+fi
+
+mkdir -p "$HOME/.bin"
+swiftc -O "$HOME/.config/alacritty/alacritty-color-mode.swift" -o "$HOME/.bin/alacritty-color-mode"
+
+# Reload the agent so it runs the new binary and plist. bootout returns before
+# the old job is fully gone, so retry bootstrap briefly.
+domain="gui/$(id -u)"
+agent="$HOME/Library/LaunchAgents/com.nixpulvis.alacritty-color-mode.plist"
+launchctl bootout "$domain/com.nixpulvis.alacritty-color-mode" 2>/dev/null || true
+tries=0
+until launchctl bootstrap "$domain" "$agent" 2>/dev/null; do
+    tries=$((tries + 1))
+    if [ "$tries" -ge 5 ]; then
+        launchctl bootstrap "$domain" "$agent"
+        exit 1
+    fi
+    sleep 1
+done
+{{ end -}}

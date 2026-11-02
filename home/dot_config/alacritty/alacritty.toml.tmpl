@@ -2,6 +2,8 @@
 {{- $home := .chezmoi.homeDir | replace "\\" "/" }}
 import = [
     "{{ $home }}/.config/alacritty/bindings.toml",
+    # A link to nixpulvis-dark.toml or nixpulvis-light.toml. On macOS,
+    # alacritty-color-mode keeps it in step with the system appearance.
     "{{ $home }}/.config/alacritty/colors.toml"
 ]
 {{- if eq .chezmoi.os "windows" }}

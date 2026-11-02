@@ -1,0 +1,58 @@
+# Light counterpart of nixpulvis-dark.toml: the same hues, darkened until
+# text in each one reads on the light background.
+#
+# The 256-color overrides are shared with the dark palette.
+
+[general]
+import = ["nixpulvis-indexed.toml"]
+
+[colors.primary]
+background = "#FAFAFA"
+foreground = "#262626"
+dim_foreground = "#6E6E6E"
+
+[colors.normal]
+black = "#000000"
+red = "#C82300"
+green = "#237A12"
+yellow = "#B35A00"
+blue = "#0068C2"
+magenta = "#B0128F"
+cyan = "#007F86"
+white = "#DADADA"
+
+[colors.bright]
+# Same role as in nixpulvis-dark.toml: the muted gray for de-emphasized text.
+black = "#767676"
+red = "#E0350C"
+green = "#33A01F"
+yellow = "#A36200"
+blue = "#2483D6"
+magenta = "#CC2DAA"
+cyan = "#00999F"
+white = "#FFFFFF"
+
+[colors.dim]
+black = "#000000"
+red = "#8F1900"
+green = "#195A0D"
+yellow = "#804000"
+blue = "#004A8A"
+magenta = "#7E0D66"
+cyan = "#005A5F"
+white = "#9A9A9A"
+
+[colors.hints.end]
+background = "CellForeground"
+foreground = "CellBackground"
+
+[colors.hints.start]
+background = "CellForeground"
+foreground = "CellBackground"
+
+[colors.line_indicator]
+background = "#A36200"
+
+[colors.search.matches]
+background = "#000000"
+foreground = "#E0350C"

@@ -1,0 +1,44 @@
+# 256-color overrides shared by nixpulvis-dark.toml and nixpulvis-light.toml,
+# so a color neither mode is using looks the same in both. The nixpulvis Vim
+# scheme takes its grays from here: 234 and 236 in dark mode (set below), 250,
+# 252 and 255 in light mode (the xterm defaults, left alone). Zed's terminal
+# can't override 16-255 and always shows the xterm defaults.
+
+[[colors.indexed_colors]]
+color = "#FF00FF"
+index = 161
+
+[[colors.indexed_colors]]
+color = "#080808"
+index = 234
+
+[[colors.indexed_colors]]
+color = "#333333"
+index = 236
+
+[[colors.indexed_colors]]
+color = "#666666"
+index = 242
+
+# Grays nothing should use are painted red so stray uses stand out, e.g. Vim's
+# color names, which map Grey and friends into this range. 250, 252 and 255
+# stay at their defaults for the light grays.
+[[colors.indexed_colors]]
+color = "#FF0000"
+index = 248
+
+[[colors.indexed_colors]]
+color = "#FF0000"
+index = 249
+
+[[colors.indexed_colors]]
+color = "#FF0000"
+index = 251
+
+[[colors.indexed_colors]]
+color = "#FF0000"
+index = 253
+
+[[colors.indexed_colors]]
+color = "#FF0000"
+index = 254
