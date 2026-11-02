@@ -90,8 +90,8 @@ install.sh / install.ps1     bootstrap scripts
 home/                        chezmoi source (renders to ~/)
   .chezmoi.toml.tmpl         per-machine prompts
   .chezmoiignore             component gating
-  .chezmoidata/              packages.yaml, omp.yaml, weechat.yaml
-  .chezmoitemplates/         shared merge script for the WeeChat modify_ files
+  .chezmoidata/              packages.yaml, shell.yaml, omp.yaml, weechat.yaml
+  .chezmoitemplates/         shared shell settings renderer, WeeChat merge script
   dot_*                      files that become ~/.*
   run_before_*               config drift check, runs on every apply
   run_once_*                 one-time setup scripts
@@ -132,13 +132,20 @@ prompts and is templated into `~/.gitconfig`. System setup like locale,
 
 ### Shells
 
-fish is the main shell. bash and zsh get the same environment, aliases, fzf
-key bindings and greeting from two shared files in `home/dot_config/sh/`:
-`env.sh` (PATH, Homebrew, `$EDITOR`; also loaded by non-interactive bash) and
-`rc.sh` (interactive setup). `.bashrc` and `.zshrc` only add each shell's
-prompt, and `.zshrc` its history and completion. fish can't read sh syntax, so
-`dot_config/fish/config.fish` keeps its own copy of the same settings. Change
-both when you change one.
+fish is the main shell, and bash and zsh are set up to match it. Settings that
+apply to all three (PATH, environment variables, aliases, fzf options, the
+greeting) live once in
+[`home/.chezmoidata/shell.yaml`](home/.chezmoidata/shell.yaml).
+`home/.chezmoitemplates/shell-shared` renders them in each shell's syntax into
+`dot_config/fish/config.fish.tmpl` and, for bash and zsh,
+`dot_config/sh/env.sh.tmpl` (environment; also loaded by non-interactive bash)
+and `dot_config/sh/rc.sh.tmpl` (interactive setup). Shared values are written
+in double quotes, which mean the same in both syntaxes, so they can't contain
+`"`, `\` or backticks; rendering fails if one does.
+
+Those three files, `.bashrc` and `.zshrc` keep only what needs per-shell code:
+prompts, tool hooks (`fzf --fish`, `rbenv init`, ssh-agent), and zsh's history
+and completion.
 
 ### WeeChat
 

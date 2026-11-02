@@ -1,0 +1,46 @@
+# PATH, variables, aliases and the greeting are shared with bash and zsh: edit
+# them in .chezmoidata/shell.yaml. This file holds what needs fish code.
+
+{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "env" "s" .shell) }}
+# Setup rbenv.
+if type -q rbenv
+    source (rbenv init -|psub)
+end
+
+if type -q ssh-agent; and not set -q SSH_AUTH_SOCK
+    eval (ssh-agent -c) &>/dev/null
+end
+
+{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "interactive" "s" .shell) }}
+# fzf key bindings: ctrl-r searches history, ctrl-t inserts file paths, alt-c
+# (left Option on macOS) cds into a subdirectory, shift-tab runs completions
+# through fzf. Its settings are in shell.yaml.
+if type -q fzf
+    fzf --fish | source
+end
+
+# Fish git config.
+set __fish_git_prompt_showdirtystate 'yes'
+set __fish_git_prompt_showstashstate 'yes'
+set __fish_git_prompt_showcolorhints
+
+function fish_prompt
+  printf '%s%s%s@%s%s%s:%s%s%s%s $ ' \
+  (set_color red) (whoami) (set_color normal) \
+  (set_color blue) (hostname) (set_color normal) \
+  (set_color green) (prompt_pwd) (set_color normal) \
+  (__fish_git_prompt)
+end
+
+function fish_right_prompt
+    set last_status $status
+    if test $last_status -ne 0
+        echo -n '('(set_color red)$last_status(set_color normal)') '
+    end
+    printf '%s%s%s' (set_color -d white) (date '+%Y-%m-%d %T%z') (set_color normal)
+end
+
+# Print a nice startup message.
+function fish_greeting
+{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "greeting" "s" .shell) | trim | indent 4 }}
+end

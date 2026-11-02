@@ -1,0 +1,89 @@
+# Shell settings shared by fish, bash and zsh. `chezmoi` loads this as
+# `.shell`; .chezmoitemplates/shell-shared renders it into each shell's syntax
+# for dot_config/fish/config.fish.tmpl and dot_config/sh/{env,rc}.sh.tmpl.
+# Anything that needs different code per shell stays in those files.
+#
+# Values are written inside double quotes, which mean the same thing in fish
+# and sh: $VAR and $(cmd) expand, everything else is literal. So a value can't
+# contain ", \ or backticks (rendering fails if one does). `cmd` entries are
+# emitted as-is and must be valid in both shells.
+#
+# `requires` lists commands that must all be on PATH for the entry to apply.
+shell:
+  # Directories to put at the front of PATH, highest priority first. A list of
+  # candidates means the first one that exists. Missing directories are
+  # skipped, and repeated entries removed.
+  path:
+    - $HOME/.rbenv/bin
+    - /usr/local/bin
+    # Scripts from the nixpulvis.com repo (e.g. scribe). The code directory is
+    # ~/Code on some machines and ~/code on others (the same directory on
+    # case-insensitive macOS, hence first-match).
+    - [$HOME/Code/nixpulvis.com/bin, $HOME/code/nixpulvis.com/bin]
+    - $HOME/.bin
+    - $HOME/.cargo/bin
+    - $HOME/.local/bin
+    - /opt/homebrew/bin
+    - /opt/homebrew/sbin
+
+  # Exported in every shell, interactive or not. `keep_inherited` skips the
+  # entry when the variable is already set, e.g. in a nested shell.
+  env:
+    - {name: EDITOR, value: nvim}
+    - {name: VISUAL, value: nvim}
+    - {name: PIPX_HOME, value: $HOME/.local/pipx}
+    # Rust src from the active toolchain. Asking rustc is slow, hence
+    # keep_inherited.
+    - {name: RUST_SRC_PATH, value: "$(rustc --print sysroot)/lib/rustlib/src/rust/library", requires: [rustc], keep_inherited: true}
+    # Colorize man pages with bat. col -bx first strips man's backspace
+    # overstrike (bold/underline); bat passes it through, and where its
+    # highlighting splits a sequence, less shows a literal ^H (e.g. git-s^Hscm).
+    # Linux's groff emits color codes instead, which col would mangle into text
+    # like "4mgit24m", so GROFF_NO_SGR makes it overstrike too. macOS's mandoc
+    # already overstrikes and ignores it.
+    - {name: MANPAGER, value: "sh -c 'col -bx | bat -plman'", requires: [bat, col]}
+    - {name: GROFF_NO_SGR, value: "1", requires: [bat, col]}
+
+  # Interactive shells only.
+  interactive:
+    env:
+      # fzf's selected line in bright blue. Its default (color 254) is one of
+      # the indexes our Alacritty palette sets to #FF0000.
+      - {name: FZF_DEFAULT_OPTS, value: "--color=fg+:12", requires: [fzf]}
+      # fd's lists skip .gitignore'd files and include dotfiles (except .git).
+      # Without fd, fzf uses its built-in walker.
+      - {name: FZF_DEFAULT_COMMAND, value: "fd --type f --hidden --exclude .git", requires: [fzf, fd]}
+      - {name: FZF_CTRL_T_COMMAND, value: "fd --hidden --exclude .git", requires: [fzf, fd]}
+      - {name: FZF_ALT_C_COMMAND, value: "fd --type d --hidden --exclude .git", requires: [fzf, fd]}
+      # Previews: files with bat, directories as an eza tree. fzf runs these
+      # with $SHELL, so they must be valid in both fish and sh.
+      - {name: FZF_CTRL_T_OPTS, value: "--preview 'test -d {} && eza --tree --level=2 --color=always {} || bat --color=always --style=numbers --line-range=:200 {}'", requires: [fzf, bat, eza]}
+      - {name: FZF_ALT_C_OPTS, value: "--preview 'eza --tree --level=2 --color=always {}'", requires: [fzf, eza]}
+
+    # `else` is used when `requires` isn't met; without it the alias is left
+    # undefined.
+    aliases:
+      # eza: human-readable sizes by default, and -a skips . and .. (like ls -h
+      # and -A). --git adds a per-file status column inside repos; long-iso
+      # dates are YYYY-MM-DD HH:MM; -g --smart-group shows the group only when
+      # it isn't the owner's name. --classify needs =auto spelled out, since a
+      # bare -F would take the first path argument as its value. The fallbacks
+      # match fish's built-in ll/la.
+      - {name: l, value: "eza -l --git --time-style=long-iso -g --smart-group --classify=auto", requires: [eza], else: "ls -l"}
+      - {name: ll, value: "l", requires: [eza], else: "ls -lh"}
+      - {name: la, value: "l -a", requires: [eza], else: "ls -lAh"}
+      # l/la as a tree; ls has no tree view.
+      - {name: lt, value: "l --tree", requires: [eza]}
+      - {name: lat, value: "l -a --tree", requires: [eza]}
+
+    # Run at startup. `if_env` also requires these variables to have these
+    # values.
+    run:
+      # Remap caps lock to escape on a Linux console.
+      # See also .config/sway/config input "type:keyboard".
+      - {cmd: "setxkbmap -option caps:escape", requires: [setxkbmap], if_env: {XDG_SESSION_TYPE: tty}}
+
+    # Printed when an interactive shell starts.
+    greeting:
+      - {cmd: fortune, requires: [fortune]}
+      - {cmd: 'echo "><_> tick... tock..."'}

@@ -1,0 +1,130 @@
+{{- /*
+Renders .chezmoidata/shell.yaml (the `shell` data) for one shell. Include with
+
+  {{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "env" "s" .shell) }}
+
+  shell: "fish" or "sh" (bash and zsh)
+  part:  "env"         PATH (prepend, then dedup) and exported variables
+         "interactive" interactive variables, aliases and startup commands
+         "greeting"    greeting commands (fish wraps these in fish_greeting)
+
+Values go inside double quotes, which mean the same in fish and sh; a value
+containing ", \ or a backtick fails rendering instead of quoting differently.
+*/ -}}
+{{- $fish := eq .shell "fish" -}}
+{{- $s := .s -}}
+{{- $ind := ternary "    " "\t" $fish -}}
+{{- $bad := "[\"\\\\`]" -}}
+# Generated from .chezmoidata/shell.yaml by .chezmoitemplates/shell-shared.
+{{- if eq .part "env" }}
+
+# PATH, highest priority first in shell.yaml, so prepend in reverse.
+{{-   range $e := reverse $s.path }}
+{{-     $cands := ternary $e (list $e) (kindIs "slice" $e) }}
+{{-     range $cands }}{{ if regexMatch $bad . }}{{ fail (printf "shell.yaml: path %q can't contain \", \\ or `" .) }}{{ end }}{{ end }}
+{{-     if eq (len $cands) 1 }}
+{{-       if $fish }}
+if test -d "{{ index $cands 0 }}"
+    set -gx PATH "{{ index $cands 0 }}" $PATH
+end
+{{-       else }}
+if [[ -d "{{ index $cands 0 }}" ]]; then
+	PATH="{{ index $cands 0 }}:$PATH"
+fi
+{{-       end }}
+{{-     else }}
+{{-       if $fish }}
+for dir in{{ range $cands }} "{{ . }}"{{ end }}
+    if test -d $dir
+        set -gx PATH $dir $PATH
+        break
+    end
+end
+{{-       else }}
+for __dir in{{ range $cands }} "{{ . }}"{{ end }}; do
+	if [[ -d $__dir ]]; then
+		PATH="$__dir:$PATH"
+		break
+	fi
+done
+unset __dir
+{{-       end }}
+{{-     end }}
+{{-   end }}
+
+# Drop repeated PATH entries, keeping the first.
+{{-   if $fish }}
+set -l path_seen
+for dir in $PATH
+    contains -- $dir $path_seen; or set -a path_seen $dir
+end
+set -gx PATH $path_seen
+{{-   else }}
+# Parsed by hand because zsh doesn't word-split $PATH; works in bash 3.2 too.
+__path_dedup() {
+	local rest="$PATH:" dir out=":"
+	while [[ -n $rest ]]; do
+		dir=${rest%%:*}
+		rest=${rest#*:}
+		[[ -z $dir || $out == *":$dir:"* ]] || out="$out$dir:"
+	done
+	out=${out#:}
+	PATH=${out%:}
+}
+__path_dedup
+export PATH
+{{-   end }}
+{{/* One blank line between PATH and the variables. */}}
+{{- end }}
+
+{{- /* Items: (kind, entry) pairs rendered in order for this part. */ -}}
+{{- $items := list -}}
+{{- if eq .part "env" -}}
+{{-   range $s.env }}{{ $items = append $items (list "env" .) }}{{ end -}}
+{{- else if eq .part "interactive" -}}
+{{-   range $s.interactive.env }}{{ $items = append $items (list "env" .) }}{{ end -}}
+{{-   range $s.interactive.aliases }}{{ $items = append $items (list "alias" .) }}{{ end -}}
+{{-   range $s.interactive.run }}{{ $items = append $items (list "cmd" .) }}{{ end -}}
+{{- else if eq .part "greeting" -}}
+{{-   range $s.interactive.greeting }}{{ $items = append $items (list "cmd" .) }}{{ end -}}
+{{- end -}}
+
+{{- range $item := $items }}
+{{-   $kind := index $item 0 }}
+{{-   $e := index $item 1 }}
+{{-   if ne $kind "cmd" }}{{ if regexMatch $bad (toString $e.value) }}{{ fail (printf "shell.yaml: %s value can't contain \", \\ or `" $e.name) }}{{ end }}{{ end }}
+{{-   if hasKey $e "else" }}{{ if regexMatch $bad (toString (get $e "else")) }}{{ fail (printf "shell.yaml: %s else can't contain \", \\ or `" $e.name) }}{{ end }}{{ end }}
+{{-   $conds := list }}
+{{-   if get $e "keep_inherited" }}
+{{-     $conds = append $conds (ternary (printf "not set -q %s" $e.name) (printf "[[ -z ${%s-} ]]" $e.name) $fish) }}
+{{-   end }}
+{{-   range (default (list) (get $e "requires")) }}
+{{-     $conds = append $conds (ternary (printf "type -q %s" .) (printf "command -v %s >/dev/null 2>&1" .) $fish) }}
+{{-   end }}
+{{-   range $k, $v := (default (dict) (get $e "if_env")) }}
+{{-     $conds = append $conds (ternary (printf "test \"$%s\" = \"%s\"" $k $v) (printf "[[ ${%s-} == \"%s\" ]]" $k $v) $fish) }}
+{{-   end }}
+{{-   $body := "" }}
+{{-   $else := "" }}
+{{-   if eq $kind "env" }}
+{{-     $body = ternary (printf "set -gx %s \"%v\"" $e.name $e.value) (printf "export %s=\"%v\"" $e.name $e.value) $fish }}
+{{-   else if eq $kind "alias" }}
+{{-     $body = ternary (printf "alias %s \"%s\"" $e.name $e.value) (printf "alias %s=\"%s\"" $e.name $e.value) $fish }}
+{{-     if hasKey $e "else" }}
+{{-       $else = ternary (printf "alias %s \"%s\"" $e.name $e.else) (printf "alias %s=\"%s\"" $e.name $e.else) $fish }}
+{{-     end }}
+{{-   else }}
+{{-     $body = $e.cmd }}
+{{-   end }}
+{{-   if $conds }}
+{{ ternary (printf "if %s" (join "; and " $conds)) (printf "if %s; then" (join " && " $conds)) $fish }}
+{{ $ind }}{{ $body }}
+{{-     if $else }}
+else
+{{ $ind }}{{ $else }}
+{{-     end }}
+{{ ternary "end" "fi" $fish }}
+{{-   else }}
+{{ $body }}
+{{-   end }}
+{{- end }}
