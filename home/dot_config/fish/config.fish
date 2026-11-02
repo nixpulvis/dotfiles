@@ -5,6 +5,16 @@ set -x VISUAL nvim
 # Executables in our home directory.
 set -x PATH $HOME/.bin $PATH
 
+# Scripts from the nixpulvis.com repo (e.g. scribe), on machines that have it.
+# The code directory is ~/Code on some machines and ~/code on others; the first
+# match wins (they're the same directory on case-insensitive macOS).
+for dir in $HOME/Code $HOME/code
+    if test -d $dir/nixpulvis.com/bin
+        set -x PATH $dir/nixpulvis.com/bin $PATH
+        break
+    end
+end
+
 # Some of our own custom stuff might end up here.
 set -x PATH /usr/local/bin $PATH
 
