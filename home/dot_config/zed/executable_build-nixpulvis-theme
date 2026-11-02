@@ -1,0 +1,356 @@
+#!/usr/bin/env python3
+"""Build Zed's nixpulvis themes from the Vim color scheme and Alacritty colors.
+
+~/.vim/colors/nixpulvis.vim decides which terminal color number each thing
+gets; Alacritty's color files decide what those numbers look like. For each
+of dark and light, this loads the scheme in a clean headless Neovim with that
+'background', resolves every group Zed needs to a color number, looks the
+numbers up in the matching Alacritty palette, and writes both themes to
+~/.config/zed/themes/nixpulvis.json. Rerun it after changing either side.
+"""
+
+import json
+import subprocess
+import tempfile
+import tomllib
+from pathlib import Path
+
+HOME = Path.home()
+ALACRITTY = HOME / ".config/alacritty"
+# (Zed theme name, Vim 'background', Alacritty colors file)
+THEMES = [
+    ("nixpulvis", "dark", ALACRITTY / "nixpulvis-dark.toml"),
+    ("nixpulvis light", "light", ALACRITTY / "nixpulvis-light.toml"),
+]
+OUTPUT = HOME / ".config/zed/themes/nixpulvis.json"
+
+ANSI = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"]
+
+# Zed syntax capture -> Vim highlight group.
+SYNTAX = {
+    "attribute": "Macro",
+    "boolean": "Boolean",
+    "comment": "Comment",
+    "comment.doc": "SpecialComment",
+    "constant": "Constant",
+    "constructor": "@lsp.type.enumMember",
+    "diff.minus": "Removed",
+    "diff.plus": "Added",
+    "embedded": "Normal",
+    "emphasis": "htmlItalic",
+    "emphasis.strong": "htmlBold",
+    "enum": "Type",
+    "function": "Function",
+    "hint": "LspInlayHint",
+    "keyword": "Keyword",
+    "label": "Label",
+    # Zed's Rust queries mark macro calls function.special; rust-analyzer's
+    # macro tokens map to function.macro.
+    "function.macro": "@function.macro",
+    "function.special": "@function.macro",
+    "lifetime": "Special",
+    "link_text": "Underlined",
+    "link_uri": "Underlined",
+    "namespace": "Identifier",
+    "number": "Number",
+    "operator": "Operator",
+    "predictive": "Comment",
+    "preproc": "PreProc",
+    "primary": "Normal",
+    "property": "Identifier",
+    "punctuation": "Delimiter",
+    "punctuation.bracket": "Delimiter",
+    "punctuation.delimiter": "Delimiter",
+    "punctuation.list_marker": "Special",
+    "punctuation.markup": "Special",
+    "punctuation.special": "Special",
+    "selector": "Statement",
+    "selector.pseudo": "PreProc",
+    "string": "String",
+    "string.escape": "SpecialChar",
+    "string.regex": "String",
+    "string.special": "String",
+    "string.special.symbol": "Constant",
+    "tag": "Statement",
+    "text.literal": "String",
+    "title": "Title",
+    "type": "Type",
+    "variable": "Identifier",
+    "variable.parameter": "Identifier",
+    # Zed uses this for self/this; the scheme only names Rust's.
+    "variable.special": "rustSelf",
+    "variant": "@lsp.type.enumMember",
+}
+
+# Groups the UI mapping below reads, besides the syntax ones.
+UI_GROUPS = [
+    "Normal", "Comment", "CursorLine", "CursorLineNr", "ColorColumn", "Visual",
+    "LineNr", "NonText", "Folded", "MatchParen", "Search", "IncSearch",
+    "Directory", "Underlined", "VertSplit", "StatusLine", "TabLineFill",
+    "TabLine", "Pmenu", "PmenuSel", "PmenuThumb", "FloatBorder",
+    "DiffText", "Added", "Changed", "Removed", "DiagnosticError",
+    "DiagnosticWarn", "DiagnosticInfo", "DiagnosticHint", "DiagnosticOk",
+    "LspReferenceRead", "LspReferenceWrite",
+]
+
+DUMP_LUA = """
+local out = {}
+for _, name in ipairs(vim.json.decode(%s)) do
+  local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+  out[name] = { fg = hl.ctermfg, bg = hl.ctermbg, attrs = hl.cterm or vim.empty_dict() }
+end
+out.colors_name = vim.g.colors_name
+io.stdout:write(vim.json.encode(out))
+"""
+
+
+def merge(into, data):
+    for key, value in data.items():
+        if isinstance(value, dict) and isinstance(into.get(key), dict):
+            merge(into[key], value)
+        else:
+            into[key] = value
+    return into
+
+
+def load_alacritty(path):
+    """Read an Alacritty config, imports first so the file's own keys win."""
+    data = tomllib.loads(path.read_text())
+    config = {}
+    for name in data.get("general", {}).get("import", []):
+        imported = Path(name).expanduser()
+        if not imported.is_absolute():
+            imported = path.parent / imported
+        merge(config, load_alacritty(imported))
+    return merge(config, data)
+
+
+def hex_color(value):
+    value = value.strip().upper().replace("0X", "#")
+    return value if value.startswith("#") else "#" + value
+
+
+def dim(color):
+    """Alacritty's default dim foreground: the foreground at 66%."""
+    r, g, b = (int(color[i:i + 2], 16) * 66 // 100 for i in (1, 3, 5))
+    return f"#{r:02X}{g:02X}{b:02X}"
+
+
+def xterm_256():
+    """Default xterm colors for 16-255, used where Alacritty sets none."""
+    table = {}
+    levels = [0, 95, 135, 175, 215, 255]
+    for i in range(216):
+        r, g, b = levels[i // 36], levels[i // 6 % 6], levels[i % 6]
+        table[16 + i] = f"#{r:02X}{g:02X}{b:02X}"
+    for i in range(24):
+        v = 8 + 10 * i
+        table[232 + i] = f"#{v:02X}{v:02X}{v:02X}"
+    return table
+
+
+def load_highlights(groups, background):
+    with tempfile.NamedTemporaryFile("w", suffix=".lua") as script:
+        script.write(DUMP_LUA % json.dumps(json.dumps(groups)))
+        script.flush()
+        result = subprocess.run(
+            [
+                "nvim", "--clean", "--headless",
+                "--cmd", "set runtimepath^=~/.vim runtimepath+=~/.vim/after",
+                "-c", f"set notermguicolors background={background}",
+                "-c", "colorscheme nixpulvis",
+                "-c", f"luafile {script.name}",
+                "-c", "qa!",
+            ],
+            capture_output=True, text=True,
+        )
+    highlights = json.loads(result.stdout)
+    if highlights.pop("colors_name", None) != "nixpulvis":
+        raise SystemExit(f"nvim failed to load nixpulvis:\n{result.stderr}")
+    return highlights
+
+
+def build_style(colors_file, background):
+    colors = load_alacritty(colors_file)["colors"]
+    primary = {k: hex_color(v) for k, v in colors["primary"].items()}
+    palette = xterm_256()
+    for i, name in enumerate(ANSI):
+        palette[i] = hex_color(colors["normal"][name])
+        palette[i + 8] = hex_color(colors["bright"][name])
+    for entry in colors.get("indexed_colors", []):
+        palette[entry["index"]] = hex_color(entry["color"])
+    default_fg = primary["foreground"]
+    default_bg = primary["background"]
+
+    highlights = load_highlights(sorted(set(SYNTAX.values()) | set(UI_GROUPS)), background)
+
+    def resolve(group):
+        """A group's (fg, bg) as hex; unset means the terminal's default."""
+        hl = highlights[group]
+        fg = palette[hl["fg"]] if "fg" in hl else default_fg
+        bg = palette[hl["bg"]] if "bg" in hl else default_bg
+        return (bg, fg) if hl["attrs"].get("reverse") else (fg, bg)
+
+    def fg(group):
+        return resolve(group)[0]
+
+    def bg(group):
+        return resolve(group)[1]
+
+    def alpha(color, a):
+        return color + a
+
+    style = {}
+
+    def status(key, color):
+        style[key] = color
+        style[f"{key}.background"] = alpha(color, "1A")
+        style[f"{key}.border"] = alpha(color, "66")
+
+    style["accents"] = [palette[i] for i in (4, 5, 3, 2, 6, 1)]
+
+    style.update({
+        "background": bg("StatusLine"),
+        "surface.background": bg("Normal"),
+        "elevated_surface.background": bg("Pmenu"),
+        "drop_target.background": alpha(bg("Visual"), "80"),
+
+        # Vim's VertSplit is a filled 236 column; as a 1px line it vanishes on
+        # the 236 tab and title bars, so Zed's main borders use nvim's float
+        # border lines (8) instead, keeping 236 for the subtler dividers.
+        "border": fg("FloatBorder"),
+        "border.variant": fg("VertSplit"),
+        "border.focused": fg("Directory"),
+        "border.selected": fg("Directory"),
+        "border.transparent": "#00000000",
+        "border.disabled": fg("VertSplit"),
+
+        "element.background": bg("Pmenu"),
+        "element.hover": bg("CursorLine"),
+        "element.active": bg("PmenuSel"),
+        "element.selected": bg("PmenuSel"),
+        "element.disabled": bg("Pmenu"),
+        "ghost_element.background": "#00000000",
+        "ghost_element.hover": bg("CursorLine"),
+        "ghost_element.active": bg("PmenuSel"),
+        "ghost_element.selected": bg("PmenuSel"),
+        "ghost_element.disabled": bg("Normal"),
+
+        "text": fg("Normal"),
+        "text.muted": fg("LineNr"),
+        "text.placeholder": fg("LineNr"),
+        "text.disabled": fg("NonText"),
+        "text.accent": fg("Directory"),
+        "icon": fg("Normal"),
+        "icon.muted": fg("LineNr"),
+        "icon.disabled": fg("NonText"),
+        "icon.placeholder": fg("LineNr"),
+        "icon.accent": fg("Directory"),
+        "link_text.hover": fg("Underlined"),
+
+        "title_bar.background": bg("TabLineFill"),
+        "title_bar.inactive_background": bg("TabLineFill"),
+        "status_bar.background": bg("StatusLine"),
+        "toolbar.background": bg("Normal"),
+        "tab_bar.background": bg("TabLineFill"),
+        "tab.inactive_background": bg("TabLine"),
+        # Zed draws tab labels in the theme's text color, not TabLineSel's, so
+        # the active tab takes the editor's background and reads in both modes.
+        "tab.active_background": bg("Normal"),
+        "panel.background": bg("Normal"),
+        "panel.focused_border": fg("Directory"),
+        "pane.focused_border": None,
+        "search.match_background": alpha(bg("Search"), "40"),
+        "search.active_match_background": alpha(bg("IncSearch"), "66"),
+
+        "scrollbar.thumb.background": alpha(bg("PmenuThumb"), "80"),
+        "scrollbar.thumb.hover_background": bg("PmenuThumb"),
+        "scrollbar.thumb.border": "#00000000",
+        "scrollbar.track.background": "#00000000",
+        "scrollbar.track.border": "#00000000",
+
+        "editor.foreground": fg("Normal"),
+        "editor.background": bg("Normal"),
+        "editor.gutter.background": bg("Normal"),
+        "editor.subheader.background": bg("Folded"),
+        "editor.active_line.background": bg("CursorLine"),
+        "editor.highlighted_line.background": bg("CursorLine"),
+        "editor.line_number": fg("LineNr"),
+        "editor.active_line_number": fg("CursorLineNr"),
+        "editor.hover_line_number": fg("Normal"),
+        "editor.invisible": fg("NonText"),
+        "editor.wrap_guide": bg("ColorColumn"),
+        "editor.active_wrap_guide": bg("ColorColumn"),
+        "editor.indent_guide": fg("NonText"),
+        "editor.indent_guide_active": fg("LineNr"),
+        "editor.document_highlight.read_background": bg("LspReferenceRead"),
+        "editor.document_highlight.write_background": bg("LspReferenceWrite"),
+        "editor.document_highlight.bracket_background": bg("MatchParen"),
+
+        "terminal.background": default_bg,
+        "terminal.foreground": default_fg,
+        "terminal.bright_foreground": primary.get("bright_foreground", default_fg),
+        "terminal.dim_foreground": primary.get("dim_foreground", dim(default_fg)),
+    })
+    for i, name in enumerate(ANSI):
+        style[f"terminal.ansi.{name}"] = palette[i]
+        style[f"terminal.ansi.bright_{name}"] = palette[i + 8]
+        if name in colors.get("dim", {}):
+            style[f"terminal.ansi.dim_{name}"] = hex_color(colors["dim"][name])
+
+    style.update({
+        "version_control.added": fg("Added"),
+        "version_control.modified": fg("Changed"),
+        "version_control.deleted": fg("Removed"),
+        "version_control.word_added": alpha(fg("Added"), "40"),
+        "version_control.word_deleted": alpha(fg("Removed"), "40"),
+        "version_control.conflict_marker.ours": alpha(fg("Added"), "1A"),
+        "version_control.conflict_marker.theirs": alpha(fg("DiagnosticInfo"), "1A"),
+    })
+    for key, group in [
+        ("error", "DiagnosticError"), ("warning", "DiagnosticWarn"),
+        ("info", "DiagnosticInfo"), ("hint", "DiagnosticHint"),
+        ("success", "DiagnosticOk"), ("created", "Added"),
+        ("modified", "Changed"), ("deleted", "Removed"),
+        ("conflict", "DiffText"), ("renamed", "Directory"),
+        ("hidden", "Comment"), ("ignored", "Comment"),
+        ("unreachable", "Comment"), ("predictive", "Comment"),
+    ]:
+        status(key, fg(group))
+
+    cursor = fg("Normal")
+    others = [palette[i] for i in (1, 2, 3, 4, 5, 6, 11)]
+    style["players"] = [{"cursor": cursor, "background": cursor, "selection": bg("Visual")}] + [
+        {"cursor": c, "background": c, "selection": alpha(c, "3D")} for c in others
+    ]
+
+    syntax = {}
+    for capture, group in sorted(SYNTAX.items()):
+        entry = {"color": fg(group)}
+        attrs = highlights[group]["attrs"]
+        if attrs.get("italic"):
+            entry["font_style"] = "italic"
+        if attrs.get("bold"):
+            entry["font_weight"] = 700
+        syntax[capture] = entry
+    style["syntax"] = syntax
+
+    return style
+
+
+def main():
+    theme = {
+        "$schema": "https://zed.dev/schema/themes/v0.2.0.json",
+        "name": "nixpulvis",
+        "author": "nixpulvis",
+        "themes": [
+            {"name": name, "appearance": background, "style": build_style(colors_file, background)}
+            for name, background, colors_file in THEMES
+        ],
+    }
+    OUTPUT.write_text(json.dumps(theme, indent=2) + "\n")
+    print(f"wrote {OUTPUT}")
+
+
+if __name__ == "__main__":
+    main()

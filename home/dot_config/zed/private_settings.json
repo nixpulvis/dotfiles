@@ -30,7 +30,10 @@
   },
   "terminal": {
     "font_family": "Fira Mono",
-    "option_as_meta": true
+    "option_as_meta": true,
+    // Show the theme's terminal colors exactly, as Alacritty does. Zed's
+    // default (45) lightens any color it thinks is too dark, like red (1).
+    "minimum_contrast": 0
   },
   "diff_view_style": "unified",
   "vim_mode": true,
@@ -52,7 +55,7 @@
   },
   "theme": {
     "mode": "system",
-    "light": "One Light",
-    "dark": "One Dark",
+    "light": "nixpulvis light",
+    "dark": "nixpulvis",
   },
 }
