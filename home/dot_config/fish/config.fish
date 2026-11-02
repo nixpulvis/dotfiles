@@ -29,6 +29,17 @@ end
 
 set -x PIPX_HOME $HOME/.local/pipx
 
+# Colorize man pages with bat where it's installed. col -bx first strips man's
+# backspace overstrike (bold/underline); bat passes it through, and where its
+# highlighting splits a sequence, less shows a literal ^H (e.g. git-s^Hscm).
+# Linux's groff emits color codes instead, which col would mangle into text
+# like "4mgit24m", so GROFF_NO_SGR makes it overstrike too. macOS's mandoc
+# already overstrikes and ignores it.
+if type -q bat; and type -q col
+    set -x MANPAGER "sh -c 'col -bx | bat -plman'"
+    set -x GROFF_NO_SGR 1
+end
+
 if type -q ssh-agent; and not set -q SSH_AUTH_SOCK
     eval (ssh-agent -c) &>/dev/null
 end
