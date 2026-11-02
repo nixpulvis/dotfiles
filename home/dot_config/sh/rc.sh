@@ -5,11 +5,6 @@
 
 if [[ -n ${ZSH_VERSION-} ]]; then __sh=zsh; else __sh=bash; fi
 
-# Update dotfiles, always regenerating the per-machine config from its template
-# so it never goes stale (reuses saved answers, so no re-prompt). Plain
-# `chezmoi apply` is still backstopped by the config drift-check banner.
-alias czup='chezmoi update --init'
-
 # List with eza where it's installed. Same flags as config.fish; see the notes
 # there. Without eza, l/ll/la match fish's ls versions and there's no lt/lat.
 if command -v eza >/dev/null 2>&1; then
