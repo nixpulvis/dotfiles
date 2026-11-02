@@ -1,0 +1,41 @@
+# Global git attributes; git reads this path when core.attributesFile is unset.
+# A repo's own .gitattributes still takes precedence.
+#
+# Use git's built-in diff drivers for hunk headers (the text after @@, also
+# shown by delta). Git has the patterns but never maps file extensions to them
+# itself. Without a driver the header is the nearest line above the change that
+# starts in column 0, which is often a `use`, an `impl` block or a stray label.
+# Context only ever comes from above, so a change in an item's leading doc
+# comment shows the previous item, or nothing.
+#
+# Languages from the repos in ~/Code and these dotfiles. Unlisted ones (e.g.
+# TOML, JSON, fish, JavaScript) have no built-in driver.
+
+# Nearest fn/struct/enum/impl/trait/mod.
+*.rs diff=rust
+
+# Nearest heading.
+*.md diff=markdown
+*.markdown diff=markdown
+
+# Nearest function definition (POSIX sh syntax too).
+*.sh diff=bash
+*.bash diff=bash
+
+# Nearest def/class.
+*.py diff=python
+*.rb diff=ruby
+
+# Nearest function/struct/class; git uses cpp for C as well.
+*.c diff=cpp
+*.h diff=cpp
+*.cc diff=cpp
+*.cpp diff=cpp
+*.hpp diff=cpp
+
+*.swift diff=swift
+
+# Nearest <h1>-<h6> heading; nearest selector.
+*.html diff=html
+*.htm diff=html
+*.css diff=css
