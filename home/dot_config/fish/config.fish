@@ -35,7 +35,23 @@ if type -q rustc
     set -x RUST_SRC_PATH (rustc --print sysroot)/lib/rustlib/src/rust/library
 end
 
-alias l "ls -l"
+# List with eza where it's installed. Its sizes are human-readable by default
+# and -a skips . and .., matching ls -h and -A. Without eza, l stays ls -l and
+# ll/la fall back to fish's built-in ls versions. --git adds a per-file status
+# column inside repos; long-iso dates are YYYY-MM-DD HH:MM. -g --smart-group
+# shows the group only when it isn't the owner's name. --classify needs =auto
+# spelled out, since a bare -F would take the first path argument as its value.
+# lt/lat are l/la as a tree; ls has no tree view, so they only exist with eza.
+if type -q eza
+    set -l eza_long eza -l --git --time-style=long-iso -g --smart-group --classify=auto
+    alias l "$eza_long"
+    alias ll "$eza_long"
+    alias la "$eza_long -a"
+    alias lt "$eza_long --tree"
+    alias lat "$eza_long -a --tree"
+else
+    alias l "ls -l"
+end
 
 if type -q setxkbmap; and [ "$XDG_SESSION_TYPE" = "tty" ]
     # Remap caps lock to escape.
