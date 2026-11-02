@@ -20,7 +20,7 @@ if [[ -n ${HOMEBREW_PREFIX-} ]]; then
 fi
 autoload -Uz compinit && compinit
 
-# Aliases, fzf, rbenv, git prompt helpers and greeting, shared with bash.
+# Aliases, fzf, rbenv and git prompt helpers, shared with bash.
 [[ -f ~/.config/sh/rc.sh ]] && . ~/.config/sh/rc.sh
 
 # Prompt: port of the nixpulvis fish_prompt / fish_right_prompt.

@@ -1,5 +1,5 @@
 # Interactive setup for bash and zsh, sourced by ~/.bashrc and ~/.zshrc after
-# env.sh. Variables, aliases and the greeting are shared with fish: edit them in
+# env.sh. Variables and aliases are shared with fish: edit them in
 # .chezmoidata/shell.yaml. This file holds what needs sh code: tool hooks, the
 # ** completion lists and the git prompt helpers each shell's rc builds its
 # prompt from.
@@ -81,5 +81,3 @@ __prompt_pwd() {
 	local p="${PWD/#$HOME/$tilde}"
 	printf '%s' "$p" | sed -e 's|\([^/]\)[^/]*/|\1/|g'
 }
-
-{{ includeTemplate "shell-shared" (dict "shell" "sh" "part" "greeting" "s" .shell) }}

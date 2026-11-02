@@ -86,7 +86,7 @@ shell:
       # See also .config/sway/config input "type:keyboard".
       - {cmd: "setxkbmap -option caps:escape", requires: [setxkbmap], if_env: {XDG_SESSION_TYPE: tty}}
 
-    # Printed when an interactive shell starts.
+    # Printed when an interactive fish shell starts (not bash or zsh).
     greeting:
       - {cmd: fortune, requires: [fortune]}
       - {cmd: 'echo "><_> tick... tock..."'}

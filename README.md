@@ -133,9 +133,9 @@ prompts and is templated into `~/.gitconfig`. System setup like locale,
 ### Shells
 
 fish is the main shell, and bash and zsh are set up to match it. Settings that
-apply to all three (PATH, environment variables, aliases, fzf options, the
-greeting) live once in
-[`home/.chezmoidata/shell.yaml`](home/.chezmoidata/shell.yaml).
+apply to all three (PATH, environment variables, aliases, fzf options) live once
+in [`home/.chezmoidata/shell.yaml`](home/.chezmoidata/shell.yaml), along with
+fish's greeting, which bash and zsh don't print.
 `home/.chezmoitemplates/shell-shared` renders them in each shell's syntax into
 `dot_config/fish/config.fish.tmpl` and, for bash and zsh,
 `dot_config/sh/env.sh.tmpl` (environment; also loaded by non-interactive bash)

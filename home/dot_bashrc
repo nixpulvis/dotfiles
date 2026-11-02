@@ -9,7 +9,7 @@
 # every start unless this is set by the end of startup.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-# Aliases, fzf, rbenv, git prompt helpers and greeting, shared with zsh.
+# Aliases, fzf, rbenv and git prompt helpers, shared with zsh.
 [[ -f ~/.config/sh/rc.sh ]] && . ~/.config/sh/rc.sh
 
 # Prompt: port of the nixpulvis fish_prompt / fish_right_prompt.

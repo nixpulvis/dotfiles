@@ -1,5 +1,6 @@
-# PATH, variables, aliases and the greeting are shared with bash and zsh: edit
-# them in .chezmoidata/shell.yaml. This file holds what needs fish code.
+# PATH, variables and aliases are shared with bash and zsh: edit them, and the
+# fish-only greeting, in .chezmoidata/shell.yaml. This file holds what needs
+# fish code.
 
 {{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "env" "s" .shell) }}
 # Setup rbenv.
