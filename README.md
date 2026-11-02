@@ -95,7 +95,9 @@ home/                        chezmoi source (renders to ~/)
   dot_*                      files that become ~/.*
   run_before_*               config drift check, runs on every apply
   run_once_*                 one-time setup scripts
+  run_onchange_*             setup that reruns when its inputs change
   AppData/                   Windows config-path symlinks (see below)
+  private_Library/           macOS launch agents
 test/                        sandbox.sh (throwaway HOME), docker.sh (Linux container)
 .github/workflows/test.yml   CI: sandbox.sh on macOS + Linux, docker.sh on Arch + Ubuntu
 ```
@@ -146,6 +148,36 @@ in double quotes, which mean the same in both syntaxes, so they can't contain
 Those three files, `.bashrc` and `.zshrc` keep only what needs per-shell code:
 prompts, tool hooks (`fzf --fish`, `rbenv init`, ssh-agent), and zsh's history
 and completion.
+
+### Colors
+
+Alacritty, Vim/Neovim and Zed share one color scheme, `nixpulvis`, built from
+the terminal's own palette:
+
+- `dot_config/alacritty/nixpulvis-dark.toml` and `nixpulvis-light.toml` set
+  what each terminal color looks like. Both import `nixpulvis-indexed.toml`,
+  so the 256-color grays are the same in either mode.
+- `dot_vim/colors/nixpulvis.vim` decides which terminal color each thing gets,
+  by number only. Neovim loads it from `~/.vim` with `termguicolors` off.
+- `dot_config/zed/themes/nixpulvis.json` is generated from those two by
+  `~/.config/zed/build-nixpulvis-theme`. After changing either, run it, then
+  `chezmoi re-add ~/.config/zed/themes/nixpulvis.json`.
+
+Alacritty imports `~/.config/alacritty/colors.toml`, a link to one of the two
+palettes. On macOS, `run_onchange_after_20-alacritty-color-mode.sh.tmpl` builds
+`dot_config/alacritty/alacritty-color-mode.swift` into `~/.bin` and loads it as
+a login agent (`private_Library/LaunchAgents/`), which repoints the link
+whenever the system appearance changes. `chezmoi` leaves the link alone there.
+Elsewhere it's a fixed link to the dark palette.
+
+omp only notices a light/dark change on its own in terminals that announce it
+(or WezTerm), which Alacritty and Zed don't.
+`dot_omp/private_agent/extensions/color-mode.ts` watches the same link and
+switches omp between its `theme.dark` and `theme.light` themes.
+
+Vim and Neovim take 'background', which picks the scheme's grays, from the
+terminal's background color: they ask at startup and again whenever the window
+regains focus, so they follow either terminal without watching anything.
 
 ### WeeChat
 
