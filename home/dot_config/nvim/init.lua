@@ -25,7 +25,6 @@ Plug('hrsh7th/nvim-cmp')
 Plug('hrsh7th/cmp-vsnip')
 Plug('hrsh7th/vim-vsnip')
 
-Plug('navarasu/onedark.nvim')
 Plug('Yggdroot/indentLine')
 Plug('airblade/vim-gitgutter')
 Plug('cespare/vim-toml')
@@ -57,7 +56,7 @@ Plug('wlangstroth/vim-racket')
 vim.call('plug#end')
 
 -- Install missing plugins now, before the config below requires them (e.g.
--- onedark, cmp), so a first launch doesn't error. Closes vim-plug's window.
+-- cmp), so a first launch doesn't error. Closes vim-plug's window.
 for _, plug in pairs(vim.g.plugs) do
     if vim.fn.isdirectory(plug.dir) == 0 then
         vim.cmd('PlugInstall --sync | close')
@@ -65,12 +64,19 @@ for _, plug in pairs(vim.g.plugs) do
     end
 end
 
--- Syntax color scheme
--- TODO: Switch based on system mode.
--- vim.opt.background = "light"
-vim.opt.background = "dark"
+-- Syntax color scheme, shared with Vim from ~/.vim. It uses the terminal's
+-- own colors, so it needs termguicolors off.
+vim.opt.runtimepath:append({ vim.fn.expand('~/.vim'), vim.fn.expand('~/.vim/after') })
+-- 'background' is left unset so Nvim takes it from the terminal's background
+-- color, which it asks for at startup and applies from any later answer. Ask
+-- again on focus to catch a light/dark switch made while away; changing
+-- 'background' reloads the scheme.
+vim.api.nvim_create_autocmd('FocusGained', {
+    callback = function() vim.api.nvim_ui_send('\027]11;?\007') end,
+})
+vim.opt.termguicolors = false
 vim.opt.syntax = "enable"
-require('onedark').load()
+vim.cmd.colorscheme('nixpulvis')
 
 -- -- Tabs as spaces.
 -- vim.opt.expandtab = true
@@ -118,10 +124,7 @@ vim.g.SuperTabDefaultCompletionType = "context"
 -- TODO: Git information in lightline.
 vim.opt.showmode = false
 vim.opt.laststatus = 2
--- TODO
--- let g:lightline = {
---   \ 'colorscheme': 'nixpulvis'
--- \}
+vim.g.lightline = { colorscheme = 'nixpulvis' }
 
 -- Highlight search matches.
 vim.opt.hlsearch = true

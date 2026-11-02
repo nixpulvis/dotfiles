@@ -2,8 +2,9 @@ let unused = '#deadbe'
 
 " Black
 let s:black = [ unused, 0 ]
-" actually DarkGrey
-let s:grey    = [ unused, 236 ]
+" The 'raise' gray from colors/nixpulvis.vim, and text that reads on it.
+let s:grey    = [ unused, &background ==# 'light' ? 252 : 236 ]
+let s:ink     = [ unused, &background ==# 'light' ? 0 : 7 ]
 let s:red     = [ unused, 1 ]
 let s:green   = [ unused, 2 ]
 let s:gold    = [ unused, 3 ]
@@ -30,7 +31,7 @@ let s:p.inactive.middle = [ [ s:grey, s:grey ] ]
 let s:p.inactive.right  = [ [ s:black, s:grey ], [ s:black, s:grey ] ]
 
 let s:p.tabline.tabsel  = [ [ s:white, s:black ] ]
-let s:p.tabline.left    = [ [ s:white, s:grey ] ]
+let s:p.tabline.left    = [ [ s:ink, s:grey ] ]
 let s:p.tabline.middle  = [ [ s:grey, s:grey ] ]
 let s:p.tabline.right   = copy(s:p.normal.right)
 

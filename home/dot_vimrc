@@ -37,8 +37,22 @@ Plug 'wlangstroth/vim-racket'
 Plug 'jasonccox/vim-wayland-clipboard'
 call plug#end()
 
-" Syntax color scheme
-set background=light
+" Syntax color scheme. 'background' is left unset so Vim takes it from the
+" terminal's background color: Vim's colorresp plugin asks with t_RB at startup
+" and sets 'background' from every answer. Ask again on focus to catch a
+" light/dark switch made while away; changing 'background' reloads the scheme.
+" TERM=alacritty's terminfo has neither the request nor focus reporting, so
+" supply the xterm sequences, which Alacritty and Zed both understand.
+if empty(&t_RB)
+  let &t_RB = "\<Esc>]11;?\<C-G>"
+endif
+if empty(&t_fe)
+  let &t_fe = "\<Esc>[?1004h"
+  let &t_fd = "\<Esc>[?1004l"
+  execute "set <FocusGained>=\<Esc>[I"
+  execute "set <FocusLost>=\<Esc>[O"
+endif
+autocmd FocusGained * call echoraw(&t_RB)
 syntax enable
 colorscheme nixpulvis
 
