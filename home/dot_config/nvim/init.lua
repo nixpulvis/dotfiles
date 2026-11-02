@@ -146,7 +146,7 @@ vim.opt.completeopt = "menuone"
 require('cmp-config')
 
 vim.lsp.enable('luals')
-vim.lsp.enable('rust-analyzer')
+vim.lsp.enable('rust_analyzer')
 vim.lsp.enable('clangd')
 
 -- " Allow some languages a bit more space.
