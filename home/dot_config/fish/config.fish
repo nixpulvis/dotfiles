@@ -53,6 +53,27 @@ else
     alias l "ls -l"
 end
 
+# fzf key bindings: ctrl-r searches history, ctrl-t inserts file paths, alt-c
+# (left Option on macOS) cds into a subdirectory. With fd the lists skip
+# .gitignore'd files and include dotfiles (except .git); without it fzf uses
+# its built-in walker. Previews show files with bat and directories as an eza
+# tree. fzf runs them with $SHELL, so they stay valid in both fish and sh.
+if type -q fzf
+    fzf --fish | source
+    # Selected line text in bright blue. fzf's default (color 254) is one of
+    # the indexes our Alacritty palette sets to #FF0000.
+    set -x FZF_DEFAULT_OPTS '--color=fg+:12'
+    if type -q fd
+        set -x FZF_DEFAULT_COMMAND 'fd --type f --hidden --exclude .git'
+        set -x FZF_CTRL_T_COMMAND 'fd --hidden --exclude .git'
+        set -x FZF_ALT_C_COMMAND 'fd --type d --hidden --exclude .git'
+    end
+    if type -q bat; and type -q eza
+        set -x FZF_CTRL_T_OPTS "--preview 'test -d {} && eza --tree --level=2 --color=always {} || bat --color=always --style=numbers --line-range=:200 {}'"
+        set -x FZF_ALT_C_OPTS "--preview 'eza --tree --level=2 --color=always {}'"
+    end
+end
+
 if type -q setxkbmap; and [ "$XDG_SESSION_TYPE" = "tty" ]
     # Remap caps lock to escape.
     setxkbmap -option caps:escape
