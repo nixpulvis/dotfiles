@@ -28,12 +28,54 @@ set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showstashstate 'yes'
 set __fish_git_prompt_showcolorhints
 
+# Sets __prompt_dir to prompt_pwd minus a linked worktree's own directory, so
+# the repo name is the last component and isn't abbreviated; the git segment
+# still shows the branch. Worktrunk names the directory <branch> (inside a bare
+# repo's <project>/) or <repo>.<branch> (beside a clone), with / in the branch
+# turned into -. Any other directory, a detached HEAD or the main worktree keeps
+# the full path.
+#
+# Also sets __prompt_show_git, empty in a bare repo's <project>/ itself: it's in
+# neither a work tree nor the git dir, and the git segment would show the bare
+# HEAD's branch, so it'd look the same as that branch's worktree.
+function __prompt_pwd
+  set -g __prompt_show_git 1
+  set -l p $PWD
+  set -l info (command git rev-parse --is-inside-work-tree --is-inside-git-dir --show-prefix --path-format=absolute --git-dir --git-common-dir --abbrev-ref HEAD 2>/dev/null)
+  if test "$info[1]" = false; and test "$info[2]" = false
+    set -g __prompt_show_git
+  else if test (count $info) -eq 6; and test "$info[4]" != "$info[5]"; and test "$info[6]" != HEAD
+    # Split $PWD into the worktree's top and the path git reports below it,
+    # rather than using --show-toplevel, which resolves symlinks $PWD keeps.
+    set -l top $PWD
+    set -l rest ''
+    if test -n "$info[3]"
+      set rest /(string trim -r -c / -- $info[3])
+      set top (string replace -r -- (string escape --style=regex -- $rest)'$' '' $PWD)
+    end
+    if test "$top$rest" = "$PWD"
+      set -l dir (path basename -- $top)
+      set -l branch (string replace -a / - -- $info[6])
+      # Git refnames can't contain glob characters, so $branch is literal.
+      if test "$dir" = "$branch"
+        set p (path normalize -- (path dirname -- $top)$rest)
+      else if string match -q -- "*.$branch" $dir
+        set p (string sub -e -(string length -- ".$branch") -- $top)$rest
+      end
+    end
+  end
+  set -g __prompt_dir (prompt_pwd $p)
+end
+
 function fish_prompt
+  __prompt_pwd
+  set -l git
+  test -n "$__prompt_show_git"; and set git (__fish_git_prompt)
   printf '%s%s%s@%s%s%s:%s%s%s%s $ ' \
   (set_color red) (whoami) (set_color normal) \
   (set_color blue) (hostname) (set_color normal) \
-  (set_color green) (prompt_pwd) (set_color normal) \
-  (__fish_git_prompt)
+  (set_color green) $__prompt_dir (set_color normal) \
+  "$git"
 end
 
 function fish_right_prompt

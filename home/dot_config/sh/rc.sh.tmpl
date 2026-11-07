@@ -93,11 +93,47 @@ GIT_PS1_SHOWSTASHSTATE=1
 GIT_PS1_SHOWUNTRACKEDFILES=1
 GIT_PS1_SHOWCOLORHINTS=1
 
-# fish prompt_pwd: shorten every path component except the last to one char.
-# The ~ comes from a variable because a literal one in the replacement keeps
-# its backslash or gets expanded, depending on the shell and version.
+# Sets __prompt_dir to $PWD shortened like fish's prompt_pwd: every component
+# but the last cut to one char. A linked worktree's own directory is dropped
+# first, as in config.fish's __prompt_pwd, so the repo name is the last
+# component; __git_ps1 still shows the branch. Also sets __prompt_show_git,
+# empty in a bare repo's <project>/ itself (see config.fish). The ~ comes from a
+# variable because a literal one in the replacement keeps its backslash or gets
+# expanded, depending on the shell and version.
 __prompt_pwd() {
-	local tilde='~'
-	local p="${PWD/#$HOME/$tilde}"
-	printf '%s' "$p" | sed -e 's|\([^/]\)[^/]*/|\1/|g'
+	local tilde='~' p=$PWD info worktree gitdir_in prefix gitdir common branch top rest dir
+	__prompt_show_git=1
+	# Lines stop at the first that fails, e.g. HEAD on an unborn branch.
+	info=$(git rev-parse --is-inside-work-tree --is-inside-git-dir --show-prefix --path-format=absolute --git-dir --git-common-dir --abbrev-ref HEAD 2>/dev/null)
+	{ IFS= read -r worktree; IFS= read -r gitdir_in; IFS= read -r prefix; IFS= read -r gitdir; IFS= read -r common; IFS= read -r branch; } <<<"$info"
+	prefix=${prefix%/}
+	if [[ $worktree == false && $gitdir_in == false ]]; then
+		__prompt_show_git=
+	# Split $PWD into the worktree's top and the path git reports below it,
+	# rather than using --show-toplevel, which resolves symlinks $PWD keeps.
+	elif [[ -n $branch && $branch != HEAD && $gitdir != "$common" && ( -z $prefix || $p == */"$prefix" ) ]]; then
+		top=$p
+		[[ -n $prefix ]] && top=${p%/"$prefix"}
+		rest=${p#"$top"}
+		dir=${top##*/}
+		branch=${branch//\//-}
+		if [[ $dir == "$branch" ]]; then
+			p=${top%/*}$rest
+			p=${p:-/}
+		elif [[ $dir == *."$branch" ]]; then
+			p=${top%."$branch"}$rest
+		fi
+	fi
+	p="${p/#$HOME/$tilde}"
+	__prompt_dir=$(printf '%s' "$p" | sed -e 's|\([^/]\)[^/]*/|\1/|g')
+}
+
+# __git_ps1 in its 2-arg PS1-setting mode, minus the git segment where
+# __prompt_pwd says to hide it. Call __prompt_pwd first.
+__prompt_git_ps1() {
+	if [[ -n $__prompt_show_git ]]; then
+		__git_ps1 "$1" "$2"
+	else
+		PS1="$1$2"
+	fi
 }

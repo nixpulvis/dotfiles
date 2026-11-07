@@ -35,11 +35,12 @@ __rprompt() {
 __prompt_command() {
 	local st=$?
 	__rprompt "$st"
+	__prompt_pwd
 	# 2-arg __git_ps1 (PROMPT_COMMAND mode) enables SHOWCOLORHINTS.
 	# pre : window title + red user @ blue host : green abbreviated pwd
 	# post: git segment is inserted between pre and post; end with " $ "
-	__git_ps1 \
-		"\[\033]0;\w\007\]\[\033[31m\]\u\[\033[0m\]@\[\033[34m\]\h\[\033[0m\]:\[\033[32m\]$(__prompt_pwd)\[\033[0m\]" \
+	__prompt_git_ps1 \
+		"\[\033]0;\w\007\]\[\033[31m\]\u\[\033[0m\]@\[\033[34m\]\h\[\033[0m\]:\[\033[32m\]$__prompt_dir\[\033[0m\]" \
 		" \\\$ "
 }
 

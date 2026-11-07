@@ -29,10 +29,10 @@ autoload -Uz compinit && compinit
 __prompt_precmd() {
 	# Window title, like the bash prompt's.
 	print -Pn '\e]0;%~\a'
-	local pwd_short=$(__prompt_pwd)
+	__prompt_pwd
 	# __git_ps1 sets PS1 to pre + git segment + post. % in a directory name
 	# would be read as a prompt escape, so double it.
-	__git_ps1 "%F{red}%n%f@%F{blue}%m%f:%F{green}${pwd_short//\%/%%}%f" " %(!.#.$) "
+	__prompt_git_ps1 "%F{red}%n%f@%F{blue}%m%f:%F{green}${__prompt_dir//\%/%%}%f" " %(!.#.$) "
 }
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd __prompt_precmd
