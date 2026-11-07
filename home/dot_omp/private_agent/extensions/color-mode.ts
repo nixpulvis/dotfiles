@@ -1,8 +1,7 @@
 import { type FSWatcher, readlinkSync, watch } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import type { ExtensionAPI, ExtensionContext } from "@oh-my-pi/pi-coding-agent";
-import { lookup } from "@oh-my-pi/pi-coding-agent/config/registry";
+import { type ExtensionAPI, onTerminalAppearanceChange } from "@oh-my-pi/pi-coding-agent";
 
 // Switches between theme.dark and theme.light when the macOS appearance changes.
 //
@@ -24,31 +23,24 @@ function currentMode(): "dark" | "light" | undefined {
 	}
 }
 
+// Reported as the terminal appearance rather than set with ui.setTheme, which
+// would turn off omp's auto theme and leave Alt+L unable to switch back.
 export default function (pi: ExtensionAPI) {
 	if (process.platform !== "darwin") return;
 
-	const themes = { dark: lookup("theme.dark"), light: lookup("theme.light") };
-	let current: ExtensionContext | undefined;
 	let watcher: FSWatcher | undefined;
-	let applied: string | undefined;
 
-	const sync = async () => {
+	const sync = () => {
 		const mode = currentMode();
-		const name = mode && themes[mode]?.get(pi.pi.settings);
-		if (!current || typeof name !== "string" || name === applied) return;
-		const result = await current.ui.setTheme(name);
-		if (result.success) applied = name;
+		if (mode) onTerminalAppearanceChange(mode);
 	};
 
-	pi.on("session_start", async (_event, ctx) => {
-		current = ctx;
+	pi.on("session_start", () => {
 		// The link is swapped by rename, so watch the directory, not the link.
-		watcher ??= watch(DIRECTORY, () => void sync());
-		await sync();
+		watcher ??= watch(DIRECTORY, sync);
+		sync();
 	});
 	pi.on("session_shutdown", () => {
-		current = undefined;
-		applied = undefined;
 		watcher?.close();
 		watcher = undefined;
 	});
