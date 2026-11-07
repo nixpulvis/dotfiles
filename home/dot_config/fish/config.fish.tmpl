@@ -16,6 +16,13 @@ if type -q fzf
     fzf --fish | source
 end
 
+# Worktrunk's wt wrapper, so `wt switch` can cd this shell into the worktree.
+# Generated each startup rather than installed with `wt config shell install`,
+# so it stays in step with the wt binary.
+if type -q wt
+    wt config shell init fish | source
+end
+
 # Fish git config.
 set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showstashstate 'yes'

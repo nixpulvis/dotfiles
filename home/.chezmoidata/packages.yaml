@@ -26,6 +26,10 @@ packages:
     - {name: pass,     brew: pass,       pacman: pass,      apt: pass}
     - {name: fortune,  brew: fortune,    pacman: fortune-mod, apt: fortune-mod}
     - {name: weechat,  brew: weechat,    pacman: weechat,   apt: weechat}
+    # Git worktree manager (`wt`); its shell wrapper loads in config.fish and
+    # rc.sh. No apt package, and winget installs it as `git-wt`, which those
+    # don't look for.
+    - {name: worktrunk, brew: worktrunk, pacman: worktrunk}
     - {name: omp,      brew: can1357/tap/omp}
 
   graphical:

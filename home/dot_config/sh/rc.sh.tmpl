@@ -28,6 +28,12 @@ fi
 if command -v rbenv >/dev/null 2>&1; then
 	eval "$(rbenv init - $__sh)"
 fi
+
+# Worktrunk's wt wrapper, so `wt switch` can cd this shell into the worktree.
+# See config.fish.
+if command -v wt >/dev/null 2>&1; then
+	eval "$(wt config shell init $__sh)"
+fi
 unset __sh
 {{ if eq .chezmoi.os "windows" }}
 # Git Bash has no session agent. The first shell starts one and records it in

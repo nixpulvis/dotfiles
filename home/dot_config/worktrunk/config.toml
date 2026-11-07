@@ -1,0 +1,8 @@
+# Worktrunk (`wt`) user config. Projects are bare repos at <project>/.git with
+# a worktree per branch at <project>/<branch> (/ in branch names becomes -).
+# For a bare repo {{ repo_path }} is the .git directory itself. A regular clone
+# would put its worktrees beside it in the parent directory instead, so clone
+# with `git clone --bare <url> <project>/.git` (see worktrunk.dev/tips-patterns).
+# An {% if %} on repo_path could fall back to <repo>.<branch> there, but wt
+# then warns about the path on every switch in a bare repo.
+worktree-path = "{{ repo_path }}/../{{ branch | sanitize }}"
