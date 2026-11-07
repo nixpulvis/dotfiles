@@ -21,10 +21,10 @@ __rprompt() {
 	local ts; ts=$(date '+%Y-%m-%d %T%z')
 	if test "$st" -ne 0; then
 		plain="($st) $ts"
-		text="(${esc}[31m${st}${esc}[0m) ${esc}[2;37m${ts}${esc}[0m"
+		text="(${esc}[31m${st}${esc}[0m) ${esc}[90m${ts}${esc}[0m"
 	else
 		plain="$ts"
-		text="${esc}[2;37m${ts}${esc}[0m"
+		text="${esc}[90m${ts}${esc}[0m"
 	fi
 	pad=$(( COLUMNS - ${#plain} ))
 	test "$pad" -lt 0 && pad=0

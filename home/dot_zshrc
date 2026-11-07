@@ -36,7 +36,7 @@ __prompt_precmd() {
 }
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd __prompt_precmd
-RPROMPT='%(?..(%F{red}%?%f%) )%{'$'\e''[2;37m%}%D{%Y-%m-%d %T%z}%{'$'\e''[0m%}'
+RPROMPT='%(?..(%F{red}%?%f%) )%F{8}%D{%Y-%m-%d %T%z}%f'
 # Run the right prompt to the last column like fish and bash; zsh leaves one
 # column blank by default.
 ZLE_RPROMPT_INDENT=0
