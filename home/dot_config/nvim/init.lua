@@ -28,11 +28,11 @@ Plug('hrsh7th/vim-vsnip')
 Plug('Yggdroot/indentLine')
 Plug('airblade/vim-gitgutter')
 Plug('cespare/vim-toml')
-Plug('ctrlpvim/ctrlp.vim')
 Plug('dag/vim-fish')
 Plug('elixir-lang/vim-elixir')
 Plug('elzr/vim-json')
 Plug('ervandew/supertab')
+Plug('ibhagwan/fzf-lua')
 Plug('itchyny/lightline.vim')
 Plug('jiangmiao/auto-pairs')
 Plug('jremmen/vim-ripgrep')
@@ -108,11 +108,55 @@ vim.keymap.set('c', '<C-j>', '<Down>')
 -- Toggle the tree viewer.
 vim.keymap.set('n', '<C-\\>', ':NERDTreeToggle<CR>')
 
+-- Find files by name in an fzf-lua picker, from the current file's Git root
+-- (else the working directory), as CtrlP did.
+vim.keymap.set('n', '<C-p>', function()
+    require('fzf-lua').files({ cwd = vim.fs.root(0, '.git') })
+end, { desc = 'Find files' })
+
 -- Spell checking.
 vim.keymap.set('n', '<F5>', ':setlocal spell! spelllang=en_us<CR>')
 
 -- Map Ctrl-/ to clear highlighting.
 vim.keymap.set('n', '<C-_>', ':nohl<CR>', { silent = true })
+
+-- In quickfix and location list windows, like fzf-lua's pickers: open the
+-- entry under the cursor in a split (Ctrl-S), vertical split (Ctrl-V) or new
+-- tab (Ctrl-T), or browse the list in an fzf-lua picker (Ctrl-F).
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'qf',
+    group = vim.api.nvim_create_augroup('my.qf', {}),
+    callback = function(ev)
+        -- Leave the list for the window its entries open in: a location
+        -- list's own window (a split copies the list from it) or the last
+        -- window used. Returns whether it's a location list.
+        local function to_file_window()
+            if vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].loclist == 1 then
+                vim.api.nvim_set_current_win(vim.fn.getloclist(0, { filewinid = 0 }).filewinid)
+                return true
+            end
+            vim.cmd.wincmd('p')
+            return false
+        end
+        local function open(split)
+            return function()
+                local idx = vim.fn.line('.')
+                local loclist = to_file_window()
+                vim.cmd(split)
+                vim.cmd((loclist and 'll ' or 'cc ') .. idx)
+            end
+        end
+        local opts = { buffer = ev.buf }
+        vim.keymap.set('n', '<C-s>', open('split'), opts)
+        vim.keymap.set('n', '<C-v>', open('vsplit'), opts)
+        vim.keymap.set('n', '<C-t>', open('tab split'), opts)
+        -- From the file window, so a pick doesn't replace the list's window.
+        vim.keymap.set('n', '<C-f>', function()
+            local fzf = require('fzf-lua')
+            if to_file_window() then fzf.loclist() else fzf.quickfix() end
+        end, opts)
+    end,
+})
 
 vim.opt.wildmode = "longest,list:longest"
 vim.opt.wildmenu = true
@@ -124,15 +168,36 @@ vim.g.SuperTabDefaultCompletionType = "context"
 -- TODO: Git information in lightline.
 vim.opt.showmode = false
 vim.opt.laststatus = 2
-vim.g.lightline = { colorscheme = 'nixpulvis' }
+-- lightline's default right side, with LSP progress (LightlineLspProgress)
+-- leading the file info group, and the current buffer's diagnostic error and
+-- warning counts (LightlineErrors, LightlineWarnings) in the theme's error and
+-- warning colors left of it. Those are defined with the LSP setup below.
+vim.g.lightline = {
+    colorscheme = 'nixpulvis',
+    active = {
+        right = {
+            { 'lineinfo' },
+            { 'percent' },
+            { 'lsp_progress', 'fileformat', 'fileencoding', 'filetype' },
+            -- Shows as "E:2 W:3": typed components on the right side are
+            -- laid out in reverse.
+            { 'diagnostic_warnings', 'diagnostic_errors' },
+        },
+    },
+    component_function = { lsp_progress = 'v:lua.LightlineLspProgress' },
+    component_expand = {
+        diagnostic_errors = 'v:lua.LightlineErrors',
+        diagnostic_warnings = 'v:lua.LightlineWarnings',
+    },
+    component_type = {
+        diagnostic_errors = 'error',
+        diagnostic_warnings = 'warning',
+    },
+}
 
 -- Highlight search matches.
 vim.opt.hlsearch = true
 vim.g.rg_highlight = true
-
--- let g:ctrlp_custom_ignore = '**/target/*\|**/dumps/*\|**/backup/*'
--- " Ignore everything in the .gitignore file from ctrl-p.
--- let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
 vim.g.startify_change_to_dir = 0
 vim.g.startify_custom_header = 'startify#fortune#quote()'
@@ -148,6 +213,213 @@ require('cmp-config')
 vim.lsp.enable('luals')
 vim.lsp.enable('rust_analyzer')
 vim.lsp.enable('clangd')
+
+-- Inlay hints (inferred types, parameter names) where the server has them,
+-- off by default; <Leader>th toggles them.
+vim.keymap.set('n', '<Leader>th', function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = 'Toggle inlay hints' })
+
+-- Menus that ask to pick one item (vim.ui.select), such as code actions
+-- (gra), open in an fzf-lua picker.
+require('fzf-lua').register_ui_select()
+
+-- LSP navigation in fzf-lua pickers with a preview. `gd` (definition) and
+-- `grt` (type definition) jump straight there when there's a single result.
+-- `grr` lists definitions tagged `def`, implementations tagged `impl` and
+-- references tagged `ref` (type `^def`, `^impl` or `^ref` to show only those);
+-- the server leaves the declaration out of the references, so it's listed
+-- once. `gO` lists the symbols in this file. Jumps go on the tag stack, so
+-- Ctrl-T comes back, and `:FzfLua resume` reopens the last list where it left
+-- off.
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('my.lsp', {}),
+    callback = function(ev)
+        local fzf = require('fzf-lua')
+        local ansi = require('fzf-lua.utils').ansi_codes
+        local function map(lhs, rhs, desc)
+            vim.keymap.set('n', lhs, rhs, { buffer = ev.buf, desc = desc })
+        end
+        map('gd', fzf.lsp_definitions, 'Goto definition')
+        map('grt', fzf.lsp_typedefs, 'Goto type definition')
+        -- Kinds as words ("[Function] run"): the default icons need a Nerd
+        -- Font, and Alacritty uses Fira Mono.
+        map('gO', function() fzf.lsp_document_symbols({ symbol_style = 3 }) end, 'Document symbols')
+        map('grr', function()
+            fzf.lsp_finder({
+                providers = {
+                    { 'definitions', prefix = ansi.green('def ') },
+                    { 'implementations', prefix = ansi.yellow('impl') },
+                    { 'references', prefix = ansi.blue('ref ') },
+                },
+                includeDeclaration = false,
+                -- Async, the list sometimes came up missing the definitions;
+                -- sync requests fill it reliably once the server has loaded.
+                async = false,
+            })
+        end, 'Definitions, implementations and references')
+    end,
+})
+
+-- When the cursor rests on a symbol, highlight its other uses in the file (by
+-- meaning, not text), and clear them when it moves. Resting is CursorHold,
+-- which waits 'updatetime' (4000 ms by default; it also sets how soon the
+-- swap file is written). `]r`/`[r` jump to the next/previous use, wrapping
+-- around the file, and take a count.
+vim.opt.updatetime = 250
+local lsp_highlight = vim.api.nvim_create_augroup('my.lsp.highlight', {})
+
+-- Asks the server for the uses on each press rather than reading the
+-- highlights, which any cursor move clears.
+local function jump_reference(dir)
+    local count = vim.v.count1
+    local win = vim.api.nvim_get_current_win()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local client = vim.lsp.get_clients({ bufnr = bufnr, method = 'textDocument/documentHighlight' })[1]
+    if not client then return end
+    local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
+    client:request('textDocument/documentHighlight', params, function(err, result)
+        if err or not result or #result == 0 then return end
+        if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_buf(win) ~= bufnr then return end
+        -- Server positions to 0-based rows and byte columns, in file order.
+        local uses = {}
+        for _, h in ipairs(result) do
+            local function pos(p)
+                local line = vim.api.nvim_buf_get_lines(bufnr, p.line, p.line + 1, false)[1] or ''
+                return { p.line, vim.str_byteindex(line, client.offset_encoding, p.character, false) }
+            end
+            uses[#uses + 1] = { start = pos(h.range.start), finish = pos(h.range['end']) }
+        end
+        local function before(a, b) return a[1] < b[1] or (a[1] == b[1] and a[2] < b[2]) end
+        table.sort(uses, function(a, b) return before(a.start, b.start) end)
+        -- Step from the use under the cursor.
+        local row, col = unpack(vim.api.nvim_win_get_cursor(win))
+        local cursor = { row - 1, col }
+        local current = 1
+        for i, u in ipairs(uses) do
+            if not before(cursor, u.start) and before(cursor, u.finish) then
+                current = i
+                break
+            end
+        end
+        local target = uses[(current - 1 + dir * count) % #uses + 1].start
+        vim.api.nvim_win_set_cursor(win, { target[1] + 1, target[2] })
+    end, bufnr)
+end
+
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = lsp_highlight,
+    callback = function(ev)
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+        if not (client and client:supports_method('textDocument/documentHighlight', ev.buf)) then
+            return
+        end
+        -- Once per buffer, even with several servers attached.
+        vim.api.nvim_clear_autocmds({ group = lsp_highlight, buffer = ev.buf })
+        vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+            group = lsp_highlight,
+            buffer = ev.buf,
+            callback = function() vim.lsp.buf.document_highlight() end,
+        })
+        vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+            group = lsp_highlight,
+            buffer = ev.buf,
+            callback = function() vim.lsp.buf.clear_references() end,
+        })
+        vim.keymap.set('n', ']r', function() jump_reference(1) end,
+            { buffer = ev.buf, desc = 'Next use of the symbol' })
+        vim.keymap.set('n', '[r', function() jump_reference(-1) end,
+            { buffer = ev.buf, desc = 'Previous use of the symbol' })
+    end,
+})
+vim.api.nvim_create_autocmd('LspDetach', {
+    group = lsp_highlight,
+    callback = function(ev)
+        vim.lsp.util.buf_clear_references(ev.buf)
+        vim.api.nvim_clear_autocmds({ group = lsp_highlight, buffer = ev.buf })
+    end,
+})
+
+-- Running LSP work (rust-analyzer's indexing, cargo check, ...) for the
+-- status line, by client and progress token. A task is dropped at its `end`,
+-- and a stopped client's tasks are skipped. A task ending also re-requests
+-- inlay hints for the client's buffers that have none: a buffer opened while
+-- the server was still loading otherwise gets none until it's edited.
+local lsp_progress = {}
+vim.api.nvim_create_autocmd('LspProgress', {
+    group = vim.api.nvim_create_augroup('my.lsp.progress', {}),
+    callback = function(ev)
+        local params = ev.data.params
+        local value = params.value
+        if type(value) ~= 'table' then return end
+        local tasks = lsp_progress[ev.data.client_id] or {}
+        lsp_progress[ev.data.client_id] = tasks
+        if value.kind == 'end' then
+            tasks[params.token] = nil
+            local client = vim.lsp.get_client_by_id(ev.data.client_id)
+            for bufnr in pairs(client and client.attached_buffers or {}) do
+                if vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+                    and #vim.lsp.inlay_hint.get({ bufnr = bufnr }) == 0 then
+                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                end
+            end
+        else
+            -- A report without a message or percentage keeps the last one.
+            local task = tasks[params.token] or {}
+            tasks[params.token] = {
+                title = value.title,
+                message = value.message or task.message,
+                percentage = value.percentage or task.percentage,
+                updated = vim.uv.hrtime(),
+            }
+        end
+        vim.cmd.redrawstatus()
+    end,
+})
+
+-- The most recently updated task, e.g. "Indexing 34/120 (serde)", cut to 50
+-- characters.
+function LightlineLspProgress()
+    local latest
+    for client_id, tasks in pairs(lsp_progress) do
+        if vim.lsp.get_client_by_id(client_id) then
+            for _, task in pairs(tasks) do
+                if not latest or task.updated > latest.updated then
+                    latest = task
+                end
+            end
+        end
+    end
+    if not latest then return '' end
+    local text = latest.title or ''
+    if latest.message then
+        text = text .. ' ' .. latest.message
+    elseif latest.percentage then
+        text = text .. ' ' .. latest.percentage .. '%'
+    end
+    if vim.fn.strchars(text) > 50 then
+        text = vim.fn.strcharpart(text, 0, 49) .. '…'
+    end
+    return text
+end
+
+-- The current buffer's diagnostic counts for lightline, e.g. "E:2" and "W:3",
+-- empty when there are none. lightline only reads these when it updates, so
+-- update it whenever diagnostics change.
+local function diagnostic_count(severity, label)
+    local n = #vim.diagnostic.get(0, { severity = severity })
+    return n > 0 and (label .. ':' .. n) or ''
+end
+function LightlineErrors()
+    return diagnostic_count(vim.diagnostic.severity.ERROR, 'E')
+end
+function LightlineWarnings()
+    return diagnostic_count(vim.diagnostic.severity.WARN, 'W')
+end
+vim.api.nvim_create_autocmd('DiagnosticChanged', {
+    group = vim.api.nvim_create_augroup('my.lightline.diagnostics', {}),
+    callback = function() vim.fn['lightline#update']() end,
+})
 
 -- " Allow some languages a bit more space.
 -- augroup rust,cc
