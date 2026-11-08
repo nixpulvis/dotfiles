@@ -17,7 +17,7 @@ color = "#333333"
 index = 236
 
 [[colors.indexed_colors]]
-color = "#666666"
+color = "#808080"
 index = 242
 
 # Grays nothing should use are painted red so stray uses stand out, e.g. Vim's

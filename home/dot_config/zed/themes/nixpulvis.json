@@ -19,7 +19,7 @@
         "surface.background": "#161616",
         "elevated_surface.background": "#333333",
         "drop_target.background": "#33333380",
-        "border": "#666666",
+        "border": "#808080",
         "border.variant": "#333333",
         "border.focused": "#00A3FE",
         "border.selected": "#00A3FE",
@@ -36,14 +36,14 @@
         "ghost_element.selected": "#000000",
         "ghost_element.disabled": "#161616",
         "text": "#CACACA",
-        "text.muted": "#666666",
-        "text.placeholder": "#666666",
+        "text.muted": "#808080",
+        "text.placeholder": "#808080",
         "text.disabled": "#333333",
         "text.accent": "#00A3FE",
         "icon": "#CACACA",
-        "icon.muted": "#666666",
+        "icon.muted": "#808080",
         "icon.disabled": "#333333",
-        "icon.placeholder": "#666666",
+        "icon.placeholder": "#808080",
         "icon.accent": "#00A3FE",
         "link_text.hover": "#00A3FE",
         "title_bar.background": "#333333",
@@ -58,8 +58,8 @@
         "pane.focused_border": null,
         "search.match_background": "#FD980540",
         "search.active_match_background": "#FFFFFF66",
-        "scrollbar.thumb.background": "#66666680",
-        "scrollbar.thumb.hover_background": "#666666",
+        "scrollbar.thumb.background": "#80808080",
+        "scrollbar.thumb.hover_background": "#808080",
         "scrollbar.thumb.border": "#00000000",
         "scrollbar.track.background": "#00000000",
         "scrollbar.track.border": "#00000000",
@@ -69,14 +69,14 @@
         "editor.subheader.background": "#080808",
         "editor.active_line.background": "#080808",
         "editor.highlighted_line.background": "#080808",
-        "editor.line_number": "#666666",
+        "editor.line_number": "#808080",
         "editor.active_line_number": "#FD9805",
         "editor.hover_line_number": "#CACACA",
         "editor.invisible": "#333333",
         "editor.wrap_guide": "#080808",
         "editor.active_wrap_guide": "#080808",
         "editor.indent_guide": "#333333",
-        "editor.indent_guide_active": "#666666",
+        "editor.indent_guide_active": "#808080",
         "editor.document_highlight.read_background": "#333333",
         "editor.document_highlight.write_background": "#333333",
         "editor.document_highlight.bracket_background": "#333333",
@@ -85,7 +85,7 @@
         "terminal.bright_foreground": "#CACACA",
         "terminal.dim_foreground": "#858585",
         "terminal.ansi.black": "#000000",
-        "terminal.ansi.bright_black": "#666666",
+        "terminal.ansi.bright_black": "#808080",
         "terminal.ansi.dim_black": "#000000",
         "terminal.ansi.red": "#FE340A",
         "terminal.ansi.bright_red": "#FE562E",
@@ -145,18 +145,18 @@
         "renamed": "#00A3FE",
         "renamed.background": "#00A3FE1A",
         "renamed.border": "#00A3FE66",
-        "hidden": "#666666",
-        "hidden.background": "#6666661A",
-        "hidden.border": "#66666666",
-        "ignored": "#666666",
-        "ignored.background": "#6666661A",
-        "ignored.border": "#66666666",
-        "unreachable": "#666666",
-        "unreachable.background": "#6666661A",
-        "unreachable.border": "#66666666",
-        "predictive": "#666666",
-        "predictive.background": "#6666661A",
-        "predictive.border": "#66666666",
+        "hidden": "#808080",
+        "hidden.background": "#8080801A",
+        "hidden.border": "#80808066",
+        "ignored": "#808080",
+        "ignored.background": "#8080801A",
+        "ignored.border": "#80808066",
+        "unreachable": "#808080",
+        "unreachable.background": "#8080801A",
+        "unreachable.border": "#80808066",
+        "predictive": "#808080",
+        "predictive.background": "#8080801A",
+        "predictive.border": "#80808066",
         "players": [
           {
             "cursor": "#CACACA",
@@ -207,10 +207,10 @@
             "color": "#2CC81B"
           },
           "comment": {
-            "color": "#666666"
+            "color": "#808080"
           },
           "comment.doc": {
-            "color": "#666666"
+            "color": "#808080"
           },
           "constant": {
             "color": "#2CC81B"
@@ -248,7 +248,7 @@
             "color": "#FE66DF"
           },
           "hint": {
-            "color": "#666666"
+            "color": "#808080"
           },
           "keyword": {
             "color": "#FE340A"
@@ -275,7 +275,7 @@
             "color": "#FE340A"
           },
           "predictive": {
-            "color": "#666666"
+            "color": "#808080"
           },
           "preproc": {
             "color": "#FE66DF"
@@ -369,7 +369,7 @@
         "surface.background": "#FAFAFA",
         "elevated_surface.background": "#D0D0D0",
         "drop_target.background": "#D0D0D080",
-        "border": "#767676",
+        "border": "#6E6E6E",
         "border.variant": "#D0D0D0",
         "border.focused": "#0068C2",
         "border.selected": "#0068C2",
@@ -386,14 +386,14 @@
         "ghost_element.selected": "#BCBCBC",
         "ghost_element.disabled": "#FAFAFA",
         "text": "#262626",
-        "text.muted": "#767676",
-        "text.placeholder": "#767676",
+        "text.muted": "#6E6E6E",
+        "text.placeholder": "#6E6E6E",
         "text.disabled": "#D0D0D0",
         "text.accent": "#0068C2",
         "icon": "#262626",
-        "icon.muted": "#767676",
+        "icon.muted": "#6E6E6E",
         "icon.disabled": "#D0D0D0",
-        "icon.placeholder": "#767676",
+        "icon.placeholder": "#6E6E6E",
         "icon.accent": "#0068C2",
         "link_text.hover": "#0068C2",
         "title_bar.background": "#D0D0D0",
@@ -408,8 +408,8 @@
         "pane.focused_border": null,
         "search.match_background": "#A3620040",
         "search.active_match_background": "#00000066",
-        "scrollbar.thumb.background": "#76767680",
-        "scrollbar.thumb.hover_background": "#767676",
+        "scrollbar.thumb.background": "#6E6E6E80",
+        "scrollbar.thumb.hover_background": "#6E6E6E",
         "scrollbar.thumb.border": "#00000000",
         "scrollbar.track.background": "#00000000",
         "scrollbar.track.border": "#00000000",
@@ -419,14 +419,14 @@
         "editor.subheader.background": "#EEEEEE",
         "editor.active_line.background": "#EEEEEE",
         "editor.highlighted_line.background": "#EEEEEE",
-        "editor.line_number": "#767676",
+        "editor.line_number": "#6E6E6E",
         "editor.active_line_number": "#A36200",
         "editor.hover_line_number": "#262626",
         "editor.invisible": "#D0D0D0",
         "editor.wrap_guide": "#EEEEEE",
         "editor.active_wrap_guide": "#EEEEEE",
         "editor.indent_guide": "#D0D0D0",
-        "editor.indent_guide_active": "#767676",
+        "editor.indent_guide_active": "#6E6E6E",
         "editor.document_highlight.read_background": "#D0D0D0",
         "editor.document_highlight.write_background": "#D0D0D0",
         "editor.document_highlight.bracket_background": "#D0D0D0",
@@ -435,7 +435,7 @@
         "terminal.bright_foreground": "#262626",
         "terminal.dim_foreground": "#6E6E6E",
         "terminal.ansi.black": "#000000",
-        "terminal.ansi.bright_black": "#767676",
+        "terminal.ansi.bright_black": "#6E6E6E",
         "terminal.ansi.dim_black": "#000000",
         "terminal.ansi.red": "#C82300",
         "terminal.ansi.bright_red": "#E0350C",
@@ -495,18 +495,18 @@
         "renamed": "#0068C2",
         "renamed.background": "#0068C21A",
         "renamed.border": "#0068C266",
-        "hidden": "#767676",
-        "hidden.background": "#7676761A",
-        "hidden.border": "#76767666",
-        "ignored": "#767676",
-        "ignored.background": "#7676761A",
-        "ignored.border": "#76767666",
-        "unreachable": "#767676",
-        "unreachable.background": "#7676761A",
-        "unreachable.border": "#76767666",
-        "predictive": "#767676",
-        "predictive.background": "#7676761A",
-        "predictive.border": "#76767666",
+        "hidden": "#6E6E6E",
+        "hidden.background": "#6E6E6E1A",
+        "hidden.border": "#6E6E6E66",
+        "ignored": "#6E6E6E",
+        "ignored.background": "#6E6E6E1A",
+        "ignored.border": "#6E6E6E66",
+        "unreachable": "#6E6E6E",
+        "unreachable.background": "#6E6E6E1A",
+        "unreachable.border": "#6E6E6E66",
+        "predictive": "#6E6E6E",
+        "predictive.background": "#6E6E6E1A",
+        "predictive.border": "#6E6E6E66",
         "players": [
           {
             "cursor": "#262626",
@@ -557,10 +557,10 @@
             "color": "#237A12"
           },
           "comment": {
-            "color": "#767676"
+            "color": "#6E6E6E"
           },
           "comment.doc": {
-            "color": "#767676"
+            "color": "#6E6E6E"
           },
           "constant": {
             "color": "#237A12"
@@ -598,7 +598,7 @@
             "color": "#B0128F"
           },
           "hint": {
-            "color": "#767676"
+            "color": "#6E6E6E"
           },
           "keyword": {
             "color": "#C82300"
@@ -625,7 +625,7 @@
             "color": "#C82300"
           },
           "predictive": {
-            "color": "#767676"
+            "color": "#6E6E6E"
           },
           "preproc": {
             "color": "#B0128F"

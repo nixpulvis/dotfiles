@@ -5,7 +5,7 @@ import = ["nixpulvis-indexed.toml"]
 # Bright black is the conventional "muted gray" for de-emphasized text: fish
 # autosuggestions, vim comments, eza's dashes. Keep it readable on the
 # background; same gray as index 242.
-black = "#666666"
+black = "#808080"
 blue = "#64B3FE"
 cyan = "#A2F9FE"
 green = "#54E53E"

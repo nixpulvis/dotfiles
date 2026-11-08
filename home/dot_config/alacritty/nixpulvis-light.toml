@@ -23,7 +23,7 @@ white = "#DADADA"
 
 [colors.bright]
 # Same role as in nixpulvis-dark.toml: the muted gray for de-emphasized text.
-black = "#767676"
+black = "#6E6E6E"
 red = "#E0350C"
 green = "#33A01F"
 yellow = "#A36200"
