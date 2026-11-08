@@ -50,3 +50,41 @@ fi
   echo "wt adopt: other worktrees are still outside $top; move them with wt step relocate" >&2
 {% if args %}wt switch {{ args }}{% else %}wt switch "$b"{% endif %}
 '''
+
+# Check out a GitHub PR through a named remote for its head repo (added if
+# missing, named after the lowercased owner) so the branch tracks
+# <remote>/<branch> like any other. An existing local branch with no upstream
+# gets one; one tracking something else is refused. Then switches to it.
+pr = '''
+set -eu
+die() { echo "wt pr: $*" >&2; exit 1; }
+n='{{ args }}'
+[ -n "$n" ] || die "usage: wt pr <number>"
+info=$(gh pr view "$n" --json headRepository,headRefName --jq '"\(.headRepository.nameWithOwner) \(.headRefName)"')
+repo=${info% *}
+branch=${info#* }
+url="https://github.com/$repo.git"
+remote=$(git remote -v | awk -v u="$url" '$2 == u && $3 == "(fetch)" { print $1; exit }')
+if [ -z "$remote" ]; then
+  remote=$(printf %s "${repo%%/*}" | tr '[:upper:]' '[:lower:]')
+  git remote add "$remote" "$url"
+fi
+git fetch "$remote" "+refs/heads/$branch:refs/remotes/$remote/$branch"
+if git show-ref -q --verify "refs/heads/$branch"; then
+  up=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$branch")
+  if [ -z "$up" ]; then
+    git branch -u "$remote/$branch" "$branch"
+  elif [ "$up" != "$remote/$branch" ]; then
+    die "local $branch already tracks $up, not $remote/$branch"
+  fi
+else
+  git branch --track "$branch" "$remote/$branch"
+fi
+wt switch "$branch"
+'''
+
+[list]
+columns = ["branch", "status", "working-diff", "ahead-behind", "branch-diff", "upstream", "Tracking", "ci", "commit", "age"]
+
+[list.custom-columns.Tracking]
+template = '{{ git.branch.remote }}/{{ git.branch.merge | replace("refs/heads/", "") }}'
