@@ -16,10 +16,6 @@ shell:
   path:
     - $HOME/.rbenv/bin
     - /usr/local/bin
-    # Scripts from the nixpulvis.com repo (e.g. scribe). The code directory is
-    # ~/Code on some machines and ~/code on others (the same directory on
-    # case-insensitive macOS, hence first-match).
-    - [$HOME/Code/nixpulvis.com/bin, $HOME/code/nixpulvis.com/bin]
     - $HOME/.bin
     - $HOME/.cargo/bin
     - $HOME/.local/bin
