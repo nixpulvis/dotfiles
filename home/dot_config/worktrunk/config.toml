@@ -2,7 +2,51 @@
 # a worktree per branch at <project>/<branch> (/ in branch names becomes -).
 # For a bare repo {{ repo_path }} is the .git directory itself. A regular clone
 # would put its worktrees beside it in the parent directory instead, so clone
-# with `git clone --bare <url> <project>/.git` (see worktrunk.dev/tips-patterns).
+# with `git clone --bare <url> <project>/.git` (see worktrunk.dev/tips-patterns),
+# or convert an existing clone in place with `wt adopt` (below).
 # An {% if %} on repo_path could fall back to <repo>.<branch> there, but wt
 # then warns about the path on every switch in a bare repo.
 worktree-path = "{{ repo_path }}/../{{ branch | sanitize }}"
+
+[aliases]
+# Convert a regular clone at <project> into the layout above: <project>/.git
+# becomes the bare repo and the checkout moves to <project>/<branch>, keeping
+# staged, unstaged, untracked and ignored files. Then switches to that worktree,
+# or runs `wt switch <args>` if given (e.g. `wt adopt -c feature`).
+adopt = '''
+set -eu
+die() { echo "wt adopt: $*" >&2; exit 1; }
+common=$(git rev-parse --path-format=absolute --git-common-dir)
+top=$(dirname "$common")
+[ "$(basename "$common")" = .git ] || die "$common is not a <project>/.git directory"
+[ "$(git --git-dir="$common" config --bool core.bare || echo false)" = false ] || die "$top is already a bare layout"
+cd "$top"
+b=$(git symbolic-ref -q --short HEAD) || die "$top has a detached HEAD"
+name=$(printf %s "$b" | tr '/\\' '--')
+for f in MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD BISECT_LOG rebase-merge rebase-apply; do
+  [ ! -e ".git/$f" ] || die "finish the in-progress operation first (.git/$f)"
+done
+[ ! -d .git/modules ] || die "repos with submodules are not supported"
+
+stage=$(mktemp -d "$top/.wt-adopt.XXXXXX")
+find . -mindepth 1 -maxdepth 1 ! -name .git ! -name "${stage##*/}" -exec mv {} "$stage"/ \;
+git config core.bare true
+if ! git worktree add -q --no-checkout "$name" "$b"; then
+  git config core.bare false
+  find "$stage" -mindepth 1 -maxdepth 1 -exec mv {} . \;
+  rmdir "$stage"
+  die "git worktree add failed; restored $top"
+fi
+gd=$(git -C "$name" rev-parse --absolute-git-dir)
+[ ! -f .git/index ] || mv .git/index "$gd/index"
+find "$stage" -mindepth 1 -maxdepth 1 -exec mv {} "$name"/ \;
+rmdir "$stage"
+
+d='{{ default_branch }}'
+if [ -n "$d" ] && git show-ref -q --verify "refs/heads/$d"; then
+  git symbolic-ref HEAD "refs/heads/$d"
+fi
+[ "$(git worktree list --porcelain | grep -c '^worktree ')" -le 2 ] ||
+  echo "wt adopt: other worktrees are still outside $top; move them with wt step relocate" >&2
+{% if args %}wt switch {{ args }}{% else %}wt switch "$b"{% endif %}
+'''
