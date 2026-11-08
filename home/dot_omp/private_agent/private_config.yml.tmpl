@@ -1,7 +1,7 @@
 {{ if eq .chezmoi.os "windows" -}}
 shellPath: C:\Program Files\Git\bin\bash.exe
 {{ end -}}
-setupVersion: 2
+setupVersion: 3
 modelRoles:
   commit: anthropic/claude-haiku-5-5
   default: anthropic/claude-opus-5-5:high
@@ -87,3 +87,6 @@ startup:
   # Hides the welcome block (logo, version, Tip) and startup status messages;
   # omp has no tip-only toggle.
   quiet: true
+update:
+  # Installs are pinned (brew tap, .chezmoidata/omp.yaml); no self-update.
+  auto: false
