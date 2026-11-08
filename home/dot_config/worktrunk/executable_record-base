@@ -1,0 +1,104 @@
+#!/bin/sh
+# Record each local branch's base for the Base and Base…± columns in wt list:
+# the nearest local branch it sits on top of, or the default branch if none.
+# Branches already contained in the default branch (merged, or never moved past
+# it) don't count as bases, and orphan branches (no history shared with the
+# default branch) get none. A recorded base that gained commits since the
+# branch forked from it stays its base. Writes branch.<name>.base, .baseahead
+# and .basebehind (commits ahead/behind the base), and .baseadded and
+# .basedeleted (lines changed since the fork point), skipping unchanged values.
+#
+# Installed as a global git reference-transaction hook (hook.wt-base in
+# ~/.gitconfig), so any commit, rebase, reset, or branch create/delete/rename
+# refreshes it, in repos wt manages (those with a .git/wt directory).
+#
+# A failing reference-transaction hook aborts the ref update, and git runs the
+# hook six times per update. So the hook.wt-base.command one-liner filters
+# with shell builtins, exiting 0 unless the phase is committed, a refs/heads/
+# ref changed, and this script exists; only then does it exec this script with
+# the phase as an argument. With an argument, the script checks for .git/wt
+# and hands the work to a detached run git doesn't wait on. With no arguments
+# it refreshes the current repo in the foreground.
+
+set -uf
+
+if [ $# -gt 0 ]; then
+  common=$(git rev-parse --git-common-dir 2>/dev/null) || exit 0
+  [ -d "$common/wt" ] || exit 0
+  "$0" </dev/null >/dev/null 2>&1 &
+  exit 0
+fi
+
+set_config() {
+  [ "$(git config --get "$1")" = "$2" ] || git config "$1" "$2"
+}
+
+update() {
+  d=$(wt config state default-branch get 2>/dev/null) && [ -n "$d" ] || return 0
+  d=refs/heads/$d
+  in_default=" $(git for-each-ref --merged="$d" --format='%(refname)' refs/heads/ | tr '\n' ' ') "
+  for b in $(git for-each-ref --format='%(refname)' refs/heads/); do
+    [ "$b" != "$d" ] || continue
+    name=${b#refs/heads/}
+    if ! git merge-base "$d" "$b" >/dev/null; then
+      # Orphan: no history shared with the default branch, so no base.
+      for k in base baseahead basebehind baseadded basedeleted; do
+        git config --unset-all "branch.$name.$k"
+      done
+      continue
+    fi
+    base=$d
+    best=
+    # Strict ancestors of b: merged into it, but not at or past its tip.
+    for c in $(git for-each-ref --merged="$b" --no-contains="$b" --format='%(refname)' refs/heads/); do
+      if [ "$c" != "$d" ]; then
+        case $in_default in *" $c "*) continue ;; esac
+      fi
+      n=$(git rev-list --count "$c..$b")
+      if [ -z "$best" ] || [ "$n" -lt "$best" ]; then
+        best=$n
+        base=$c
+      fi
+    done
+    # Keep the recorded base r when it moved on (new commits b hasn't been
+    # rebased onto): b still forks from r at a commit the default branch lacks,
+    # at or above the nearest ancestor found. Rebasing b elsewhere, or r being
+    # merged or rewritten, moves that fork point and drops r.
+    r=refs/heads/$(git config --get "branch.$name.base")
+    if [ "$r" != "$base" ] && git show-ref -q --verify "$r" &&
+      ! git merge-base --is-ancestor "$b" "$r" &&
+      fork=$(git merge-base "$r" "$b") &&
+      ! git merge-base --is-ancestor "$fork" "$d" &&
+      git merge-base --is-ancestor "$base" "$fork"; then
+      base=$r
+    fi
+    set_config "branch.$name.base" "${base#refs/heads/}"
+    set_config "branch.$name.baseahead" "$(git rev-list --count "$base..$b")"
+    set_config "branch.$name.basebehind" "$(git rev-list --count "$b..$base")"
+    # Lines changed since the fork point, counted like main…±: renames detected
+    # (-M), via plumbing so diff config doesn't change the counts.
+    lines=$(git diff-tree -r -M --numstat "$(git merge-base "$base" "$b")" "$b" |
+      awk '{ added += $1; deleted += $2 } END { print added + 0, deleted + 0 }')
+    set_config "branch.$name.baseadded" "${lines% *}"
+    set_config "branch.$name.basedeleted" "${lines#* }"
+  done
+}
+
+# Ref updates can land while a run is in flight (a stack rebase moves several
+# branches), so runs serialize on a lock dir and the holder repeats while
+# another update is pending. A lock left by a killed run expires after 5 min.
+common=$(git rev-parse --path-format=absolute --git-common-dir) || exit 1
+lock=$common/wt-base.lock
+pending=$common/wt-base.pending
+: >"$pending"
+find "$lock" -maxdepth 0 -mmin +5 -exec rmdir {} + 2>/dev/null
+while [ -e "$pending" ] && mkdir "$lock" 2>/dev/null; do
+  trap 'rmdir "$lock"' EXIT
+  trap 'exit 1' HUP INT TERM
+  while [ -e "$pending" ]; do
+    rm -f "$pending"
+    update
+  done
+  rmdir "$lock"
+  trap - EXIT HUP INT TERM
+done
