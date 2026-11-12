@@ -1,24 +1,30 @@
 #!/bin/sh
-# Record each local branch's base for the Base and Base…± columns in wt list:
-# the nearest local branch it sits on top of, or the default branch if none.
-# Branches already contained in the default branch (merged, or never moved past
-# it) don't count as bases, and orphan branches (no history shared with the
-# default branch) get none. A recorded base that gained commits since the
-# branch forked from it stays its base. Writes branch.<name>.base, .baseahead
-# and .basebehind (commits ahead/behind the base), and .baseadded and
-# .basedeleted (lines changed since the fork point), skipping unchanged values.
+# Record each branch's base for the Base↕ and Base…± columns in wt list: the
+# nearest branch it sits on top of, or the default branch if none. A local
+# branch's candidates are the local branches. A remote branch's (origin/foo)
+# are the local and remote branches, less the local branches tracking it, and
+# its default is the remote's copy of the default branch (origin/main) when
+# there is one. Branches already contained in the default branch (merged, or
+# never moved past it) don't count as bases, and orphan branches (no history
+# shared with the default branch) get none. A recorded base that gained commits
+# since the branch forked from it stays its base. Writes branch.<name>.base,
+# .baseahead and .basebehind (commits ahead/behind the base), and .baseadded
+# and .basedeleted (lines changed since the fork point), skipping unchanged
+# values; <name> is origin/foo for a remote branch, which is where wt list
+# --remotes reads that row's git.branch.* from. Keys of branches that no longer
+# exist (a pruned remote branch) are removed.
 #
 # Installed as a global git reference-transaction hook (hook.wt-base in
-# ~/.gitconfig), so any commit, rebase, reset, or branch create/delete/rename
-# refreshes it, in repos wt manages (those with a .git/wt directory).
+# ~/.gitconfig), so any commit, rebase, reset, branch create/delete/rename, or
+# fetch refreshes it, in repos wt manages (those with a .git/wt directory).
 #
 # A failing reference-transaction hook aborts the ref update, and git runs the
 # hook six times per update. So the hook.wt-base.command one-liner filters
 # with shell builtins, exiting 0 unless the phase is committed, a refs/heads/
-# ref changed, and this script exists; only then does it exec this script with
-# the phase as an argument. With an argument, the script checks for .git/wt
-# and hands the work to a detached run git doesn't wait on. With no arguments
-# it refreshes the current repo in the foreground.
+# or refs/remotes/ ref changed, and this script exists; only then does it exec
+# this script with the phase as an argument. With an argument, the script
+# checks for .git/wt and hands the work to a detached run git doesn't wait on.
+# With no arguments it refreshes the current repo in the foreground.
 
 set -uf
 
@@ -33,54 +39,112 @@ set_config() {
   [ "$(git config --get "$1")" = "$2" ] || git config "$1" "$2"
 }
 
-update() {
-  d=$(wt config state default-branch get 2>/dev/null) && [ -n "$d" ] || return 0
-  d=refs/heads/$d
-  in_default=" $(git for-each-ref --merged="$d" --format='%(refname)' refs/heads/ | tr '\n' ' ') "
-  for b in $(git for-each-ref --format='%(refname)' refs/heads/); do
-    [ "$b" != "$d" ] || continue
-    name=${b#refs/heads/}
-    if ! git merge-base "$d" "$b" >/dev/null; then
-      # Orphan: no history shared with the default branch, so no base.
-      for k in base baseahead basebehind baseadded basedeleted; do
-        git config --unset-all "branch.$name.$k"
-      done
-      continue
+# Refnames under the given prefixes, skipping symrefs like origin/HEAD.
+refs() {
+  git for-each-ref --format='%(if)%(symref)%(then)%(else)%(refname)%(end)' "$@"
+}
+
+# record <branch> <default> <prefix>...: record the base of branch (a full
+# refname) against default, choosing among branches under the given prefixes.
+# Reads $tracking from update.
+record() {
+  b=$1
+  d=$2
+  shift 2
+  name=${b#refs/heads/}
+  name=${name#refs/remotes/}
+  if ! git merge-base "$d" "$b" >/dev/null; then
+    # Orphan: no history shared with the default branch, so no base.
+    for k in base baseahead basebehind baseadded basedeleted; do
+      git config --unset-all "branch.$name.$k"
+    done
+    return
+  fi
+  in_default=" $(refs --merged="$d" "$@" | tr '\n' ' ') "
+  base=$d
+  best=
+  # Strict ancestors of b: merged into it, but not at or past its tip.
+  for c in $(refs --merged="$b" --no-contains="$b" "$@"); do
+    if [ "$c" != "$d" ]; then
+      case $in_default in *" $c "*) continue ;; esac
     fi
-    base=$d
-    best=
-    # Strict ancestors of b: merged into it, but not at or past its tip.
-    for c in $(git for-each-ref --merged="$b" --no-contains="$b" --format='%(refname)' refs/heads/); do
-      if [ "$c" != "$d" ]; then
-        case $in_default in *" $c "*) continue ;; esac
-      fi
-      n=$(git rev-list --count "$c..$b")
-      if [ -z "$best" ] || [ "$n" -lt "$best" ]; then
-        best=$n
-        base=$c
+    # A local branch tracking b trails it rather than being its base.
+    case $tracking in *" $c>$b "*) continue ;; esac
+    n=$(git rev-list --count "$c..$b")
+    # On a tie (f1 at the same commit as origin/f1) a remote branch keeps the
+    # remote base; candidates come sorted with refs/heads/ first.
+    if [ -z "$best" ] || [ "$n" -lt "$best" ] || {
+      [ "$n" = "$best" ] && [ "${c#refs/remotes/}" != "$c" ] && [ "${base#refs/heads/}" != "$base" ]
+    }; then
+      best=$n
+      base=$c
+    fi
+  done
+  # Keep the recorded base r when it moved on (new commits b hasn't been
+  # rebased onto): b still forks from r at a commit the default branch lacks,
+  # at or above the nearest ancestor found. Rebasing b elsewhere, or r being
+  # merged or rewritten, moves that fork point and drops r. A local r at the
+  # same commit as a remote base is the tie above, which the remote base wins.
+  r=$(git config --get "branch.$name.base")
+  rref=
+  if [ -n "$r" ]; then
+    for p in "$@"; do
+      if git show-ref -q --verify "$p$r"; then
+        rref=$p$r
+        break
       fi
     done
-    # Keep the recorded base r when it moved on (new commits b hasn't been
-    # rebased onto): b still forks from r at a commit the default branch lacks,
-    # at or above the nearest ancestor found. Rebasing b elsewhere, or r being
-    # merged or rewritten, moves that fork point and drops r.
-    r=refs/heads/$(git config --get "branch.$name.base")
-    if [ "$r" != "$base" ] && git show-ref -q --verify "$r" &&
-      ! git merge-base --is-ancestor "$b" "$r" &&
-      fork=$(git merge-base "$r" "$b") &&
-      ! git merge-base --is-ancestor "$fork" "$d" &&
-      git merge-base --is-ancestor "$base" "$fork"; then
-      base=$r
+  fi
+  if [ -n "$rref" ] && [ "$rref" != "$base" ] &&
+    ! { [ "${rref#refs/heads/}" != "$rref" ] && [ "${base#refs/remotes/}" != "$base" ] &&
+      [ "$(git rev-parse "$rref")" = "$(git rev-parse "$base")" ]; } &&
+    ! git merge-base --is-ancestor "$b" "$rref" &&
+    fork=$(git merge-base "$rref" "$b") &&
+    ! git merge-base --is-ancestor "$fork" "$d" &&
+    git merge-base --is-ancestor "$base" "$fork"; then
+    base=$rref
+  fi
+  short=${base#refs/heads/}
+  set_config "branch.$name.base" "${short#refs/remotes/}"
+  set_config "branch.$name.baseahead" "$(git rev-list --count "$base..$b")"
+  set_config "branch.$name.basebehind" "$(git rev-list --count "$b..$base")"
+  # Lines changed since the fork point, counted like main…±: renames detected
+  # (-M), via plumbing so diff config doesn't change the counts.
+  lines=$(git diff-tree -r -M --numstat "$(git merge-base "$base" "$b")" "$b" |
+    awk '{ added += $1; deleted += $2 } END { print added + 0, deleted + 0 }')
+  set_config "branch.$name.baseadded" "${lines% *}"
+  set_config "branch.$name.basedeleted" "${lines#* }"
+}
+
+update() {
+  def=$(wt config state default-branch get 2>/dev/null) && [ -n "$def" ] || return 0
+  # "<local branch>><its upstream>" pairs, so record can skip a branch's
+  # local copies.
+  tracking=" $(git for-each-ref --format='%(refname)>%(upstream)' refs/heads/ | tr '\n' ' ') "
+  for x in $(refs refs/heads/); do
+    [ "$x" != "refs/heads/$def" ] || continue
+    record "$x" "refs/heads/$def" refs/heads/
+  done
+  for remote in $(git remote); do
+    rdef=refs/remotes/$remote/$def
+    git show-ref -q --verify "$rdef" || rdef=refs/heads/$def
+    for x in $(refs "refs/remotes/$remote/"); do
+      [ "$x" != "$rdef" ] || continue
+      record "$x" "$rdef" refs/heads/ refs/remotes/
+    done
+  done
+  # Drop the keys of branches that are gone. Deleting a local branch deletes
+  # its section, but pruning a remote branch leaves branch.origin/foo behind;
+  # its section goes too once nothing else is in it.
+  for x in $(git config --local --name-only --get-regexp '^branch\..*\.base$' | sed 's/^branch\.//; s/\.base$//'); do
+    if git show-ref -q --verify "refs/heads/$x" || git show-ref -q --verify "refs/remotes/$x"; then
+      continue
     fi
-    set_config "branch.$name.base" "${base#refs/heads/}"
-    set_config "branch.$name.baseahead" "$(git rev-list --count "$base..$b")"
-    set_config "branch.$name.basebehind" "$(git rev-list --count "$b..$base")"
-    # Lines changed since the fork point, counted like main…±: renames detected
-    # (-M), via plumbing so diff config doesn't change the counts.
-    lines=$(git diff-tree -r -M --numstat "$(git merge-base "$base" "$b")" "$b" |
-      awk '{ added += $1; deleted += $2 } END { print added + 0, deleted + 0 }')
-    set_config "branch.$name.baseadded" "${lines% *}"
-    set_config "branch.$name.basedeleted" "${lines#* }"
+    for k in base baseahead basebehind baseadded basedeleted; do
+      git config --unset-all "branch.$x.$k"
+    done
+    git config --local --name-only --list | awk -v p="branch.$x." 'index($0, p) == 1 { f = 1 } END { exit f }' &&
+      git config --remove-section "branch.$x"
   done
 }
 

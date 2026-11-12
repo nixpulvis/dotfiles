@@ -83,21 +83,28 @@ fi
 wt switch "$branch"
 '''
 
-# wt list with Base and Base…± (below) in place of main↕ and main…±.
+# wt list with Base↕ and Base…± (below) in place of main↕ and main…±. The hook
+# behind those columns skips repos until wt has created .git/wt, which a fresh
+# clone hasn't, so with nothing recorded yet this records first.
 list-base = '''
-wt --config-set 'list.columns=["branch", "status", "working-diff", "Base", "Base…±", "upstream", "Tracking", "ci", "commit", "age"]' list {{ args }}
+git config --get-regexp '^branch\..*\.base$' >/dev/null || ~/.config/worktrunk/record-base
+wt --config-set 'list.columns=["branch", "status", "working-diff", "Base↕", "Base…±", "upstream", "Tracking", "ci", "commit", "age"]' list {{ args }}
 '''
+
+# Record every branch's base now, in the foreground: for a repo that predates
+# the hook or a change to record-base.
+record-base = '~/.config/worktrunk/record-base'
 
 [list]
 columns = ["branch", "status", "working-diff", "ahead-behind", "branch-diff", "upstream", "Tracking", "ci", "commit", "age"]
 
-# Base and Base…± stand in for main↕ and main…± in wt list-base, measured
+# Base↕ and Base…± stand in for main↕ and main…± in wt list-base, measured
 # against each branch's base instead of the default branch: commits
 # ahead/behind then the base's name, and lines changed since the fork point.
 # They read branch.<name>.base, .baseahead, .basebehind, .baseadded, and
 # .basedeleted, which ~/.config/worktrunk/record-base keeps current as a global
 # git reference-transaction hook (hook.wt-base in ~/.gitconfig).
-[list.custom-columns.Base]
+[list.custom-columns."Base↕"]
 template = '{% if git.branch.base %}{% set a = git.branch.baseahead | default("") | string %}{% set b = git.branch.basebehind | default("") | string %}{% if a not in ["", "0"] %}↑{{ a }} {% endif %}{% if b not in ["", "0"] %}↓{{ b }} {% endif %}{{ git.branch.base }}{% endif %}'
 
 [list.custom-columns."Base…±"]
