@@ -32,55 +32,155 @@ If `chezmoi` is already installed:
 chezmoi init --apply nixpulvis
 ```
 
-## Components
+## Features
 
-| Group       | Applies to                                  | Contents                                               |
-| ----------- | ------------------------------------------- | ------------------------------------------------------ |
-| `base`      | everywhere                                  | git, bash, zsh, fish, vim/nvim, weechat, omp, `~/.bin` |
-| `graphical` | macOS/Windows always, Linux by prompt       | alacritty + fonts                                      |
-| `wm`        | Linux only, by prompt (implies `graphical`) | sway, i3, i3blocks, rofi, zathura, `.xinitrc`, `.X`    |
+Everything beyond the shells and git is split into features: a set of
+packages plus the files that configure them, switched on or off as a unit.
+They're defined in one table,
+[`home/.chezmoidata/features.yaml`](home/.chezmoidata/features.yaml):
 
-`chezmoi init` asks for git name, email, and signing key, an IRC nick, and
-whether to set up the WeeChat ZNC login. On Linux it also asks whether the
-machine is graphical (defaults to no on WSL) and whether to install the `wm`
-stack. The answers are saved per machine and reused on later runs. Use
+```yaml
+neovim:
+  enabled: true
+  requires: [vim]                          # vim holds the shared color scheme
+  targets: [.config/nvim, AppData/Local/nvim]
+  packages:
+    neovim: {brew: neovim, pacman: neovim, apt: neovim, winget: Neovim.Neovim}
+```
+
+| Key        | Meaning                                                                 |
+| ---------- | ----------------------------------------------------------------------- |
+| `enabled`  | Required. The default, overridable per environment and per machine.     |
+| `group`    | Another feature that must also be on (`graphical` for alacritty, fonts, zed, wm). |
+| `os`       | The OSes it applies to. Default: all.                                   |
+| `requires` | Features that must be on whenever this one is; rendering fails otherwise. |
+| `targets`  | Paths under `~` that are managed only while it's on.                     |
+| `packages` | Package name to `brew`, `brew_cask`, `pacman`, `apt`, `winget` names.    |
+
+`core` (bash, the `~/.config/sh` files shared with zsh, and git) is always on.
+The rest: `fish`, `zsh`, `vim`, `neovim`, `rust`, `clang`, `ripgrep`, `fd`,
+`bat`, `fzf`, `eza`, `delta`, `cli` (jq, dust, fortune), `worktrunk`,
+`weechat`, `pass`, `backup`, `omp`, `sshAgent`, `graphical`, `alacritty`,
+`fonts`, `zed`, `wm` and `shareNetwork`.
+
+[`home/.chezmoitemplates/features`](home/.chezmoitemplates/features) resolves
+which are on for this machine: `enabled`, its `os`, and its `group`. It also
+checks `requires`, which is kept for real breakage (Neovim loads its color
+scheme from `~/.vim`, the backup script reads its passphrase with `pass`).
+Config that merely uses another tool checks for it when it runs, or falls back
+when the tool's feature is off: `EDITOR` becomes `vim` without `neovim`, git's
+diff tool `vimdiff`, the `l`/`ll`/`la` aliases plain `ls`, and Alacritty starts
+the login shell without `fish`. Templates use the result as
+`{{ $f := includeTemplate "features" . | fromJson }}`, `.chezmoiignore`
+skips the targets of features that are off, the install scripts install only
+enabled features' packages, and [`shell.yaml`](home/.chezmoidata/shell.yaml)
+entries can name a `feature`.
+
+A feature's settings come from three places, later ones winning:
+
+1. `features.yaml` here.
+2. Later `.chezmoidata/` files, e.g. a consuming repository's
+   `.chezmoidata/zz-env.yaml` (see [Overlays](#overlays)). Files merge key by
+   key in name order, so `features: {zed: {enabled: false}}` only touches
+   zed. Lists are replaced whole, which is why `packages` is a map: set one to
+   `null` to drop it.
+3. This machine's chezmoi config, where `chezmoi init` stores its answers.
+
+`chezmoi init` asks for git name, email, and signing key, and these:
+
+| Question                    | Key                         | Asked on     | Default                    |
+| --------------------------- | --------------------------- | ------------ | -------------------------- |
+| Graphical machine?          | `features.graphical`        | Linux        | no on WSL, else yes        |
+| Window-manager stack?       | `features.wm`               | Linux        | no; yes implies graphical  |
+| Install omp?                | `features.omp`              | all          | yes                        |
+| Set up WeeChat? (and nick)  | `features.weechat`          | macOS, Linux | macOS yes, Linux graphical |
+| Install software?           | `installPackages`           | all          | yes                        |
+
+`graphical` is always on for macOS and Windows. `installPackages` isn't a
+feature: no means config only, with no packages, omp download or Windows fonts.
+The answers are saved per machine and reused on later runs. Use
 `chezmoi init --prompt` to answer them again.
-
-The gating is in [`home/.chezmoiignore`](home/.chezmoiignore) and the prompts
-are in [`home/.chezmoi.toml.tmpl`](home/.chezmoi.toml.tmpl). A few things are
-also gated by OS: `~/.bin/share-network` is Linux only and WeeChat is skipped
-on Windows.
 
 `.chezmoi.toml.tmpl` is the template for this machine's `chezmoi` config,
 `~/.config/chezmoi/chezmoi.toml`. `chezmoi init` renders it, which asks the
 questions above and detects WSL, and saves the results in the config's `[data]`
-section. Every other template reads them from there (e.g. `.graphical` or
-`.ircnick`). Only `chezmoi init` renders it, so when it changes (your edit or a
-pull) the saved config is stale until you re-run init. The
+section. It can't read `.chezmoidata`, so a consuming repository can't change
+these questions' defaults. Only `chezmoi init` renders it, so when it changes
+(your edit or a pull) the saved config is stale until you re-run init. The
 `run_before_00-config-drift-check` script catches this and prints a banner.
 `chezmoi apply` keeps going, `chezmoi update` stops. Run `chezmoi update --init`
 (or `chezmoi init`) to regenerate the config from your saved answers.
 
 ### Packages
 
-Packages are listed in
-[`home/.chezmoidata/packages.yaml`](home/.chezmoidata/packages.yaml), grouped
-by component, with the name for each package manager:
-
-```yaml
-- {name: ripgrep, brew: ripgrep, pacman: ripgrep, apt: ripgrep, winget: BurntSushi.ripgrep.MSVC}
-```
-
-`run_once_after_10-install-packages.{sh,ps1}.tmpl` installs them with Homebrew
-on macOS, `pacman` or `apt` on Linux, and `winget` on Windows. Leave out a
-manager's key and the package is skipped there. To add a tool, add a line to
-the YAML.
+`run_once_after_10-install-packages.{sh,ps1}.tmpl` installs the enabled
+features' packages with Homebrew on macOS, `pacman` or `apt` on Linux, and
+`winget` on Windows. Leave out a manager's key and the package is skipped
+there. To add a tool, add it to a feature's `packages` in `features.yaml`.
 
 omp (the oh-my-pi coding agent) isn't in any distro repo or winget. macOS gets
-it from a Homebrew tap (the `omp` line in `packages.yaml`). Linux and Windows
-download a pinned release binary into `~/.bin` with
+it from a Homebrew tap (the omp feature's package). Linux and Windows download a
+pinned release binary into `~/.bin` with
 `run_once_after_15-install-omp.{sh,ps1}.tmpl`. To upgrade, bump the version and
 checksums in [`home/.chezmoidata/omp.yaml`](home/.chezmoidata/omp.yaml).
+
+Neovim's language servers come with the features for their languages. `neovim`
+installs lua-language-server, for its own config. Debian/Ubuntu have no package
+for it, so Linux without pacman downloads a pinned release with
+`run_once_after_16-install-lua-language-server.sh.tmpl`
+([`home/.chezmoidata/lua-language-server.yaml`](home/.chezmoidata/lua-language-server.yaml)).
+`rust` installs rustup, then the package script installs the stable toolchain
+if there's none, and the rust-analyzer and rust-src components, which match the
+toolchain that way. Homebrew's rustup is keg-only, so `shell.yaml` puts its
+`bin` on PATH. `clang` installs clang and clangd; macOS has both from the Xcode
+Command Line Tools, and Windows gets neither, since LLVM's package doesn't put
+them on PATH.
+
+Zed has no apt package, and worktrunk none on apt or winget, so they aren't
+installed there.
+
+## Overlays
+
+Another chezmoi source repository can build on this one (for example by
+merging it) and add to or take away from it without editing its files.
+
+**Adding.** A consuming repository adds a template at
+`home/.chezmoitemplates/overlay/<target path>`. The public file renders it with
+the same data and appends it at the end. Overlays are optional, and
+`.chezmoitemplates` never reaches `$HOME`.
+
+| Target                       | Overlay                                                  |
+| ---------------------------- | -------------------------------------------------------- |
+| `~/.gitconfig`               | `home/.chezmoitemplates/overlay/.gitconfig`              |
+| `~/.gitignore`               | `home/.chezmoitemplates/overlay/.gitignore`              |
+| `~/.config/sh/rc.sh`         | `home/.chezmoitemplates/overlay/.config/sh/rc.sh`        |
+| `~/.config/fish/config.fish` | `home/.chezmoitemplates/overlay/.config/fish/config.fish` |
+| `~/.config/nvim/init.lua`    | `home/.chezmoitemplates/overlay/.config/nvim/init.lua`   |
+| `.chezmoiignore` patterns    | `home/.chezmoitemplates/overlay-chezmoiignore`           |
+
+Being last, an overlay's settings win where the format allows: git's last value,
+a redefined shell alias, Lua run after the rest of `init.lua` (errors in it
+still show). chezmoi doesn't allow a `.chezmoiignore` inside
+`.chezmoitemplates`, hence that one's name. Only files with the hook support an
+overlay. To add one, end the template with:
+
+```gotemplate
+{{- includeTemplate "overlay-hook" (dict "path" ".config/foo/bar.toml" "data" .) }}
+```
+
+**Taking away.** Turn features off in a `.chezmoidata/` file of its own (see
+[Features](#features)): that drops their files, packages and the config that
+depends on them. To drop single files, list them in the `.chezmoiignore`
+overlay. If public config needs to be removable in finer pieces, add a feature
+or a `feature:` key for it here rather than working around it there.
+
+Machine-specific identity and feature choices (git name and email,
+`graphical`, `installPackages`, ...) belong in chezmoi's generated local config
+from `chezmoi init`, not in an overlay or the repository.
+
+A consuming repository shouldn't edit files this repository manages. Use an
+overlay or a data file, or deliberately take over the whole file and own it
+from then on.
 
 ## Layout
 
@@ -88,10 +188,12 @@ checksums in [`home/.chezmoidata/omp.yaml`](home/.chezmoidata/omp.yaml).
 .chezmoiroot                 points chezmoi at home/
 install.sh / install.ps1     bootstrap scripts
 home/                        chezmoi source (renders to ~/)
-  .chezmoi.toml.tmpl         per-machine prompts
-  .chezmoiignore             component gating
-  .chezmoidata/              packages.yaml, shell.yaml, omp.yaml, weechat.yaml
-  .chezmoitemplates/         shared shell settings renderer, WeeChat merge script
+  .chezmoi.toml.tmpl         per-machine questions
+  .chezmoiignore             feature and OS gating
+  .chezmoidata/              features.yaml, shell.yaml, weechat.yaml, and install
+                             pins: omp.yaml, fonts.yaml, lua-language-server.yaml
+  .chezmoitemplates/         feature resolver, package lists, overlay hook, shared
+                             shell settings renderer, WeeChat merge script
   dot_*                      files that become ~/.*
   run_before_*               config drift check, runs on every apply
   run_once_*                 one-time setup scripts
@@ -202,8 +304,7 @@ the rest through unchanged. On a new machine they write a minimal file. The
 shared logic is in `home/.chezmoitemplates/weechat-merge-conf`.
 
 - `modify_private_irc.conf.tmpl` manages the `znc.*` server lines: address,
-  TLS, nick, and, if you said yes to the ZNC prompt, the password reference,
-  autoconnect, and autojoin.
+  TLS, nick, the password reference, autoconnect, and autojoin.
 - `modify_private_sec.conf.tmpl` sets `sec.crypt.passphrase_command` so WeeChat
   gets its secured-data passphrase from the OS keyring and doesn't prompt on
   launch.
@@ -214,7 +315,7 @@ applied to `znc.autojoin` on every `chezmoi apply`. Listed channels are always
 joined. Channels you `/join` by hand stay joined on ZNC until you `/part` them.
 
 No password is stored in this repo or in the keyring. If you answer yes to the
-ZNC prompt, `run_once_before_05-weechat-sec-passphrase.sh.tmpl` generates a
+WeeChat question, `run_once_before_05-weechat-sec-passphrase.sh.tmpl` generates a
 random passphrase and stores it in the keyring (service `weechat`, user = your
 IRC nick) before any files are written. If one already exists it's kept, since
 a new one would make existing secrets unreadable. You then store the ZNC
@@ -240,5 +341,4 @@ The keyring has to be one the `chezmoi` CLI can reach: the login keychain on
 macOS (not iCloud Keychain or Passwords.app), or a running Secret Service
 provider (gnome-keyring or kwallet) on Linux. If no keyring is available the
 passphrase script skips itself and prints how to retry. On headless machines,
-answer no to the ZNC prompt. You still get the bouncer server in `irc.conf`,
-with autoconnect off and no password.
+answer no to the WeeChat question, which leaves out WeeChat entirely.

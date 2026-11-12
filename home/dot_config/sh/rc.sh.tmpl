@@ -4,9 +4,10 @@
 # ** completion lists and the git prompt helpers each shell's rc builds its
 # prompt from.
 
-{{ includeTemplate "shell-shared" (dict "shell" "sh" "part" "interactive" "s" .shell) }}
+{{ $f := includeTemplate "features" . | fromJson -}}
+{{ includeTemplate "shell-shared" (dict "shell" "sh" "part" "interactive" "data" .) }}
 if [[ -n ${ZSH_VERSION-} ]]; then __sh=zsh; else __sh=bash; fi
-
+{{ if $f.fzf }}
 # fzf key bindings: ctrl-r history, ctrl-t file paths, alt-c cd. Its settings
 # are in shell.yaml. `fzf --bash`/`--zsh` needs fzf 0.48+, so older versions
 # are skipped instead of failing. It also adds fuzzy completion: type ** then
@@ -24,18 +25,19 @@ if command -v fzf >/dev/null 2>&1; then
 		_fzf_compgen_dir() { fd --type d --hidden --exclude .git . "$1"; }
 	fi
 fi
-
+{{ end }}
 if command -v rbenv >/dev/null 2>&1; then
 	eval "$(rbenv init - $__sh)"
 fi
-
+{{ if $f.worktrunk }}
 # Worktrunk's wt wrapper, so `wt switch` can cd this shell into the worktree.
 # See config.fish.
 if command -v wt >/dev/null 2>&1; then
 	eval "$(wt config shell init $__sh)"
 fi
+{{ end -}}
 unset __sh
-{{ if eq .chezmoi.os "windows" }}
+{{ if and (eq .chezmoi.os "windows") $f.sshAgent }}
 # Git Bash has no session agent. The first shell starts one and records it in
 # ~/.ssh/agent.env; later shells reuse it while it still answers, so there's one
 # agent per Windows login, not one per shell (GitHub's "Auto-launching
@@ -137,3 +139,4 @@ __prompt_git_ps1() {
 		PS1="$1$2"
 	fi
 }
+{{- includeTemplate "overlay-hook" (dict "path" ".config/sh/rc.sh" "data" .) }}

@@ -1,4 +1,5 @@
-{{- if eq .chezmoi.os "darwin" -}}
+{{- $f := includeTemplate "features" . | fromJson -}}
+{{- if and (eq .chezmoi.os "darwin") $f.alacritty -}}
 #!/bin/sh
 # Build alacritty-color-mode into ~/.bin and (re)start its login agent, which
 # points ~/.config/alacritty/colors.toml at the dark or light palette to match

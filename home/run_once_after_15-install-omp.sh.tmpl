@@ -1,4 +1,5 @@
-{{- if eq .chezmoi.os "linux" -}}
+{{- $f := includeTemplate "features" . | fromJson -}}
+{{- if and (eq .chezmoi.os "linux") $f.omp .installPackages -}}
 #!/bin/sh
 # Install or update omp (oh-my-pi) on Linux. It isn't packaged for pacman or apt,
 # so download the pinned release binary into ~/.bin, which fish puts first on

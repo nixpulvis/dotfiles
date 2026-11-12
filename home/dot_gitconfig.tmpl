@@ -28,8 +28,10 @@
     z = stash
     cp = cherry-pick
 
+{{ $f := includeTemplate "features" . | fromJson -}}
 [core]
     excludesFile = ~/.gitignore
+{{- if $f.delta }}
     # delta pages diffs with syntax highlighting. Fall back to plain less (and
     # an unfiltered `add -p`) where it isn't installed yet, e.g. before the
     # package script has run. git runs both through sh, also on Windows.
@@ -42,6 +44,7 @@
     # n/N jump between files in a diff. Light/dark is detected from the
     # terminal.
     navigate = true
+{{- end }}
 
 [init]
     defaultBranch = master
@@ -93,18 +96,21 @@
 {{- end }}
 
 [diff]
-    tool = nvimdiff
+    tool = {{ if $f.neovim }}nvimdiff{{ else }}vimdiff{{ end }}
     # Usually more readable hunks than the default myers, e.g. around moved
     # or repeated lines.
     algorithm = histogram
 [merge]
-    tool = nvimdiff
+    tool = {{ if $f.neovim }}nvimdiff{{ else }}vimdiff{{ end }}
     # Conflict markers also show the common ancestor's version.
     conflictStyle = zdiff3
 [pull]
     ff = only
+{{- if $f.worktrunk }}
 # Keeps branch.<name>.base and friends current for wt list-base's Base↕ and
 # Base…± columns; see ~/.config/worktrunk/record-base.
 [hook "wt-base"]
     event = reference-transaction
     command = "s=$HOME/.config/worktrunk/record-base; [ \"$1\" = committed ] && [ -x \"$s\" ] && while read -r _ _ r; do case $r in refs/heads/*|refs/remotes/*) exec \"$s\" \"$1\";; esac; done; :"
+{{- end }}
+{{- includeTemplate "overlay-hook" (dict "path" ".gitconfig" "data" .) }}

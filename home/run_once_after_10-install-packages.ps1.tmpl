@@ -1,17 +1,33 @@
-{{- if eq .chezmoi.os "windows" -}}
-# Install packages with winget. The package IDs live in .chezmoidata/packages.yaml,
-# so edit that instead of this script. `chezmoi` runs this once per machine.
+{{- if and (eq .chezmoi.os "windows") .installPackages -}}
+# Install the packages of this machine's enabled features with winget, unless
+# it opted out (installPackages). The package IDs are listed in
+# .chezmoidata/features.yaml, so edit that instead of this script. `chezmoi`
+# runs this once per machine, and again whenever the rendered script changes.
 $ErrorActionPreference = 'Stop'
 
 function Install-Pkg($id) {
     winget install --id $id -e --accept-source-agreements --accept-package-agreements
 }
 
-{{- $groups := list "base" -}}
-{{- if .graphical }}{{ $groups = append $groups "graphical" }}{{ end -}}
-{{- range $g := $groups }}{{ range $p := index $.packages $g -}}
-{{- if hasKey $p "winget" }}
-Install-Pkg '{{ $p.winget }}'
-{{- end -}}
-{{- end }}{{ end }}
+{{- range includeTemplate "packages" (dict "manager" "winget" "data" .) | fromJson }}
+Install-Pkg '{{ . }}'
+{{- end }}
+{{- if (includeTemplate "features" . | fromJson).rust }}
+
+# rustup was just installed, and this session's PATH predates it. A fresh one
+# has no toolchain, so install stable, then the components Neovim's
+# rust_analyzer and RUST_SRC_PATH need; from rustup, they match the toolchain.
+$rustup = Join-Path $HOME '.cargo\bin\rustup.exe'
+if (Test-Path $rustup) {
+    # Windows PowerShell turns redirected native stderr into errors, which
+    # 'Stop' would make fatal; this check is allowed to fail.
+    $ErrorActionPreference = 'Continue'
+    & $rustup which rustc 2>&1 | Out-Null
+    $ErrorActionPreference = 'Stop'
+    if ($LASTEXITCODE -ne 0) { & $rustup default stable }
+    & $rustup component add rust-analyzer rust-src
+} else {
+    Write-Warning "rustup isn't at $rustup; skipping the Rust toolchain."
+}
+{{- end }}
 {{ end -}}

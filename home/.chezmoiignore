@@ -1,28 +1,13 @@
-{{- /* Component gating. `base` (everything not listed here) applies everywhere.
-       Groups are chosen per-machine by `chezmoi init` (see .chezmoi.toml.tmpl):
-       `graphical` (GUI apps) and `wm` (the Linux window-manager stack). */ -}}
+{{- /* Feature gating: the `targets` of every feature that's off on this machine
+       (.chezmoidata/features.yaml, resolved by .chezmoitemplates/features).
+       What's left below are per-OS details within features. */ -}}
+{{- $f := includeTemplate "features" . | fromJson -}}
+{{- range $n, $on := $f }}{{ if not $on }}{{ range (default (list) (get (index $.features $n) "targets")) }}
+{{ . }}
+{{- end }}{{ end }}{{ end }}
 
-{{- if not .graphical }}
-.config/alacritty
-.config/zed
-AppData/Roaming/alacritty
-{{- end }}
-
-{{- /* The window-manager stack only makes sense on a graphical Linux box. */ -}}
-{{- if or (ne .chezmoi.os "linux") (not .wm) }}
-.config/i3
-.config/i3blocks
-.config/sway
-.config/rofi
-.config/zathura
-.config/user-dirs.dirs
-.xinitrc
-.X
-{{- end }}
-
-{{- /* Linux-only helper, and the ssh-agent systemd user service. */ -}}
+{{- /* The ssh-agent systemd user service is Linux only. */ -}}
 {{- if ne .chezmoi.os "linux" }}
-.bin/share-network
 .config/systemd
 {{- end }}
 
@@ -39,7 +24,7 @@ Library
 
 {{- /* ~/.bin/fd and ~/.bin/bat link to Debian/Ubuntu's renamed `fdfind` and
        `batcat`. Same apt check as run_once_after_10-install-packages, so they
-       exist exactly where apt installed those packages. */ -}}
+       exist exactly where apt installs those packages. */ -}}
 {{- if or (ne .chezmoi.os "linux") (lookPath "pacman") (not (lookPath "apt-get")) }}
 .bin/fd
 .bin/bat
@@ -48,20 +33,16 @@ Library
 {{- /* Windows-only config-path symlinks (%LOCALAPPDATA%, %APPDATA%). */ -}}
 {{- if ne .chezmoi.os "windows" }}
 AppData
-{{ end -}}
-
-{{- /* No WeeChat on Windows, and irc.conf is applied by a POSIX modify_
-       script, so skip the whole config there. */ -}}
-{{- if eq .chezmoi.os "windows" }}
-.config/weechat
 {{- end }}
 
-{{/* omp: track only agent/config.yml, agent/AGENTS.md, agent/themes/ and agent/extensions/.
-     Everything else under agent/ is ignored so auth tokens, sessions, caches
-     and *.db files never get added, including ones that don't exist yet.
-     No left trim here: it would glue this block onto the WeeChat line above. */ -}}
+{{- /* omp: track only agent/config.yml, agent/AGENTS.md, agent/themes/ and
+       agent/extensions/. Everything else under agent/ is ignored so auth
+       tokens, sessions, caches and *.db files never get added, including ones
+       that don't exist yet. With the omp feature off, its `.omp` target above
+       wins over these ! exclusions. */}}
 .omp/agent/*
 !.omp/agent/config.yml
 !.omp/agent/AGENTS.md
 !.omp/agent/themes
 !.omp/agent/extensions
+{{- includeTemplate "overlay-hook" (dict "path" ".chezmoiignore" "data" .) }}

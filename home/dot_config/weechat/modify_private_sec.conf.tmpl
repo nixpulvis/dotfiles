@@ -5,7 +5,7 @@
        On a fresh machine stdin is empty and $seed gets written. The `chezmoi` path
        is absolute so it works whatever WeeChat's PATH is. Merge logic is in
        .chezmoitemplates/weechat-merge-conf. */ -}}
-{{- if and .libera (ne .chezmoi.os "windows") -}}
+{{- if ne .chezmoi.os "windows" -}}
 #!/bin/sh
 set -eu
 

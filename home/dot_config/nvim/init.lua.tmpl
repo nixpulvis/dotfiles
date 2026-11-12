@@ -21,3 +21,4 @@ require('config.quickfix')
 require('config.completion')
 require('config.lsp')
 require('config.statusline')
+{{- includeTemplate "overlay-hook" (dict "path" ".config/nvim/init.lua" "data" .) }}

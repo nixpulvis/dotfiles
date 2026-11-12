@@ -1,32 +1,27 @@
-{{- if ne .chezmoi.os "windows" -}}
+{{- $f := includeTemplate "features" . | fromJson -}}
+{{- if and (ne .chezmoi.os "windows") (or .installPackages $f.weechat) -}}
 #!/bin/sh
-# Install packages for the enabled component groups. The package list lives in
-# .chezmoidata/packages.yaml, so edit that instead of this script. `chezmoi`
-# runs this once per machine, and again whenever the rendered script changes.
+# Install the packages of this machine's enabled features, unless it opted out
+# (installPackages). The packages are listed in .chezmoidata/features.yaml, so
+# edit that instead of this script. `chezmoi` runs this once per machine, and
+# again whenever the rendered script changes.
 set -eu
 
-{{- $groups := list "base" -}}
-{{- if .graphical }}{{ $groups = append $groups "graphical" }}{{ end -}}
-{{- if .wm }}{{ $groups = append $groups "wm" }}{{ end }}
-
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if not .installPackages -}}
+{{ else if eq .chezmoi.os "darwin" -}}
 # ---- macOS (Homebrew) ------------------------------------------------------
 if ! command -v brew >/dev/null 2>&1; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
     if [ -x /usr/local/bin/brew ]; then eval "$(/usr/local/bin/brew shellenv)"; fi
 fi
-{{ $formulae := list -}}
-{{ $casks := list -}}
-{{- range $g := $groups }}{{ range $p := index $.packages $g -}}
-{{- if hasKey $p "brew" }}{{ $formulae = append $formulae $p.brew }}{{ end -}}
-{{- if hasKey $p "brew_cask" }}{{ $casks = append $casks $p.brew_cask }}{{ end -}}
-{{- end }}{{ end -}}
+{{ $formulae := includeTemplate "packages" (dict "manager" "brew" "data" .) | fromJson -}}
+{{ $casks := includeTemplate "packages" (dict "manager" "brew_cask" "data" .) | fromJson -}}
 {{ if $formulae }}brew install {{ $formulae | join " " }}
 {{ end -}}
 {{ if $casks }}brew install --cask --adopt {{ $casks | join " " }}
 {{ end -}}
-{{ if .graphical -}}
+{{ if $f.alacritty -}}
 # There's no Alacritty package to install here because the Homebrew cask is
 # deprecated. Print a reminder if it isn't already installed.
 if ! command -v alacritty >/dev/null 2>&1 && [ ! -d /Applications/Alacritty.app ]; then
@@ -38,17 +33,11 @@ fi
 {{ else if eq .chezmoi.os "linux" -}}
 # ---- Linux -----------------------------------------------------------------
 {{ if lookPath "pacman" -}}
-{{ $pkgs := list -}}
-{{- range $g := $groups }}{{ range $p := index $.packages $g -}}
-{{- if hasKey $p "pacman" }}{{ $pkgs = append $pkgs $p.pacman }}{{ end -}}
-{{- end }}{{ end -}}
+{{ $pkgs := includeTemplate "packages" (dict "manager" "pacman" "data" .) | fromJson -}}
 echo "sudo: installing system packages via pacman (root required to write to /usr and /var)." >&2
 sudo pacman -S --needed --noconfirm {{ $pkgs | join " " }}
 {{ else if lookPath "apt-get" -}}
-{{ $pkgs := list -}}
-{{- range $g := $groups }}{{ range $p := index $.packages $g -}}
-{{- if hasKey $p "apt" }}{{ $pkgs = append $pkgs $p.apt }}{{ end -}}
-{{- end }}{{ end -}}
+{{ $pkgs := includeTemplate "packages" (dict "manager" "apt" "data" .) | fromJson -}}
 echo "sudo: refreshing apt package index (root required for /var/lib/apt)." >&2
 sudo apt-get update
 echo "sudo: installing system packages via apt (root required to write to /usr and /var)." >&2
@@ -57,8 +46,26 @@ sudo apt-get install -y {{ $pkgs | join " " }}
 echo "No supported package manager (pacman/apt) found; install packages manually." >&2
 {{ end -}}
 {{ end -}}
+{{ if and .installPackages $f.rust -}}
+# ---- Rust ------------------------------------------------------------------
+# rustup comes from the packages above. A fresh one has no toolchain, so install
+# stable, then the components Neovim's rust_analyzer and RUST_SRC_PATH need;
+# from rustup, they match the toolchain.
+{{ if eq .chezmoi.os "darwin" -}}
+# Homebrew's rustup is keg-only.
+for d in /opt/homebrew/opt/rustup/bin /usr/local/opt/rustup/bin; do
+    if [ -d "$d" ]; then PATH="$d:$PATH"; fi
+done
+{{ end -}}
+if command -v rustup >/dev/null 2>&1; then
+    rustup which rustc >/dev/null 2>&1 || rustup default stable
+    rustup component add rust-analyzer rust-src
+else
+    echo "NOTE: rustup isn't installed; skipping the Rust toolchain." >&2
+fi
+{{ end -}}
 
-{{- if .libera }}
+{{- if $f.weechat }}
 # ---- WeeChat: ZNC bouncer login --------------------------------------------
 # `chezmoi` sets up the connection and channels, and WeeChat reads its secured
 # data passphrase from the keyring, so there's no prompt on launch. The ZNC

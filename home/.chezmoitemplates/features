@@ -1,0 +1,43 @@
+{{- /*
+Resolves .features (.chezmoidata/features.yaml, then any later data files and
+this machine's chezmoi config) for this machine, and renders it as JSON: feature
+name -> on. Use as
+
+  {{ $f := includeTemplate "features" . | fromJson }}{{ if $f.neovim }}...
+
+A feature is on when its `enabled` is true, its `os` (if any) lists this OS,
+and its `group` (if any) is on. Rendering fails on a malformed entry, on
+`core` being off, or on an enabled feature whose `requires` aren't on.
+*/ -}}
+{{- $all := .features -}}
+{{- $os := .chezmoi.os -}}
+
+{{- $self := dict -}}
+{{- range $n, $f := $all -}}
+{{-   if not (kindIs "map" $f) }}{{ fail (printf "features.%s: must be a map" $n) }}{{ end -}}
+{{-   if not (kindIs "bool" (get $f "enabled")) }}{{ fail (printf "features.%s: `enabled` must be true or false" $n) }}{{ end -}}
+{{-   $on := $f.enabled -}}
+{{-   if hasKey $f "os" }}{{ $on = and $on (has $os $f.os) }}{{ end -}}
+{{-   $_ := set $self $n $on -}}
+{{- end -}}
+
+{{- $on := dict -}}
+{{- range $n, $f := $all -}}
+{{-   $v := index $self $n -}}
+{{-   if hasKey $f "group" -}}
+{{-     if not (hasKey $all $f.group) }}{{ fail (printf "features.%s: unknown group %q" $n $f.group) }}{{ end -}}
+{{-     if hasKey (index $all $f.group) "group" }}{{ fail (printf "features.%s: group %q has a group itself" $n $f.group) }}{{ end -}}
+{{-     $v = and $v (index $self $f.group) -}}
+{{-   end -}}
+{{-   $_ := set $on $n $v -}}
+{{- end -}}
+
+{{- if not (index $on "core") }}{{ fail "features.core: can't be turned off" }}{{ end -}}
+{{- range $n, $f := $all -}}
+{{-   range (default (list) (get $f "requires")) -}}
+{{-     if not (hasKey $all .) }}{{ fail (printf "features.%s: requires unknown feature %q" $n .) }}{{ end -}}
+{{-     if and (index $on $n) (not (index $on .)) }}{{ fail (printf "features.%s is on but requires %s, which is off" $n .) }}{{ end -}}
+{{-   end -}}
+{{- end -}}
+
+{{- $on | toJson -}}

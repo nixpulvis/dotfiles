@@ -1,0 +1,52 @@
+{{- $f := includeTemplate "features" . | fromJson -}}
+{{- if and (eq .chezmoi.os "linux") $f.neovim .installPackages (not (lookPath "pacman")) -}}
+#!/bin/sh
+# Install or update lua-language-server on Linux without pacman, where there's
+# no distro package (Debian/Ubuntu). Download the pinned release into
+# ~/.local/share/lua-language-server and put a wrapper in ~/.bin, which fish
+# puts first on PATH. The binary finds its scripts relative to itself, so it
+# stays in the release's layout. The version and checksums live in
+# .chezmoidata/lua-language-server.yaml. `chezmoi` runs this once per machine,
+# and again when the pin changes.
+set -eu
+
+version="{{ .luals.version }}"
+root="$HOME/.local/share/lua-language-server"
+wrapper="$HOME/.bin/lua-language-server"
+
+# Already at the pinned version? Nothing to do.
+if [ -x "$wrapper" ] && "$wrapper" --version 2>/dev/null | grep -q "$version"; then
+    exit 0
+fi
+
+# These are the glibc builds.
+arch=$(uname -m)
+case "$arch" in
+    x86_64|amd64)  asset="linux-x64";   sha="{{ index .luals.sha256 "linux-x64" }}" ;;
+    aarch64|arm64) asset="linux-arm64"; sha="{{ index .luals.sha256 "linux-arm64" }}" ;;
+    *) echo "lua-language-server: unsupported architecture '$arch'; install manually from https://github.com/LuaLS/lua-language-server/releases" >&2; exit 1 ;;
+esac
+
+url="https://github.com/LuaLS/lua-language-server/releases/download/${version}/lua-language-server-${version}-${asset}.tar.gz"
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+echo "Installing lua-language-server ${version} (${asset})..." >&2
+curl -fsSL "$url" -o "$tmp/luals.tar.gz"
+
+# Verify the checksum before unpacking.
+if command -v sha256sum >/dev/null 2>&1; then
+    echo "${sha}  $tmp/luals.tar.gz" | sha256sum -c - >/dev/null
+else
+    echo "${sha}  $tmp/luals.tar.gz" | shasum -a 256 -c - >/dev/null
+fi
+
+mkdir -p "$tmp/root"
+tar -xzf "$tmp/luals.tar.gz" -C "$tmp/root"
+rm -rf "$root"
+mkdir -p "$(dirname "$root")" "$HOME/.bin"
+mv "$tmp/root" "$root"
+printf '#!/bin/sh\nexec "%s/bin/lua-language-server" "$@"\n' "$root" > "$wrapper"
+chmod 0755 "$wrapper"
+echo "lua-language-server ${version} installed to ${root}" >&2
+{{ end -}}

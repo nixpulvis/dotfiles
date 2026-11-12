@@ -2,27 +2,30 @@
 # fish-only greeting, in .chezmoidata/shell.yaml. This file holds what needs
 # fish code.
 
-{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "env" "s" .shell) }}
+{{ $f := includeTemplate "features" . | fromJson -}}
+{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "env" "data" .) }}
 # Setup rbenv.
 if type -q rbenv
     source (rbenv init -|psub)
 end
 
-{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "interactive" "s" .shell) }}
+{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "interactive" "data" .) }}
+{{- if $f.fzf }}
 # fzf key bindings: ctrl-r searches history, ctrl-t inserts file paths, alt-c
 # (left Option on macOS) cds into a subdirectory, shift-tab runs completions
 # through fzf. Its settings are in shell.yaml.
 if type -q fzf
     fzf --fish | source
 end
-
+{{ end }}
+{{- if $f.worktrunk }}
 # Worktrunk's wt wrapper, so `wt switch` can cd this shell into the worktree.
 # Generated each startup rather than installed with `wt config shell install`,
 # so it stays in step with the wt binary.
 if type -q wt
     wt config shell init fish | source
 end
-
+{{ end }}
 # Fish git config.
 set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showstashstate 'yes'
@@ -88,5 +91,6 @@ end
 
 # Print a nice startup message.
 function fish_greeting
-{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "greeting" "s" .shell) | trim | indent 4 }}
+{{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "greeting" "data" .) | trim | indent 4 }}
 end
+{{- includeTemplate "overlay-hook" (dict "path" ".config/fish/config.fish" "data" .) }}

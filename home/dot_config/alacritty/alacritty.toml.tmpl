@@ -10,13 +10,21 @@ import = [
 working_directory = {{ .chezmoi.homeDir | quote }}
 {{- end }}
 
-[terminal.shell]
+{{- /* Without fish, macOS and Linux leave out the program, so Alacritty starts
+       the login shell. */}}
+{{- $fish := (includeTemplate "features" . | fromJson).fish }}
 {{- if eq .chezmoi.os "windows" }}
+
+[terminal.shell]
 program = "C:\\Program Files\\Git\\bin\\bash.exe"
 args = ["--login", "-i"]
-{{- else if eq .chezmoi.os "darwin" }}
+{{- else if and $fish (eq .chezmoi.os "darwin") }}
+
+[terminal.shell]
 program = {{ if eq .chezmoi.arch "arm64" }}"/opt/homebrew/bin/fish"{{ else }}"/usr/local/bin/fish"{{ end }}
-{{- else }}
+{{- else if $fish }}
+
+[terminal.shell]
 program = "/usr/bin/fish"
 {{- end }}
 

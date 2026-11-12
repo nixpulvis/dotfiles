@@ -2,3 +2,4 @@
 {{- if eq .chezmoi.os "darwin" }}
 .DS_Store
 {{- end }}
+{{- includeTemplate "overlay-hook" (dict "path" ".gitignore" "data" .) }}

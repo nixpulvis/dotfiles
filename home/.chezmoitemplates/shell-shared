@@ -1,18 +1,20 @@
 {{- /*
 Renders .chezmoidata/shell.yaml (the `shell` data) for one shell. Include with
 
-  {{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "env" "s" .shell) }}
+  {{ includeTemplate "shell-shared" (dict "shell" "fish" "part" "env" "data" .) }}
 
   shell: "fish" or "sh" (bash and zsh)
   part:  "env"         PATH (prepend, then dedup) and exported variables
          "interactive" interactive variables, aliases and startup commands
          "greeting"    greeting commands (fish wraps these in fish_greeting)
+  data:  the template data (.), for .shell and the enabled features
 
 Values go inside double quotes, which mean the same in fish and sh; a value
 containing ", \ or a backtick fails rendering instead of quoting differently.
 */ -}}
 {{- $fish := eq .shell "fish" -}}
-{{- $s := .s -}}
+{{- $s := .data.shell -}}
+{{- $features := includeTemplate "features" .data | fromJson -}}
 {{- $ind := ternary "    " "\t" $fish -}}
 {{- $bad := "[\"\\\\`]" -}}
 # Generated from .chezmoidata/shell.yaml by .chezmoitemplates/shell-shared.
@@ -94,6 +96,9 @@ export PATH
 {{-   $e := index $item 1 }}
 {{-   if ne $kind "cmd" }}{{ if regexMatch $bad (toString $e.value) }}{{ fail (printf "shell.yaml: %s value can't contain \", \\ or `" $e.name) }}{{ end }}{{ end }}
 {{-   if hasKey $e "else" }}{{ if regexMatch $bad (toString (get $e "else")) }}{{ fail (printf "shell.yaml: %s else can't contain \", \\ or `" $e.name) }}{{ end }}{{ end }}
+{{-   $feature := get $e "feature" }}
+{{-   if and $feature (not (hasKey $features $feature)) }}{{ fail (printf "shell.yaml: %s: unknown feature %q" (default (get $e "cmd") (get $e "name")) $feature) }}{{ end }}
+{{-   $featureOff := and $feature (not (index $features $feature)) }}
 {{-   $conds := list }}
 {{-   if get $e "keep_inherited" }}
 {{-     $conds = append $conds (ternary (printf "not set -q %s" $e.name) (printf "[[ -z ${%s-} ]]" $e.name) $fish) }}
@@ -108,6 +113,9 @@ export PATH
 {{-   $else := "" }}
 {{-   if eq $kind "env" }}
 {{-     $body = ternary (printf "set -gx %s \"%v\"" $e.name $e.value) (printf "export %s=\"%v\"" $e.name $e.value) $fish }}
+{{-     if hasKey $e "else" }}
+{{-       $else = ternary (printf "set -gx %s \"%v\"" $e.name $e.else) (printf "export %s=\"%v\"" $e.name $e.else) $fish }}
+{{-     end }}
 {{-   else if eq $kind "alias" }}
 {{-     $body = ternary (printf "alias %s \"%s\"" $e.name $e.value) (printf "alias %s=\"%s\"" $e.name $e.value) $fish }}
 {{-     if hasKey $e "else" }}
@@ -116,7 +124,11 @@ export PATH
 {{-   else }}
 {{-     $body = $e.cmd }}
 {{-   end }}
-{{-   if $conds }}
+{{-   if $featureOff }}
+{{-     if $else }}
+{{ $else }}
+{{-     end }}
+{{-   else if $conds }}
 {{ ternary (printf "if %s" (join "; and " $conds)) (printf "if %s; then" (join " && " $conds)) $fish }}
 {{ $ind }}{{ $body }}
 {{-     if $else }}

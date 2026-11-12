@@ -1,0 +1,225 @@
+# Features: each one is a set of packages and the files that configure them,
+# switched on or off as a unit. `chezmoi` loads this as `.features`, and
+# .chezmoitemplates/features resolves which are on for this machine.
+#
+#   enabled   required. The default here; overridden by later .chezmoidata
+#             files (e.g. a consuming repository's) and by this machine's
+#             chezmoi config, where `chezmoi init` stores its answers.
+#   group     a feature that must also be on, e.g. alacritty needs graphical.
+#             Groups can't have groups themselves.
+#   os        the OSes it applies to (.chezmoi.os values). Default: all.
+#   requires  features that must be on whenever this one is. Rendering fails
+#             otherwise. Only for real breakage; config that merely uses a
+#             tool checks for it at runtime or falls back instead.
+#   targets   paths under ~ to manage only while it's on (.chezmoiignore).
+#   packages  name -> {brew, brew_cask, pacman, apt, winget}. Leave out a
+#             manager and the package is skipped there. Set a package to null in
+#             a later data file to drop it.
+#
+# `core` is always on: shells (bash, sh/env.sh, sh/rc.sh) and git.
+features:
+  core:
+    enabled: true
+    packages:
+      git: {brew: git, pacman: git, apt: git, winget: Git.Git}
+
+  fish:
+    enabled: true
+    targets: [.config/fish]
+    packages:
+      fish: {brew: fish, pacman: fish, apt: fish}
+
+  zsh:
+    enabled: true
+    targets: [.zshrc]
+    packages:
+      # macOS already ships zsh.
+      zsh: {pacman: zsh, apt: zsh}
+
+  # Also holds the color scheme Neovim loads from ~/.vim.
+  vim:
+    enabled: true
+    targets: [.vimrc, .vim]
+
+  neovim:
+    enabled: true
+    requires: [vim]
+    targets: [.config/nvim, AppData/Local/nvim]
+    packages:
+      neovim: {brew: neovim, pacman: neovim, apt: neovim, winget: Neovim.Neovim}
+      # For editing this config (lsp/luals.lua). No apt package; Linux without
+      # pacman runs run_once_after_16-install-lua-language-server instead, with
+      # the pin in lua-language-server.yaml.
+      lua-language-server: {brew: lua-language-server, pacman: lua-language-server, winget: LuaLS.lua-language-server}
+
+  # Rust through rustup. The package script then installs the stable toolchain
+  # if there's none, and the rust-analyzer (Neovim's rust_analyzer) and rust-src
+  # (RUST_SRC_PATH in shell.yaml) components.
+  rust:
+    enabled: true
+    packages:
+      # Homebrew's is keg-only; shell.yaml puts its bin on PATH.
+      rustup: {brew: rustup, pacman: rustup, apt: rustup, winget: Rustlang.Rustup}
+
+  # C and C++, with clangd for Neovim (lsp/clangd.lua). macOS has both from the
+  # Xcode Command Line Tools. Windows' LLVM package doesn't put them on PATH.
+  clang:
+    enabled: true
+    packages:
+      # Arch's clang includes clangd.
+      clang: {pacman: clang, apt: clang}
+      clangd: {apt: clangd}
+
+  ripgrep:
+    enabled: true
+    targets: [.config/ripgrep]
+    packages:
+      ripgrep: {brew: ripgrep, pacman: ripgrep, apt: ripgrep, winget: BurntSushi.ripgrep.MSVC}
+
+  # apt installs fd-find and bat as `fdfind` and `batcat`. On those machines
+  # ~/.bin/fd and ~/.bin/bat point at them (gated in .chezmoiignore).
+  fd:
+    enabled: true
+    targets: [.config/fd, .bin/fd]
+    packages:
+      fd: {brew: fd, pacman: fd, apt: fd-find, winget: sharkdp.fd}
+
+  bat:
+    enabled: true
+    targets: [.bin/bat]
+    packages:
+      bat: {brew: bat, pacman: bat, apt: bat, winget: sharkdp.bat}
+
+  fzf:
+    enabled: true
+    packages:
+      fzf: {brew: fzf, pacman: fzf, apt: fzf, winget: junegunn.fzf}
+
+  eza:
+    enabled: true
+    packages:
+      eza: {brew: eza, pacman: eza, apt: eza, winget: eza-community.eza}
+
+  delta:
+    enabled: true
+    packages:
+      delta: {brew: git-delta, pacman: git-delta, apt: git-delta, winget: dandavison.delta}
+
+  # Small tools with no config here.
+  cli:
+    enabled: true
+    packages:
+      jq: {brew: jq, pacman: jq, apt: jq, winget: jqlang.jq}
+      dust: {brew: dust, pacman: dust, apt: du-dust, winget: bootandy.dust}
+      fortune: {brew: fortune, pacman: fortune-mod, apt: fortune-mod}
+
+  # Git worktree manager (`wt`); its shell wrapper loads in config.fish and
+  # rc.sh. No apt package, and winget installs it as `git-wt`, which those
+  # don't look for.
+  worktrunk:
+    enabled: true
+    targets: [.config/worktrunk]
+    packages:
+      worktrunk: {brew: worktrunk, pacman: worktrunk}
+
+  # WeeChat through the ZNC bouncer, with its passphrase in the OS keyring.
+  # Asked by `chezmoi init`.
+  weechat:
+    enabled: true
+    os: [darwin, linux]
+    targets: [.config/weechat]
+    packages:
+      weechat: {brew: weechat, pacman: weechat, apt: weechat}
+
+  pass:
+    enabled: true
+    packages:
+      pass: {brew: pass, pacman: pass, apt: pass}
+
+  backup:
+    enabled: true
+    os: [darwin, linux]
+    requires: [pass]
+    targets: [.bin/backup]
+    packages:
+      borg: {brew: borgbackup, pacman: borg, apt: borgbackup}
+
+  # The oh-my-pi coding agent. Only macOS has a package (a Homebrew tap); Linux
+  # and Windows download the pin in omp.yaml. Asked by `chezmoi init`.
+  omp:
+    enabled: true
+    targets: [.omp]
+    packages:
+      omp: {brew: can1357/tap/omp}
+
+  # One ssh-agent per login: a systemd user service on Linux, a shared agent
+  # started by the first Git Bash shell on Windows. macOS's launchd has one.
+  sshAgent:
+    enabled: true
+    os: [linux, windows]
+    targets: [.config/systemd]
+
+  # GUI apps. Always on for macOS and Windows; asked by `chezmoi init` on Linux.
+  graphical:
+    enabled: true
+
+  alacritty:
+    enabled: true
+    group: graphical
+    targets:
+      - .config/alacritty
+      - AppData/Roaming/alacritty
+      - Library/LaunchAgents/com.nixpulvis.alacritty-color-mode.plist
+    packages:
+      # The macOS cask is deprecated; the package script prints a reminder.
+      alacritty: {pacman: alacritty, apt: alacritty, winget: Alacritty.Alacritty}
+
+  fonts:
+    enabled: true
+    group: graphical
+    packages:
+      # No winget package; Windows installs Fira Mono via fonts.yaml.
+      fira-mono: {brew_cask: font-fira-mono, pacman: ttf-fira-mono, apt: fonts-firacode}
+      fira-sans: {brew_cask: font-fira-sans, pacman: ttf-fira-sans}
+
+  # No apt package; Zed's own installer is an unpinned script.
+  zed:
+    enabled: true
+    group: graphical
+    targets: [.config/zed]
+    packages:
+      zed: {brew_cask: zed, pacman: zed, winget: ZedIndustries.Zed}
+
+  # The Linux window-manager stack. Asked by `chezmoi init` on Linux.
+  wm:
+    enabled: false
+    group: graphical
+    os: [linux]
+    targets:
+      - .config/i3
+      - .config/i3blocks
+      - .config/sway
+      - .config/rofi
+      - .config/zathura
+      - .config/user-dirs.dirs
+      - .xinitrc
+      - .X
+    packages:
+      sway: {pacman: sway, apt: sway}
+      i3: {pacman: i3-wm, apt: i3}
+      i3blocks: {pacman: i3blocks, apt: i3blocks}
+      dmenu: {pacman: dmenu}
+      rofi: {pacman: rofi, apt: rofi}
+      feh: {pacman: feh, apt: feh}
+      swaybg: {pacman: swaybg}
+      swayidle: {pacman: swayidle}
+      grim: {pacman: grim, apt: grim}
+      slurp: {pacman: slurp, apt: slurp}
+      zathura: {pacman: zathura, apt: zathura}
+      zathura-pdf: {pacman: zathura-pdf-poppler, apt: zathura-pdf-poppler}
+      brightnessctl: {pacman: brightnessctl, apt: brightnessctl}
+
+  shareNetwork:
+    enabled: true
+    os: [linux]
+    targets: [.bin/share-network]

@@ -1,6 +1,6 @@
 # Fonts for the direct-download install path on Windows, where neither winget
 # nor its winget-font source packages Fira Mono. macOS and Linux install fonts
-# from packages.yaml `graphical`. Files come from a pinned google/fonts commit;
+# as the fonts feature's packages in features.yaml. Files come from a pinned google/fonts commit;
 # installed per-user by run_once_after_12-install-fonts.ps1.tmpl, which re-runs
 # when this pin changes. To upgrade, bump `commit` and recompute the checksums.
 fonts:

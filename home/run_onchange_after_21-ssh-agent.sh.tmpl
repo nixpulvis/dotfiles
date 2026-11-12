@@ -1,4 +1,5 @@
-{{- if eq .chezmoi.os "linux" -}}
+{{- $f := includeTemplate "features" . | fromJson -}}
+{{- if and (eq .chezmoi.os "linux") $f.sshAgent -}}
 #!/bin/sh
 # Enable the ssh-agent user service and (re)start it, so it runs the current
 # unit. `chezmoi` reruns this when the unit changes:

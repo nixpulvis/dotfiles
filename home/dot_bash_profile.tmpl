@@ -1,7 +1,7 @@
 # PATH, Homebrew and editor, shared with zsh. Loaded here too so the window
 # manager started below inherits them.
 [[ -f ~/.config/sh/env.sh ]] && . ~/.config/sh/env.sh
-{{ if eq .chezmoi.os "linux" }}
+{{ if (includeTemplate "features" . | fromJson).wm }}
 # TODO: https://github.com/zed-industries/zed/issues/32792
 export WLR_RENDER_NO_EXPLICIT_SYNC=1
 

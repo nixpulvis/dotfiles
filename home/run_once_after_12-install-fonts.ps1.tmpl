@@ -1,4 +1,5 @@
-{{- if and (eq .chezmoi.os "windows") .graphical -}}
+{{- $f := includeTemplate "features" . | fromJson -}}
+{{- if and (eq .chezmoi.os "windows") $f.fonts .installPackages -}}
 # Install Fira Mono (Alacritty's font) per-user on Windows. It isn't on winget
 # or winget-font, so download the pinned TTFs from google/fonts. The pin and
 # checksums live in .chezmoidata/fonts.yaml. `chezmoi` runs this once per

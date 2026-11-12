@@ -9,6 +9,9 @@
 # emitted as-is and must be valid in both shells.
 #
 # `requires` lists commands that must all be on PATH for the entry to apply.
+# `feature` names a feature (.chezmoidata/features.yaml) that must be on for
+# the entry to be rendered at all. `else` is used when either isn't met;
+# without it the entry is left out.
 shell:
   # Directories to put at the front of PATH, highest priority first. A list of
   # candidates means the first one that exists. Missing directories are
@@ -18,6 +21,8 @@ shell:
     - /usr/local/bin
     - $HOME/.bin
     - $HOME/.cargo/bin
+    # Homebrew's rustup is keg-only.
+    - [/opt/homebrew/opt/rustup/bin, /usr/local/opt/rustup/bin]
     - $HOME/.local/bin
     - /opt/homebrew/bin
     - /opt/homebrew/sbin
@@ -25,46 +30,44 @@ shell:
   # Exported in every shell, interactive or not. `keep_inherited` skips the
   # entry when the variable is already set, e.g. in a nested shell.
   env:
-    - {name: EDITOR, value: nvim}
-    - {name: VISUAL, value: nvim}
+    - {name: EDITOR, value: nvim, feature: neovim, else: vim}
+    - {name: VISUAL, value: nvim, feature: neovim, else: vim}
     - {name: PIPX_HOME, value: $HOME/.local/pipx}
     # Rust src from the active toolchain. Asking rustc is slow, hence
     # keep_inherited.
-    - {name: RUST_SRC_PATH, value: "$(rustc --print sysroot)/lib/rustlib/src/rust/library", requires: [rustc], keep_inherited: true}
+    - {name: RUST_SRC_PATH, value: "$(rustc --print sysroot)/lib/rustlib/src/rust/library", requires: [rustc], keep_inherited: true, feature: rust}
     # The ssh-agent systemd user service (dot_config/systemd/user/), one per
     # login. macOS's launchd and forwarded SSH sessions already set it, so
     # theirs wins. Git Bash has neither; rc.sh starts an agent there.
-    - {name: SSH_AUTH_SOCK, value: $XDG_RUNTIME_DIR/ssh-agent.socket, requires: [systemctl], keep_inherited: true}
+    - {name: SSH_AUTH_SOCK, value: $XDG_RUNTIME_DIR/ssh-agent.socket, requires: [systemctl], keep_inherited: true, feature: sshAgent}
     # Colorize man pages with bat. col -bx first strips man's backspace
     # overstrike (bold/underline); bat passes it through, and where its
     # highlighting splits a sequence, less shows a literal ^H (e.g. git-s^Hscm).
     # Linux's groff emits color codes instead, which col would mangle into text
     # like "4mgit24m", so GROFF_NO_SGR makes it overstrike too. macOS's mandoc
     # already overstrikes and ignores it.
-    - {name: MANPAGER, value: "sh -c 'col -bx | bat -plman'", requires: [bat, col]}
-    - {name: GROFF_NO_SGR, value: "1", requires: [bat, col]}
+    - {name: MANPAGER, value: "sh -c 'col -bx | bat -plman'", requires: [bat, col], feature: bat}
+    - {name: GROFF_NO_SGR, value: "1", requires: [bat, col], feature: bat}
     # rg only reads a config file named by this; see dot_config/ripgrep/config.
     # In env rather than interactive so editors and scripts get it too.
-    - {name: RIPGREP_CONFIG_PATH, value: $HOME/.config/ripgrep/config, requires: [rg]}
+    - {name: RIPGREP_CONFIG_PATH, value: $HOME/.config/ripgrep/config, requires: [rg], feature: ripgrep}
 
   # Interactive shells only.
   interactive:
     env:
       # fzf's selected line in bright blue. Its default (color 254) is one of
       # the indexes our Alacritty palette sets to #FF0000.
-      - {name: FZF_DEFAULT_OPTS, value: "--color=fg+:12", requires: [fzf]}
+      - {name: FZF_DEFAULT_OPTS, value: "--color=fg+:12", requires: [fzf], feature: fzf}
       # fd's lists skip .gitignore'd files and include dotfiles (except .git).
       # Without fd, fzf uses its built-in walker.
-      - {name: FZF_DEFAULT_COMMAND, value: "fd --type f --hidden --exclude .git", requires: [fzf, fd]}
-      - {name: FZF_CTRL_T_COMMAND, value: "fd --hidden --exclude .git", requires: [fzf, fd]}
-      - {name: FZF_ALT_C_COMMAND, value: "fd --type d --hidden --exclude .git", requires: [fzf, fd]}
+      - {name: FZF_DEFAULT_COMMAND, value: "fd --type f --hidden --exclude .git", requires: [fzf, fd], feature: fzf}
+      - {name: FZF_CTRL_T_COMMAND, value: "fd --hidden --exclude .git", requires: [fzf, fd], feature: fzf}
+      - {name: FZF_ALT_C_COMMAND, value: "fd --type d --hidden --exclude .git", requires: [fzf, fd], feature: fzf}
       # Previews: files with bat, directories as an eza tree. fzf runs these
       # with $SHELL, so they must be valid in both fish and sh.
-      - {name: FZF_CTRL_T_OPTS, value: "--preview 'test -d {} && eza --tree --level=2 --color=always {} || bat --color=always --style=numbers --line-range=:200 {}'", requires: [fzf, bat, eza]}
-      - {name: FZF_ALT_C_OPTS, value: "--preview 'eza --tree --level=2 --color=always {}'", requires: [fzf, eza]}
+      - {name: FZF_CTRL_T_OPTS, value: "--preview 'test -d {} && eza --tree --level=2 --color=always {} || bat --color=always --style=numbers --line-range=:200 {}'", requires: [fzf, bat, eza], feature: fzf}
+      - {name: FZF_ALT_C_OPTS, value: "--preview 'eza --tree --level=2 --color=always {}'", requires: [fzf, eza], feature: fzf}
 
-    # `else` is used when `requires` isn't met; without it the alias is left
-    # undefined.
     aliases:
       # eza: human-readable sizes by default, and -a skips . and .. (like ls -h
       # and -A). --git adds a per-file status column inside repos; long-iso
@@ -72,12 +75,12 @@ shell:
       # it isn't the owner's name. --classify needs =auto spelled out, since a
       # bare -F would take the first path argument as its value. The fallbacks
       # match fish's built-in ll/la.
-      - {name: l, value: "eza -l --git --time-style=long-iso -g --smart-group --classify=auto", requires: [eza], else: "ls -l"}
-      - {name: ll, value: "l", requires: [eza], else: "ls -lh"}
-      - {name: la, value: "l -a", requires: [eza], else: "ls -lAh"}
+      - {name: l, value: "eza -l --git --time-style=long-iso -g --smart-group --classify=auto", requires: [eza], feature: eza, else: "ls -l"}
+      - {name: ll, value: "l", requires: [eza], feature: eza, else: "ls -lh"}
+      - {name: la, value: "l -a", requires: [eza], feature: eza, else: "ls -lAh"}
       # l/la as a tree; ls has no tree view.
-      - {name: lt, value: "l --tree", requires: [eza]}
-      - {name: lat, value: "l -a --tree", requires: [eza]}
+      - {name: lt, value: "l --tree", requires: [eza], feature: eza}
+      - {name: lat, value: "l -a --tree", requires: [eza], feature: eza}
 
     # Run at startup. `if_env` also requires these variables to have these
     # values.
@@ -88,5 +91,5 @@ shell:
 
     # Printed when an interactive fish shell starts (not bash or zsh).
     greeting:
-      - {cmd: fortune, requires: [fortune]}
+      - {cmd: fortune, requires: [fortune], feature: cli}
       - {cmd: 'echo "><_> tick... tock..."'}

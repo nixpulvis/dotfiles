@@ -1,0 +1,23 @@
+{{- /*
+The packages of this machine's enabled features for one package manager, as a
+JSON list, in feature then package name order. Use as
+
+  {{ $pkgs := includeTemplate "packages" (dict "manager" "apt" "data" .) | fromJson }}
+
+manager: brew, brew_cask, pacman, apt or winget. Packages without that key,
+and ones set to null, are skipped.
+*/ -}}
+{{- $f := includeTemplate "features" .data | fromJson -}}
+{{- $out := list -}}
+{{- range $n := keys $f | sortAlpha -}}
+{{-   if index $f $n -}}
+{{-     $pkgs := get (index $.data.features $n) "packages" -}}
+{{-     if $pkgs -}}
+{{-       range $name := keys $pkgs | sortAlpha -}}
+{{-         $p := index $pkgs $name -}}
+{{-         if and $p (hasKey $p $.manager) }}{{ $out = append $out (index $p $.manager) }}{{ end -}}
+{{-       end -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{- $out | toJson -}}

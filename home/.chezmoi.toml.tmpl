@@ -11,29 +11,43 @@
 {{-   end -}}
 {{- end -}}
 
-{{/* Component groups.
-     - base       : applied everywhere, never gated.
-     - graphical  : GUI apps (alacritty + fonts). Implicit on macOS/Windows;
-                    only a question on Linux, where a box may be headless (WSL,
-                    servers).
-     - wm         : the Linux window-manager stack (i3/sway/rofi/zathura). A
-                    Linux-only option that implies `graphical`. macOS/Windows
-                    have their own window managers, so it is always false there. */}}
+{{/* Feature questions. The answers are stored under [data.features.*], where
+     they override the defaults in .chezmoidata/features.yaml. Every other
+     feature is set by data alone. (This template can't read .chezmoidata, so
+     defaults that depend on the machine are worked out here.)
+     - graphical : GUI apps (alacritty, fonts, zed). Always on for macOS/Windows;
+                   a question only on Linux, where a box may be headless (WSL,
+                   servers).
+     - wm        : the Linux window-manager stack (i3/sway/rofi/zathura). A
+                   Linux-only question that implies `graphical`.
+     - omp       : install omp and manage ~/.omp/agent.
+     - weechat   : WeeChat with the ZNC bouncer login, its passphrase in the OS
+                   keyring. Not on Windows. */}}
 {{- $graphical := true -}}
 {{- $wm := false -}}
 {{- if eq $os "linux" -}}
-{{-   $graphical = promptBoolOnce . "graphical" "Graphical machine? (install alacritty + fonts)" (not $wsl) -}}
-{{-   $wm = promptBoolOnce . "wm" "Install the Linux window-manager stack? (i3/sway/rofi/zathura)" false -}}
+{{-   $graphical = promptBoolOnce . "features.graphical.enabled" "Graphical machine? (alacritty, fonts, zed)" (not $wsl) -}}
+{{-   $wm = promptBoolOnce . "features.wm.enabled" "Install the Linux window-manager stack? (i3/sway/rofi/zathura)" false -}}
 {{-   if $wm -}}{{- $graphical = true -}}{{- end -}}
 {{- end -}}
+{{- $omp := promptBoolOnce . "features.omp.enabled" "Install omp and manage its config?" true -}}
+{{- $weechat := false -}}
+{{- if ne $os "windows" -}}
+{{-   $weechat = promptBoolOnce . "features.weechat.enabled" "Set up WeeChat? (ZNC bouncer login; passphrase in the OS keyring)" (or (eq $os "darwin") $graphical) -}}
+{{- end -}}
+
+{{/* Not a feature: whether to install software at all (the enabled features'
+     packages, omp and the Windows fonts), for machines that get it some other
+     way. No means config only. */}}
+{{- $installPackages := promptBoolOnce . "installPackages" "Install software? (packages, omp and font downloads; no means config only)" true -}}
 
 {{- $name       := promptStringOnce . "name"       "Git user name"             "Nathan Lilienthal" -}}
 {{- $email      := promptStringOnce . "email"      "Git email (personal/work)" "nathan@nixpulvis.com" -}}
 {{- $signingkey := promptStringOnce . "signingkey" "Git signing key"           "Nathan Lilienthal" -}}
-{{- $ircnick    := promptStringOnce . "ircnick"    "IRC nick / username"       "nixpulvis" -}}
-{{- $liberaDefault := false -}}
-{{- if eq $os "darwin" }}{{ $liberaDefault = true }}{{ else if eq $os "linux" }}{{ $liberaDefault = $graphical }}{{ end -}}
-{{- $libera     := promptBoolOnce . "libera" "Set up WeeChat ZNC bouncer login? (stores the ZNC password in the OS keyring)" $liberaDefault -}}
+{{- $ircnick := "" -}}
+{{- if $weechat -}}
+{{-   $ircnick = promptStringOnce . "ircnick" "IRC nick / username" "nixpulvis" -}}
+{{- end -}}
 
 [data]
     # SHA256 of this config template at last `chezmoi init`. The drift-check
@@ -43,11 +57,23 @@
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     signingkey = {{ $signingkey | quote }}
+{{- if $weechat }}
     ircnick = {{ $ircnick | quote }}
-    libera = {{ $libera }}
+{{- end }}
     wsl = {{ $wsl }}
-    graphical = {{ $graphical }}
-    wm = {{ $wm }}
+    installPackages = {{ $installPackages }}
+{{- if eq $os "linux" }}
+[data.features.graphical]
+    enabled = {{ $graphical }}
+[data.features.wm]
+    enabled = {{ $wm }}
+{{- end }}
+[data.features.omp]
+    enabled = {{ $omp }}
+{{- if ne $os "windows" }}
+[data.features.weechat]
+    enabled = {{ $weechat }}
+{{- end }}
 
 # Page `chezmoi diff` through delta, like git diff.
 [diff]

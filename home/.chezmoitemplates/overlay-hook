@@ -1,0 +1,16 @@
+{{- /*
+Appends a consuming repository's render-time overlay for one file, if it has
+one: .chezmoitemplates/overlay/<path>, rendered with the same data. Put the
+hook at the very end of the file, with a left trim:
+
+  {{- includeTemplate "overlay-hook" (dict "path" ".gitconfig" "data" .) }}
+
+Renders nothing when there's no overlay, otherwise a newline and the overlay's
+contents (minus trailing newlines). `path` is the target path under ~, except
+for .chezmoiignore, whose overlay is overlay-chezmoiignore: chezmoi doesn't
+allow a .chezmoiignore inside .chezmoitemplates.
+*/ -}}
+{{- $name := ternary "overlay-chezmoiignore" (printf "overlay/%s" .path) (eq .path ".chezmoiignore") -}}
+{{- if stat (joinPath .data.chezmoi.sourceDir ".chezmoitemplates" $name) }}
+{{ regexReplaceAll "\n+$" (includeTemplate $name .data) "" }}
+{{- end -}}

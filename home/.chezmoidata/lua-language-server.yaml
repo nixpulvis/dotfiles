@@ -1,0 +1,11 @@
+# lua-language-server release pin for Linux without pacman (Debian/Ubuntu have
+# no package), installed by run_once_after_16-install-lua-language-server.sh.tmpl.
+# The other platforms get it as a neovim feature package (features.yaml). To
+# upgrade, bump `version` and copy the checksums from the release's asset
+# digests (`gh release view <version> -R LuaLS/lua-language-server --json assets`).
+# The script re-runs when the pin changes.
+luals:
+  version: "3.19.2"
+  sha256:
+    linux-x64:   "93ad326b10f6c00911dd8c450fa098332dbd8f9f45d1052f5636a2d54479b947"
+    linux-arm64: "17b8e401a874440adeb649e5024c364f2bb9d15156c74a40e56d1ae9a1b2e4f2"
