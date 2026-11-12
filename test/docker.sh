@@ -34,7 +34,7 @@ case "$DISTRO" in
             echo "arch: needs an x86-64 docker host, not $host; it runs in CI. Use 'test/docker.sh ubuntu' here." >&2
             exit 2
         fi
-        IMAGE=archlinux:latest; PREP='pacman -Sy --noconfirm --needed git curl sudo openssh' ;;
+        IMAGE=archlinux:latest; PREP='pacman -Syu --noconfirm --needed git curl sudo openssh' ;;
     ubuntu|debian)
         IMAGE=ubuntu:latest; PREP='ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git curl sudo ca-certificates openssh-client procps systemd libpam-systemd' ;;
     *) echo "unknown distro: $DISTRO (use ubuntu|arch)" >&2; exit 2 ;;
