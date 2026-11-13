@@ -1,0 +1,20 @@
+{{- /*
+The `symbols` member shared by every omp theme in dot_omp/private_agent/themes.
+Include it as the theme JSON's `"symbols"` member with
+
+  {{ includeTemplate "omp-theme-symbols" | trim }},
+
+With symbolPreset: ascii the status-line icons render as words (`ctx:`, `t:`,
+...); omp can only override single symbols from a theme, so blank them here.
+*/ -}}
+"symbols": {
+    "overrides": {
+      "icon.model": "",
+      "icon.folder": "",
+      "icon.worktree": "",
+      "icon.scratchFolder": "",
+      "icon.context": "",
+      "icon.time": "",
+      "icon.branch": ""
+    }
+  }

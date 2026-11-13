@@ -11,8 +11,11 @@ composer:
   # status bar directly below, no gutter/padding/fill.
   shape: nate.rules
 theme:
-  dark: titanium-me
-  light: light
+  # Both blank the status-line icons (ctx:, t:, ...) from the shared
+  # .chezmoitemplates/omp-theme-symbols. dark-me is the built-in titanium theme
+  # (with gold user messages); light-me is the built-in light theme.
+  dark: dark-me
+  light: light-me
 steeringMode: one-at-a-time
 followUpMode: one-at-a-time
 interruptMode: immediate
@@ -34,7 +37,7 @@ statusLine:
   # Default preset's segments minus the leading `pi` logo, with model and
   # context moved to the right, plus a `usage` segment that shows the Claude
   # subscription rate-limit windows: 5h (rolling session) and 7d (weekly),
-  # each as "<pct>% (<reset>)". The theme blanks the `ctx:`/`t:` labels.
+  # each as "<pct>% (<reset>)". Both themes blank the `ctx:`/`t:` icons.
   #
   # `status` shows the session name, length-capped by
   # extensions/session-title.ts (built-in `session_name` has no cap).

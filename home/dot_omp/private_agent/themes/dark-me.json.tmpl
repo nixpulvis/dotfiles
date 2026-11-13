@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/theme-schema.json",
-  "name": "titanium-me",
+  "name": "dark-me",
   "vars": {
     "brushedTitanium": "#151820",
     "darkTitanium": "#0f1216",
@@ -83,17 +83,7 @@
     "statusLineSubagents": "electricBlue",
     "pythonMode": "#f0c040"
   },
-  "symbols": {
-    "overrides": {
-      "icon.model": "",
-      "icon.folder": "",
-      "icon.worktree": "",
-      "icon.scratchFolder": "",
-      "icon.context": "",
-      "icon.time": "",
-      "icon.branch": ""
-    }
-  },
+  {{ includeTemplate "omp-theme-symbols" | trim }},
   "export": {
     "pageBg": "brushedTitanium",
     "cardBg": "darkTitanium",
