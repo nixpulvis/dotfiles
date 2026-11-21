@@ -21,6 +21,8 @@
      - wm        : the Linux window-manager stack (i3/sway/rofi/zathura). A
                    Linux-only question that implies `graphical`.
      - omp       : install omp and manage ~/.omp/agent.
+     - inkling   : Inkling 2 Mini served locally, selectable with omp's /model.
+                   macOS only, asked only with omp, default no (a 14 GB download).
      - weechat   : WeeChat with the ZNC bouncer login, its passphrase in the OS
                    keyring. Not on Windows. */}}
 {{- $graphical := true -}}
@@ -31,6 +33,10 @@
 {{-   if $wm -}}{{- $graphical = true -}}{{- end -}}
 {{- end -}}
 {{- $omp := promptBoolOnce . "features.omp.enabled" "Install omp and manage its config?" true -}}
+{{- $inkling := false -}}
+{{- if and (eq $os "darwin") $omp -}}
+{{-   $inkling = promptBoolOnce . "features.inkling.enabled" "Run Inkling 2 Mini locally, selectable with omp's /model? (14 GB download)" false -}}
+{{- end -}}
 {{- $weechat := false -}}
 {{- if ne $os "windows" -}}
 {{-   $weechat = promptBoolOnce . "features.weechat.enabled" "Set up WeeChat? (ZNC bouncer login; passphrase in the OS keyring)" (or (eq $os "darwin") $graphical) -}}
@@ -70,6 +76,10 @@
 {{- end }}
 [data.features.omp]
     enabled = {{ $omp }}
+{{- if eq $os "darwin" }}
+[data.features.inkling]
+    enabled = {{ $inkling }}
+{{- end }}
 {{- if ne $os "windows" }}
 [data.features.weechat]
     enabled = {{ $weechat }}

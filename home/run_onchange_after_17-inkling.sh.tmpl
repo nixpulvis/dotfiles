@@ -1,0 +1,49 @@
+{{- $f := includeTemplate "features" . | fromJson -}}
+{{- if and (eq .chezmoi.os "darwin") $f.inkling .installPackages -}}
+#!/bin/sh
+# Install Inkling 2 Mini for omp's /model: Unsloth's llama.cpp prebuilt and
+# the GGUF into ~/.local/share/inkling, which ~/.bin/inkling serves. Pins are
+# in .chezmoidata/inkling.yaml; `chezmoi` reruns this when they change:
+#   {{ .inkling | toJson | sha256sum }}
+set -eu
+
+root="$HOME/.local/share/inkling"
+version="{{ .inkling.llamaCpp.version }}"
+# llama-server --version reports release b12588-mix-... as "build 12588,".
+build="${version%%-*}"
+build="${build#b}"
+mkdir -p "$root/models"
+
+# fetch URL SHA256 DEST: download to DEST.part (resuming an interrupted one),
+# check the checksum, then move it into place. A DEST already present with
+# the right checksum is kept.
+fetch() {
+    if [ -f "$3" ] && echo "$2  $3" | shasum -a 256 -c - >/dev/null 2>&1; then
+        return 0
+    fi
+    echo "inkling: downloading $(basename "$3")..." >&2
+    curl -fL --retry 5 -C - -o "$3.part" "$1"
+    if ! echo "$2  $3.part" | shasum -a 256 -c - >/dev/null; then
+        rm -f "$3.part"
+        echo "inkling: checksum mismatch for $1" >&2
+        exit 1
+    fi
+    mv "$3.part" "$3"
+}
+
+# llama.cpp. It's a directory of llama-server and its dylibs, so unpack a
+# fresh one and swap it in whole.
+if ! "$root/llama.cpp/llama-server" --version 2>&1 | grep -q "build ${build},"; then
+    tmp=$(mktemp -d)
+    trap 'rm -rf "$tmp"' EXIT
+    fetch "https://github.com/unslothai/llama.cpp/releases/download/${version}/llama-${version}-bin-macos-arm64.tar.gz" \
+        "{{ .inkling.llamaCpp.sha256 }}" "$tmp/llama.tar.gz"
+    mkdir "$tmp/llama.cpp"
+    tar -xzf "$tmp/llama.tar.gz" -C "$tmp/llama.cpp" --strip-components=1
+    rm -rf "$root/llama.cpp"
+    mv "$tmp/llama.cpp" "$root/llama.cpp"
+fi
+
+gguf="https://huggingface.co/{{ .inkling.gguf.repo }}/resolve/{{ .inkling.gguf.revision }}"
+fetch "$gguf/{{ .inkling.gguf.file }}" "{{ .inkling.gguf.sha256 }}" "$root/models/{{ .inkling.gguf.file }}"
+{{ end -}}

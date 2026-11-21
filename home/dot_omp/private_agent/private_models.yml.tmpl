@@ -1,0 +1,21 @@
+# Inkling 2 Mini, served by ~/.bin/inkling while it runs (the inkling feature,
+# .chezmoidata/inkling.yaml). Loopback only, so no key.
+providers:
+  inkling:
+    baseUrl: http://127.0.0.1:{{ .inkling.port }}/v1
+    api: openai-completions
+    auth: none
+    models:
+      - id: {{ .inkling.alias }}
+        name: Inkling 2 Mini (local)
+        # The agent loads no vision projector.
+        input: [text]
+        contextWindow: {{ .inkling.ctxSize }}
+        maxTokens: 16384
+        cost: {input: 0, output: 0, cacheRead: 0, cacheWrite: 0}
+        # The chat template maps reasoning_effort none..max onto its 0.0-0.99
+        # thinking effort.
+        reasoning: true
+        thinking:
+          mode: effort
+          efforts: [minimal, low, medium, high, xhigh, max]

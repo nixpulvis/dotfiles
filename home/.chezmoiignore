@@ -36,13 +36,18 @@ AppData
 {{- end }}
 
 {{- /* omp: track only agent/config.yml, agent/AGENTS.md, agent/themes/ and
-       agent/extensions/. Everything else under agent/ is ignored so auth
-       tokens, sessions, caches and *.db files never get added, including ones
-       that don't exist yet. With the omp feature off, its `.omp` target above
-       wins over these ! exclusions. */}}
+       agent/extensions/, plus agent/models.yml with the inkling feature on.
+       Everything else under agent/ is ignored so auth tokens, sessions,
+       caches and *.db files never get added, including ones that don't exist
+       yet. With the omp feature off, its `.omp` target above wins over these
+       ! exclusions. The models.yml exclusion is only written while inkling is
+       on, so it can't bring the file back when inkling's target ignores it. */}}
 .omp/agent/*
 !.omp/agent/config.yml
 !.omp/agent/AGENTS.md
 !.omp/agent/themes
 !.omp/agent/extensions
+{{- if $f.inkling }}
+!.omp/agent/models.yml
+{{- end }}
 {{- includeTemplate "overlay-hook" (dict "path" ".chezmoiignore" "data" .) }}

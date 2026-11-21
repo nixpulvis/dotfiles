@@ -152,6 +152,16 @@ features:
     packages:
       omp: {brew: can1357/tap/omp}
 
+  # Inkling 2 Mini, a local model to pick with omp's /model: `inkling` serves
+  # it with llama-server on 127.0.0.1 with no API key. A 14 GB download, so
+  # it's off unless `chezmoi init` is told otherwise (macOS only). Pins and the
+  # Homebrew plan in inkling.yaml.
+  inkling:
+    enabled: false
+    os: [darwin]
+    requires: [omp]
+    targets: [.bin/inkling, .omp/agent/models.yml]
+
   # One ssh-agent per login: a systemd user service on Linux, a shared agent
   # started by the first Git Bash shell on Windows. macOS's launchd has one.
   sshAgent:

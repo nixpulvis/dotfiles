@@ -1,0 +1,35 @@
+# Inkling 2 Mini (Thinking Machines) for the inkling feature in features.yaml:
+# ~/.bin/inkling serves Unsloth's GGUF of it with llama-server on 127.0.0.1
+# with no API key, for omp's /model. Installed by
+# run_onchange_after_17-inkling.sh.tmpl into ~/.local/share/inkling and
+# registered with omp by dot_omp/private_agent/private_models.yml.tmpl. The
+# script re-runs when anything here changes.
+#
+# llama.cpp is Unsloth's prebuilt, not Homebrew's. Mainline llama.cpp reads a
+# different GGUF layout and needs ggml-org/llama.cpp#32704, without which the
+# looped layers lose their NVFP4 expert scales and the output is garbage. Once a
+# Homebrew bottle includes that fix: add llama.cpp as this feature's package,
+# point ~/.bin/inkling at Homebrew's llama-server, take the model file from the
+# repo's Mainline_Support/ (rename .gguf_file to .gguf), and drop the llamaCpp
+# pin. The flags, port and models.yml stay as they are.
+inkling:
+  # The provider/model omp knows it as: inkling/inkling-2-mini.
+  alias: inkling-2-mini
+  # Not llama.cpp's usual 8080, which omp probes for its implicit llama.cpp
+  # provider and would list this model twice.
+  port: 8131
+  ctxSize: 65536
+  llamaCpp:
+    # From the release's asset digests:
+    # gh release view <version> -R unslothai/llama.cpp --json assets
+    version: "b12588-mix-c0c3de8"
+    sha256: "229def18e27ed740ec4f3a6508f084b25630e08d8a87ada40b00622fc496ceb8"
+  gguf:
+    # Checksums are the files' LFS oids:
+    # curl -s 'https://huggingface.co/api/models/<repo>/tree/<revision>?expand=true'
+    repo: unsloth/Inkling-2-Mini-GGUF
+    revision: ea0c79b2ecd73669e774c8519b79bfabfddbc027
+    # 13.6 GB. The Mac this is for has 24 GB, and Metal can use 17.8 GiB of it;
+    # UD-Q4_K_XL (17.6 GB) leaves almost nothing for context.
+    file: Inkling-2-Mini-UD-Q3_K_XL.gguf
+    sha256: "f72f396d1b479b14d76346df80baa449c8b1f399653bff38fa4764b359a40048"

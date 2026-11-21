@@ -60,8 +60,8 @@ neovim:
 `core` (bash, the `~/.config/sh` files shared with zsh, and git) is always on.
 The rest: `fish`, `zsh`, `vim`, `neovim`, `rust`, `clang`, `ripgrep`, `fd`,
 `bat`, `fzf`, `eza`, `delta`, `cli` (jq, dust, fortune), `worktrunk`,
-`weechat`, `pass`, `backup`, `omp`, `sshAgent`, `graphical`, `alacritty`,
-`fonts`, `zed`, `wm` and `shareNetwork`.
+`weechat`, `pass`, `backup`, `omp`, `inkling`, `sshAgent`, `graphical`,
+`alacritty`, `fonts`, `zed`, `wm` and `shareNetwork`.
 
 [`home/.chezmoitemplates/features`](home/.chezmoitemplates/features) resolves
 which are on for this machine: `enabled`, its `os`, and its `group`. It also
@@ -93,6 +93,7 @@ A feature's settings come from three places, later ones winning:
 | Graphical machine?          | `features.graphical`        | Linux        | no on WSL, else yes        |
 | Window-manager stack?       | `features.wm`               | Linux        | no; yes implies graphical  |
 | Install omp?                | `features.omp`              | all          | yes                        |
+| Local Inkling model?        | `features.inkling`          | macOS + omp  | no                         |
 | Set up WeeChat? (and nick)  | `features.weechat`          | macOS, Linux | macOS yes, Linux graphical |
 | Install software?           | `installPackages`           | all          | yes                        |
 
@@ -123,6 +124,17 @@ it from a Homebrew tap (the omp feature's package). Linux and Windows download a
 pinned release binary into `~/.bin` with
 `run_once_after_15-install-omp.{sh,ps1}.tmpl`. To upgrade, bump the version and
 checksums in [`home/.chezmoidata/omp.yaml`](home/.chezmoidata/omp.yaml).
+
+`inkling` runs [Inkling 2 Mini](https://thinkingmachines.ai/news/inkling-2-mini/)
+locally, selectable in omp with `/model`. Start it with `inkling`
+(`dot_bin/executable_inkling.tmpl`), which runs `llama-server` on `127.0.0.1`
+with no API key until Ctrl-C. `models.yml` registers it as
+`inkling/inkling-2-mini`. `run_onchange_after_17-inkling.sh.tmpl`
+downloads Unsloth's llama.cpp build and a 13.6 GB GGUF into
+`~/.local/share/inkling`. Mainline llama.cpp can't run this model correctly
+yet, so it isn't Homebrew's build;
+[`home/.chezmoidata/inkling.yaml`](home/.chezmoidata/inkling.yaml) has the pins
+and the steps for switching to Homebrew.
 
 Neovim's language servers come with the features for their languages. `neovim`
 installs lua-language-server, for its own config. Debian/Ubuntu have no package
@@ -191,7 +203,8 @@ home/                        chezmoi source (renders to ~/)
   .chezmoi.toml.tmpl         per-machine questions
   .chezmoiignore             feature and OS gating
   .chezmoidata/              features.yaml, shell.yaml, weechat.yaml, and install
-                             pins: omp.yaml, fonts.yaml, lua-language-server.yaml
+                             pins: omp.yaml, inkling.yaml, fonts.yaml,
+                             lua-language-server.yaml
   .chezmoitemplates/         feature resolver, package lists, overlay hook, shared
                              shell settings renderer, WeeChat merge script
   dot_*                      files that become ~/.*

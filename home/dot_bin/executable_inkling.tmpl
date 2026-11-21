@@ -1,0 +1,20 @@
+#!/bin/sh
+# Serve Inkling 2 Mini for omp's /model (inkling/{{ .inkling.alias }}, registered
+# in ~/.omp/agent/models.yml) until Ctrl-C. Loopback only and no API key;
+# same-origin CORS, so web pages in a browser can't call it. llama.cpp and the
+# model are installed by run_onchange_after_17-inkling.sh.tmpl, pinned in
+# .chezmoidata/inkling.yaml. Extra arguments go to llama-server.
+#
+# Measured on the 24 GB M5 Pro this is for: a 128 ubatch, flash attention and
+# a q8_0 KV cache fit 64K of context in 15.2 GiB of Metal's 17.8 GiB, and 128
+# also gave the fastest prompt processing (351 tok/s vs 317 at 512). Sampling
+# is Unsloth's and Thinking Machines' recommendation.
+root="$HOME/.local/share/inkling"
+exec "$root/llama.cpp/llama-server" \
+    --host 127.0.0.1 --port {{ .inkling.port }} --cors-origins localhost \
+    --model "$root/models/{{ .inkling.gguf.file }}" --alias {{ .inkling.alias }} \
+    --n-gpu-layers 99 --ctx-size {{ .inkling.ctxSize }} --parallel 1 \
+    --ubatch-size 128 --flash-attn on --cache-type-k q8_0 --cache-type-v q8_0 \
+    --cache-ram 0 --jinja \
+    --temp 1.0 --top-p 1.0 --top-k 0 --min-p 0.0 \
+    "$@"
