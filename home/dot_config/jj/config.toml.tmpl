@@ -2,9 +2,11 @@
 [user]
 name = {{ .name | quote }}
 email = {{ .email | quote }}
-{{- if $f.delta }}
 
 [ui]
+# Set explicitly so bare `jj` stops printing the hint about this setting.
+default-command = "log"
+{{- if $f.delta }}
 # Delta only understands git-style diffs, so switch jj off its default color-words format.
 pager = "delta"
 diff-formatter = ":git"
@@ -18,6 +20,10 @@ auto-track = "none()"
 [revsets]
 # Hide other workspaces' empty working-copy commits (one per wt worktree); keep @ and any with changes.
 log = "builtin_log() ~ ((working_copies() ~ @) & empty())"
+
+[remotes.origin]
+# Track every bookmark fetched from origin, so they get local bookmarks and show in jj log.
+auto-track-bookmarks = "*"
 
 [aliases]
 # The one-letter aliases from ~/.gitconfig, where jj has a counterpart (b is
