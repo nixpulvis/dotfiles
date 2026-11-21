@@ -15,8 +15,8 @@ It prints one line per fact, from whichever commits they're about:
   w <change id> <flags>  @: * changes but no description, ! conflict,
                          ? divergent
   b <bookmark>...        the nearest commits at or below @ with bookmarks
-  t = or t >             the tip, @ unless it's empty and undescribed, then @-:
-                         = on a remote bookmark, > not (one line per parent)
+  t                      the tip, @ unless it's empty and undescribed, then @-,
+                         isn't on a remote bookmark (one line per parent)
   r                      a remote bookmark exists, so pushing means something
 */ -}}
 --ignore-working-copy --no-graph --color=never \
@@ -29,7 +29,7 @@ It prints one line per fact, from whichever commits they're about:
   ) ++ "\n"),
   if(self.contained_in("heads(::@ & bookmarks())"),
     "b " ++ local_bookmarks.map(|b| b.name()).join(" ") ++ "\n"),
-  if(self.contained_in("coalesce(@ ~ (empty() & description(exact:\"\")), @-)"),
-    "t " ++ if(self.contained_in("::remote_bookmarks()"), "=", ">") ++ "\n"),
+  if(self.contained_in("coalesce(@ ~ (empty() & description(exact:\"\")), @-) ~ ::remote_bookmarks()"),
+    "t\n"),
   if(self.contained_in("remote_bookmarks()"), "r\n"),
 )'

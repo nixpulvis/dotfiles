@@ -273,9 +273,9 @@ zsh's history and completion.
 
 The prompts show a jj segment in jj workspaces and git's everywhere else, e.g.
 `(main *%>)`: the nearest bookmark (or @'s change id), then `*` for changes in
-an undescribed @, `%` for untracked paths, `!` conflict, `?` divergent, and `=`
-or `>` for whether the tip (@, or @- when @ is empty and undescribed) is on a
-remote bookmark. All three build it from the `jj log` arguments in
+an undescribed @, `%` for untracked paths, `!` conflict, `?` divergent, and `>`
+when the tip (@, or @- when @ is empty and undescribed) isn't on a remote
+bookmark yet. All three build it from the `jj log` arguments in
 `home/.chezmoitemplates/jj-prompt`. Each prompt runs `jj status`, since that's
 the only way jj lists untracked paths (jj-vcs/jj#8375), with
 `--no-integrate-operation`, so its snapshot stays out of `jj op log`. Each one

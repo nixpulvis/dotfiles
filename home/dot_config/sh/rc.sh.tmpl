@@ -103,7 +103,7 @@ GIT_PS1_SHOWCOLORHINTS=1
 # ${__prompt_jj_name} for PS1 to expand, as __git_ps1 does with the branch, so
 # a $ or ` in a bookmark name isn't run.
 __prompt_jj() {
-	local top=$PWD nl=$'\n' st op= log kind a rest id= flags= tip= remote= state= name red green magenta yellow reset pct
+	local top=$PWD nl=$'\n' st op= log kind a rest id= flags= unpushed= remote= state= name red green magenta yellow reset pct
 	__prompt_jj= __prompt_jj_names= __prompt_jj_name=
 	until [[ -d $top/.jj ]]; do
 		[[ -z $top ]] && return 1
@@ -125,8 +125,7 @@ __prompt_jj() {
 		case $kind in
 		w) id=$a flags=$rest ;;
 		b) __prompt_jj_names="$__prompt_jj_names $a${rest:+ $rest}" ;;
-		# A merge has a line per parent; one unpushed makes it >.
-		t) [[ $tip == '>' ]] || tip=$a ;;
+		t) unpushed=1 ;;
 		r) remote=1 ;;
 		esac
 	done <<<"$log"
@@ -151,7 +150,7 @@ __prompt_jj() {
 	[[ $'\n'$st$'\n' == *$'\nUntracked paths:\n'* ]] && state+=$red$pct
 	[[ $flags == *'!'* ]] && state+=$red'!'
 	[[ $flags == *'?'* ]] && state+=$yellow'?'
-	[[ -n $remote ]] && state+=$reset$tip
+	[[ -n $remote && -n $unpushed ]] && state+=$reset'>'
 	__prompt_jj=" ($name${state:+ $state}$reset)"
 }
 

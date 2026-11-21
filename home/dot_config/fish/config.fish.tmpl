@@ -42,8 +42,8 @@ set __fish_git_prompt_showcolorhints
 #   %  untracked paths: ~/.config/jj doesn't track new files on its own
 #   !  @ has a conflict
 #   ?  @ is divergent
-#   =  the tip (@, or @- when @ is empty and undescribed) is on a remote
-#      bookmark; > when it isn't. Neither when there's no remote bookmark.
+#   >  the tip (@, or @- when @ is empty and undescribed) isn't on a remote
+#      bookmark. Nothing once it is, or when there's no remote bookmark.
 function __prompt_jj
   set -g __prompt_jj
   set -g __prompt_jj_names
@@ -66,7 +66,7 @@ function __prompt_jj
   set -l log (command jj $at log {{ includeTemplate "jj-prompt" }} </dev/null 2>/dev/null); or return 1
   set -l id
   set -l flags
-  set -l tip
+  set -l unpushed
   set -l remote
   for line in $log
     set -l words (string split ' ' -- $line)
@@ -77,8 +77,7 @@ function __prompt_jj
       case b
         set -a __prompt_jj_names $words[2..-1]
       case t
-        # A merge has a line per parent; one unpushed makes it >.
-        test "$tip" = '>'; or set tip $words[2]
+        set unpushed 1
       case r
         set remote 1
     end
@@ -91,7 +90,7 @@ function __prompt_jj
   contains -- 'Untracked paths:' $st; and set state "$state$(set_color red)%"
   string match -qr '!' -- $flags; and set state "$state$(set_color red)!"
   string match -qr '\?' -- $flags; and set state "$state$(set_color yellow)?"
-  test -n "$remote"; and set state "$state$(set_color normal)$tip"
+  test -n "$remote"; and test -n "$unpushed"; and set state "$state$(set_color normal)>"
   test -n "$state"; and set state " $state"
   set -g __prompt_jj " ($name$state$(set_color normal))"
 end
