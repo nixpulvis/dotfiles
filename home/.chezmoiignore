@@ -50,4 +50,7 @@ AppData
 {{- if $f.inkling }}
 !.omp/agent/models.yml
 {{- end }}
+
+{{- /* jj's per-repo state (which repos' config it trusts). */}}
+.config/jj/repos
 {{- includeTemplate "overlay-hook" (dict "path" ".chezmoiignore" "data" .) }}

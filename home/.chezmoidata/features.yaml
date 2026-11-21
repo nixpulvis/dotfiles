@@ -122,6 +122,17 @@ features:
     packages:
       worktrunk: {brew: worktrunk, pacman: worktrunk}
 
+  # Jujutsu (`jj`), with git's one-letter aliases, and jj-adopt, which
+  # worktrunk's pre-start hook runs to make each new worktree a jj workspace
+  # in repos with a <project>/.jj-store. Not on Windows: `jj i` and jj-adopt
+  # are sh. No apt package.
+  jj:
+    enabled: true
+    os: [darwin, linux]
+    targets: [.config/jj, .config/worktrunk/jj-adopt]
+    packages:
+      jj: {brew: jj, pacman: jujutsu}
+
   # WeeChat through the ZNC bouncer, with its passphrase in the OS keyring.
   # Asked by `chezmoi init`.
   weechat:

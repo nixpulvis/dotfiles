@@ -59,7 +59,7 @@ neovim:
 
 `core` (bash, the `~/.config/sh` files shared with zsh, and git) is always on.
 The rest: `fish`, `zsh`, `vim`, `neovim`, `rust`, `clang`, `ripgrep`, `fd`,
-`bat`, `fzf`, `eza`, `delta`, `cli` (jq, dust, fortune), `worktrunk`,
+`bat`, `fzf`, `eza`, `delta`, `cli` (jq, dust, fortune), `worktrunk`, `jj`,
 `weechat`, `pass`, `backup`, `omp`, `inkling`, `sshAgent`, `graphical`,
 `alacritty`, `fonts`, `zed`, `wm` and `shareNetwork`.
 
@@ -124,6 +124,13 @@ it from a Homebrew tap (the omp feature's package). Linux and Windows download a
 pinned release binary into `~/.bin` with
 `run_once_after_15-install-omp.{sh,ps1}.tmpl`. To upgrade, bump the version and
 checksums in [`home/.chezmoidata/omp.yaml`](home/.chezmoidata/omp.yaml).
+
+`jj` installs [Jujutsu](https://jj-vcs.github.io/jj/) with the one-letter
+aliases from `~/.gitconfig`; `jj i` commits, advances the nearest bookmark,
+and puts Git back on that branch for `wt`. For a project with a
+`<project>/.jj-store` (`jj git init --no-colocate --git-repo .git .jj-store`),
+worktrunk's hooks make each new worktree a jj workspace with
+`~/.config/worktrunk/jj-adopt`, and forget it when the worktree is removed.
 
 `inkling` runs [Inkling 2 Mini](https://thinkingmachines.ai/news/inkling-2-mini/)
 locally, selectable in omp with `/model`. Start it with `inkling`

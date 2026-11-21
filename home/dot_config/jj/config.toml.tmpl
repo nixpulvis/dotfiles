@@ -1,0 +1,48 @@
+{{ $f := includeTemplate "features" . | fromJson -}}
+[user]
+name = {{ .name | quote }}
+email = {{ .email | quote }}
+{{- if $f.delta }}
+
+[ui]
+# Delta only understands git-style diffs, so switch jj off its default color-words format.
+pager = "delta"
+diff-formatter = ":git"
+{{- end }}
+
+[revsets]
+# Hide other workspaces' empty working-copy commits (one per wt worktree); keep @ and any with changes.
+log = "builtin_log() ~ ((working_copies() ~ @) & empty())"
+
+[aliases]
+# The one-letter aliases from ~/.gitconfig, where jj has a counterpart (b is
+# built in). None for add, reset, stash (no index or stash in jj), merge (jj
+# new <a> <b>), pull (jj git fetch, then rebase) or init (jj repos here are set
+# up by hand with a .jj-store; see ~/.config/worktrunk/jj-adopt). x is the
+# git checkout <commit> sense: a new change on top; jj edit amends in place.
+#
+# i commits, advances one bookmark to it, and puts Git back on that branch,
+# which jj leaves detached, so wt sees it. The bookmark is Git's branch, or
+# after jj x the nearest one below; never several, since a new wt branch shares
+# its commit with the one it came from. With none it just commits.
+#
+# Plan, to try on parser-combinator first: drop the workspace = branch mapping.
+# i becomes plain commit, workspaces come from jj workspace add (no jj-adopt or
+# worktrunk hooks), and bookmarks are only set for pushing (jj bookmark set
+# <name> -r @- && jj git push -b <name>, or jj git push -c @-). Costs wt and
+# Git's branch view in jj projects.
+i = ["util", "exec", "--", "sh", "-c", 'b=$(git symbolic-ref -q --short HEAD || jj log -r "heads(::@ & bookmarks())" --no-graph -T "local_bookmarks.map(|b| b.name())"); case $b in *" "*) echo "jj i: several bookmarks ($b); jj commit, then jj bookmark advance --to @- <name>" >&2; exit 1;; esac; jj commit "$@" && { [ -z "$b" ] || { jj bookmark advance --to @- "exact:$b" && git switch -q "$b"; }; }', "jj-i"]
+up = ["git", "fetch", "--all-remotes"]
+c = ["git", "clone"]
+d = ["diff"]
+f = ["git", "fetch"]
+sh = ["show"]
+l = ["log"]
+o = ["git", "remote"]
+p = ["git", "push"]
+r = ["rebase"]
+s = ["status"]
+t = ["tag"]
+x = ["new"]
+w = ["log", "--summary"]
+cp = ["duplicate"]

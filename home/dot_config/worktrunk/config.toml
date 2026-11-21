@@ -112,3 +112,16 @@ template = '{% set a = git.branch.baseadded | default("") | string %}{% set d = 
 
 [list.custom-columns.Tracking]
 template = '{{ git.branch.remote }}/{{ git.branch.merge | replace("refs/heads/", "") }}'
+
+# jj workspaces for repos with a <project>/.jj-store (jj git init --no-colocate
+# --git-repo .git .jj-store): each new worktree becomes a jj workspace sharing
+# the Git worktree. Blocking, since jj-adopt moves the directory aside and back.
+# Repos without a .jj-store are skipped, and so is everything where the jj
+# feature is off and jj-adopt isn't installed.
+[pre-start]
+jj = "a=~/.config/worktrunk/jj-adopt; test ! -x $a || $a {{ worktree_path }} {{ worktree_name }} {{ repo_path }}"
+
+# After wt removes the worktree. workspace forget leaves the disk alone, so it
+# only drops jj's record of the workspace.
+[post-remove]
+jj = "test ! -d {{ repo_path }}/../.jj-store || jj -R {{ repo_path }}/../.jj-store workspace forget {{ worktree_name }}"

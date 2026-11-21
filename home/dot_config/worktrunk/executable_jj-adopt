@@ -1,0 +1,18 @@
+#!/bin/sh
+# Make an existing Git worktree a jj workspace backed by <project>/.jj-store,
+# sharing the worktree's files (non-colocated: Git keeps its own .git file).
+# Usage: jj-adopt <worktree-dir> <workspace-name> <project>/.git
+# The worktree's files (changes, untracked, ignored) are kept exactly as they were.
+set -eu
+dir=${1%/} name=$2 store=$(dirname "$3")/.jj-store
+[ -d "$store/.jj" ] && [ ! -e "$dir/.jj" ] || exit 0
+jj -R "$store" git import --quiet
+rev=$(git -C "$dir" rev-parse HEAD)
+old=$(mktemp -d "$dir.jj-adopt.XXXXXX")
+# If anything below fails, put the original worktree back where it was.
+trap '[ -d "$old/wt" ] && { rm -rf "$dir"; mv "$old/wt" "$dir"; rmdir "$old"; }' EXIT
+mv "$dir" "$old/wt"
+jj -R "$store" workspace add --quiet --no-colocate --sparse-patterns full --name "$name" -r "$rev" "$dir"
+rsync -a --delete --exclude=/.jj "$old/wt/" "$dir/"
+rm -rf "$old"
+printf '/*\n' > "$dir/.jj/.gitignore"
