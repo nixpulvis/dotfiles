@@ -1,8 +1,8 @@
 # Interactive setup for bash and zsh, sourced by ~/.bashrc and ~/.zshrc after
 # env.sh. Variables and aliases are shared with fish: edit them in
 # .chezmoidata/shell.yaml. This file holds what needs sh code: tool hooks, the
-# ** completion lists and the git prompt helpers each shell's rc builds its
-# prompt from.
+# ** completion lists and the jj and git prompt helpers each shell's rc builds
+# its prompt from.
 
 {{ $f := includeTemplate "features" . | fromJson -}}
 {{ includeTemplate "shell-shared" (dict "shell" "sh" "part" "interactive" "data" .) }}
@@ -95,45 +95,131 @@ GIT_PS1_SHOWSTASHSTATE=1
 GIT_PS1_SHOWUNTRACKEDFILES=1
 GIT_PS1_SHOWCOLORHINTS=1
 
+# Sets __prompt_jj to the jj segment, " (name flags)" with this shell's color
+# escapes, when $PWD is in a jj workspace, along with __prompt_jj_top, the
+# workspace's top directory, and __prompt_jj_names, the space-separated
+# bookmarks it names. Fails otherwise, or when jj does. The segment and its
+# flags are as in config.fish's __prompt_jj. In bash the name is left as
+# ${__prompt_jj_name} for PS1 to expand, as __git_ps1 does with the branch, so
+# a $ or ` in a bookmark name isn't run.
+__prompt_jj() {
+	local top=$PWD nl=$'\n' st op= log kind a rest id= flags= tip= remote= state= name red green magenta yellow reset pct
+	__prompt_jj= __prompt_jj_names= __prompt_jj_name=
+	until [[ -d $top/.jj ]]; do
+		[[ -z $top ]] && return 1
+		top=${top%/*}
+	done
+	__prompt_jj_top=${top:-/}
+	# jj status snapshots without integrating the operation; see config.fish.
+	# Its ID is on stderr, and jj log reads the repo at it. No ID means there
+	# was nothing to snapshot, so the stored @ is current.
+	st=$(command jj --no-integrate-operation status --color=never </dev/null 2>&1) || return 1
+	case $st in
+	*'--no-integrate-operation was requested: '*)
+		op=${st#*--no-integrate-operation was requested: }
+		op=${op%%"$nl"*}
+		;;
+	esac
+	log=$(command jj ${op:+--at-op=$op} log {{ includeTemplate "jj-prompt" }} </dev/null 2>/dev/null) || return 1
+	while read -r kind a rest; do
+		case $kind in
+		w) id=$a flags=$rest ;;
+		b) __prompt_jj_names="$__prompt_jj_names $a${rest:+ $rest}" ;;
+		# A merge has a line per parent; one unpushed makes it >.
+		t) [[ $tip == '>' ]] || tip=$a ;;
+		r) remote=1 ;;
+		esac
+	done <<<"$log"
+	__prompt_jj_names=${__prompt_jj_names# }
+	if [[ -n ${ZSH_VERSION-} ]]; then
+		red='%F{red}' green='%F{green}' magenta='%F{magenta}' yellow='%F{yellow}' reset='%f' pct='%%'
+	else
+		red='\[\033[31m\]' green='\[\033[32m\]' magenta='\[\033[35m\]' yellow='\[\033[33m\]' reset='\[\033[0m\]' pct='%'
+	fi
+	if [[ -n $__prompt_jj_names ]]; then
+		name=$green __prompt_jj_name=${__prompt_jj_names// /,}
+	else
+		name=$magenta __prompt_jj_name=$id
+	fi
+	if [[ -n ${ZSH_VERSION-} ]]; then
+		name+=${__prompt_jj_name//\%/%%}
+	else
+		name+='${__prompt_jj_name}'
+	fi
+	[[ $flags == *'*'* ]] && state+=$red'*'
+	# A whole line, so a changed file named "Untracked paths:" doesn't count.
+	[[ $'\n'$st$'\n' == *$'\nUntracked paths:\n'* ]] && state+=$red$pct
+	[[ $flags == *'!'* ]] && state+=$red'!'
+	[[ $flags == *'?'* ]] && state+=$yellow'?'
+	[[ -n $remote ]] && state+=$reset$tip
+	__prompt_jj=" ($name${state:+ $state}$reset)"
+}
+
 # Sets __prompt_dir to $PWD shortened like fish's prompt_pwd: every component
 # but the last cut to one char. A linked worktree's own directory is dropped
 # first, as in config.fish's __prompt_pwd, so the repo name is the last
-# component; __git_ps1 still shows the branch. Also sets __prompt_show_git,
-# empty in a bare repo's <project>/ itself (see config.fish). The ~ comes from a
-# variable because a literal one in the replacement keeps its backslash or gets
+# component; the VCS segment still shows the branch. Also sets
+# __prompt_show_git, empty in a jj workspace, which __prompt_jj covers, and in a
+# bare repo's <project>/ itself (see config.fish). The ~ comes from a variable
+# because a literal one in the replacement keeps its backslash or gets
 # expanded, depending on the shell and version.
 __prompt_pwd() {
-	local tilde='~' p=$PWD info worktree gitdir_in prefix gitdir common branch top rest dir
+	local tilde='~' nl=$'\n' p=$PWD info worktree gitdir_in prefix gitdir common branch top rest dir
 	__prompt_show_git=1
-	# Lines stop at the first that fails, e.g. HEAD on an unborn branch.
-	info=$(git rev-parse --is-inside-work-tree --is-inside-git-dir --show-prefix --path-format=absolute --git-dir --git-common-dir --abbrev-ref HEAD 2>/dev/null)
-	{ IFS= read -r worktree; IFS= read -r gitdir_in; IFS= read -r prefix; IFS= read -r gitdir; IFS= read -r common; IFS= read -r branch; } <<<"$info"
-	prefix=${prefix%/}
-	if [[ $worktree == false && $gitdir_in == false ]]; then
+	if __prompt_jj; then
 		__prompt_show_git=
-	# Split $PWD into the worktree's top and the path git reports below it,
-	# rather than using --show-toplevel, which resolves symlinks $PWD keeps.
-	elif [[ -n $branch && $branch != HEAD && $gitdir != "$common" && ( -z $prefix || $p == */"$prefix" ) ]]; then
-		top=$p
-		[[ -n $prefix ]] && top=${p%/"$prefix"}
-		rest=${p#"$top"}
-		dir=${top##*/}
-		branch=${branch//\//-}
-		if [[ $dir == "$branch" ]]; then
-			p=${top%/*}$rest
-			p=${p:-/}
-		elif [[ $dir == *."$branch" ]]; then
-			p=${top%."$branch"}$rest
+		# Only a secondary workspace, whose .jj/repo is a file pointing at the
+		# main one, and named after one of the bookmarks.
+		top=$__prompt_jj_top
+		if [[ -f $top/.jj/repo ]]; then
+			rest=${p#"$top"}
+			dir=${top##*/}
+			while read -r branch; do
+				branch=${branch//\//-}
+				if [[ $dir == "$branch" ]]; then
+					p=${top%/*}$rest
+					p=${p:-/}
+					break
+				elif [[ $dir == *."$branch" ]]; then
+					p=${top%."$branch"}$rest
+					break
+				fi
+			done <<<"${__prompt_jj_names// /$nl}"
+		fi
+	else
+		# Lines stop at the first that fails, e.g. HEAD on an unborn branch.
+		info=$(git rev-parse --is-inside-work-tree --is-inside-git-dir --show-prefix --path-format=absolute --git-dir --git-common-dir --abbrev-ref HEAD 2>/dev/null)
+		{ IFS= read -r worktree; IFS= read -r gitdir_in; IFS= read -r prefix; IFS= read -r gitdir; IFS= read -r common; IFS= read -r branch; } <<<"$info"
+		prefix=${prefix%/}
+		if [[ $worktree == false && $gitdir_in == false ]]; then
+			__prompt_show_git=
+		# Split $PWD into the worktree's top and the path git reports below it,
+		# rather than using --show-toplevel, which resolves symlinks $PWD keeps.
+		elif [[ -n $branch && $branch != HEAD && $gitdir != "$common" && ( -z $prefix || $p == */"$prefix" ) ]]; then
+			top=$p
+			[[ -n $prefix ]] && top=${p%/"$prefix"}
+			rest=${p#"$top"}
+			dir=${top##*/}
+			branch=${branch//\//-}
+			if [[ $dir == "$branch" ]]; then
+				p=${top%/*}$rest
+				p=${p:-/}
+			elif [[ $dir == *."$branch" ]]; then
+				p=${top%."$branch"}$rest
+			fi
 		fi
 	fi
 	p="${p/#$HOME/$tilde}"
 	__prompt_dir=$(printf '%s' "$p" | sed -e 's|\([^/]\)[^/]*/|\1/|g')
 }
 
-# __git_ps1 in its 2-arg PS1-setting mode, minus the git segment where
-# __prompt_pwd says to hide it. Call __prompt_pwd first.
-__prompt_git_ps1() {
-	if [[ -n $__prompt_show_git ]]; then
+# Sets PS1 to $1, the VCS segment, then $2: __prompt_jj's in a jj workspace,
+# else __git_ps1's in its 2-arg PS1-setting mode, or none where __prompt_pwd
+# says to hide it. Call __prompt_pwd first.
+__prompt_vcs_ps1() {
+	if [[ -n $__prompt_jj ]]; then
+		PS1="$1$__prompt_jj$2"
+	elif [[ -n $__prompt_show_git ]]; then
 		__git_ps1 "$1" "$2"
 	else
 		PS1="$1$2"

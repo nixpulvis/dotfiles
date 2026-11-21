@@ -271,6 +271,17 @@ Those three files, `.bashrc` and `.zshrc` keep only what needs per-shell code:
 prompts, tool hooks (`fzf --fish`, `rbenv init`, Git Bash's ssh-agent), and
 zsh's history and completion.
 
+The prompts show a jj segment in jj workspaces and git's everywhere else, e.g.
+`(main *%>)`: the nearest bookmark (or @'s change id), then `*` for changes in
+an undescribed @, `%` for untracked paths, `!` conflict, `?` divergent, and `=`
+or `>` for whether the tip (@, or @- when @ is empty and undescribed) is on a
+remote bookmark. All three build it from the `jj log` arguments in
+`home/.chezmoitemplates/jj-prompt`. Each prompt runs `jj status`, since that's
+the only way jj lists untracked paths (jj-vcs/jj#8375), with
+`--no-integrate-operation`, so its snapshot stays out of `jj op log`. Each one
+still leaves a small unreferenced operation while there are unsnapshotted
+changes, which `jj util gc` deletes.
+
 Shells never start their own ssh-agent elsewhere, since one started from a
 terminal outlives it (and on macOS keeps the terminal listed as "Running in
 Background"). macOS's launchd provides `SSH_AUTH_SOCK`. On Linux,

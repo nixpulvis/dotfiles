@@ -26,24 +26,110 @@ if type -q wt
     wt config shell init fish | source
 end
 {{ end }}
-# Fish git config.
+# Fish git config, for repos jj doesn't manage.
 set __fish_git_prompt_showdirtystate 'yes'
 set __fish_git_prompt_showstashstate 'yes'
 set __fish_git_prompt_showcolorhints
 
+# Sets __prompt_jj to the jj segment, " (name flags)" like the git one, when
+# $PWD is in a jj workspace, along with __prompt_jj_top, the workspace's top
+# directory, and __prompt_jj_names, the bookmarks it names. Fails otherwise,
+# or when jj does. It looks for .jj itself, so outside jj it runs nothing.
+#
+# The name is the nearest bookmarks at or below @, or @'s change id when there
+# are none. The flags, in this order:
+#   *  @ has changes but no description
+#   %  untracked paths: ~/.config/jj doesn't track new files on its own
+#   !  @ has a conflict
+#   ?  @ is divergent
+#   =  the tip (@, or @- when @ is empty and undescribed) is on a remote
+#      bookmark; > when it isn't. Neither when there's no remote bookmark.
+function __prompt_jj
+  set -g __prompt_jj
+  set -g __prompt_jj_names
+  set -g __prompt_jj_top $PWD
+  while not test -d $__prompt_jj_top/.jj
+    test $__prompt_jj_top = /; and return 1
+    set __prompt_jj_top (path dirname -- $__prompt_jj_top)
+  end
+  # Snapshotting is the only way jj finds untracked paths (most jj prompts use
+  # --ignore-working-copy and can't show them), but --no-integrate-operation
+  # keeps the snapshot out of `jj op log` and the working-copy state: nothing
+  # changes for other jj commands, at the cost of an unreferenced operation
+  # per prompt while there's something to snapshot (`jj util gc` deletes them).
+  # status prints that operation's ID on stderr, and jj log reads the repo at
+  # it. No ID means there was nothing to snapshot, so the stored @ is current.
+  set -l st (command jj --no-integrate-operation status --color=never </dev/null 2>&1); or return 1
+  set -l op (string replace -rf -- '.*--no-integrate-operation was requested: ([0-9a-f]+)$' '$1' $st)
+  set -l at
+  test -n "$op[1]"; and set at --at-op=$op[1]
+  set -l log (command jj $at log {{ includeTemplate "jj-prompt" }} </dev/null 2>/dev/null); or return 1
+  set -l id
+  set -l flags
+  set -l tip
+  set -l remote
+  for line in $log
+    set -l words (string split ' ' -- $line)
+    switch $words[1]
+      case w
+        set id $words[2]
+        set flags $words[3]
+      case b
+        set -a __prompt_jj_names $words[2..-1]
+      case t
+        # A merge has a line per parent; one unpushed makes it >.
+        test "$tip" = '>'; or set tip $words[2]
+      case r
+        set remote 1
+    end
+  end
+  # Quoted, so a set_color that prints nothing (TERM=dumb) can't empty it all.
+  set -l name "$(set_color magenta)$id"
+  set -q __prompt_jj_names[1]; and set name "$(set_color green)$(string join , -- $__prompt_jj_names)"
+  set -l state ''
+  string match -qr '\*' -- $flags; and set state "$state$(set_color red)*"
+  contains -- 'Untracked paths:' $st; and set state "$state$(set_color red)%"
+  string match -qr '!' -- $flags; and set state "$state$(set_color red)!"
+  string match -qr '\?' -- $flags; and set state "$state$(set_color yellow)?"
+  test -n "$remote"; and set state "$state$(set_color normal)$tip"
+  test -n "$state"; and set state " $state"
+  set -g __prompt_jj " ($name$state$(set_color normal))"
+end
+
 # Sets __prompt_dir to prompt_pwd minus a linked worktree's own directory, so
-# the repo name is the last component and isn't abbreviated; the git segment
+# the repo name is the last component and isn't abbreviated; the VCS segment
 # still shows the branch. Worktrunk names the directory <branch> (inside a bare
 # repo's <project>/) or <repo>.<branch> (beside a clone), with / in the branch
 # turned into -. Any other directory, a detached HEAD or the main worktree keeps
-# the full path.
+# the full path. In a jj workspace the branch is any bookmark __prompt_jj names
+# (jj leaves git's HEAD detached), and only a secondary workspace, whose
+# .jj/repo is a file pointing at the main one, is shortened.
 #
-# Also sets __prompt_show_git, empty in a bare repo's <project>/ itself: it's in
-# neither a work tree nor the git dir, and the git segment would show the bare
-# HEAD's branch, so it'd look the same as that branch's worktree.
+# Also sets __prompt_show_git, empty in a jj workspace, which __prompt_jj
+# covers, and in a bare repo's <project>/ itself: it's in neither a work tree
+# nor the git dir, and the git segment would show the bare HEAD's branch, so
+# it'd look the same as that branch's worktree.
 function __prompt_pwd
   set -g __prompt_show_git 1
   set -l p $PWD
+  if __prompt_jj
+    set -g __prompt_show_git
+    if test -f $__prompt_jj_top/.jj/repo
+      set -l rest (string replace -- $__prompt_jj_top '' $PWD)
+      set -l dir (path basename -- $__prompt_jj_top)
+      for branch in (string replace -a / - -- $__prompt_jj_names)
+        if test "$dir" = "$branch"
+          set p (path normalize -- (path dirname -- $__prompt_jj_top)"$rest")
+          break
+        else if string match -qr -- (string escape --style=regex -- ".$branch")'$' $dir
+          set p (string sub -e -(string length -- ".$branch") -- $__prompt_jj_top)"$rest"
+          break
+        end
+      end
+    end
+    set -g __prompt_dir (prompt_pwd $p)
+    return
+  end
   set -l info (command git rev-parse --is-inside-work-tree --is-inside-git-dir --show-prefix --path-format=absolute --git-dir --git-common-dir --abbrev-ref HEAD 2>/dev/null)
   if test "$info[1]" = false; and test "$info[2]" = false
     set -g __prompt_show_git
@@ -72,13 +158,13 @@ end
 
 function fish_prompt
   __prompt_pwd
-  set -l git
-  test -n "$__prompt_show_git"; and set git (__fish_git_prompt)
+  set -l vcs $__prompt_jj
+  test -n "$__prompt_show_git"; and set vcs (__fish_git_prompt)
   printf '%s%s%s@%s%s%s:%s%s%s%s $ ' \
   (set_color red) (whoami) (set_color normal) \
   (set_color blue) (hostname) (set_color normal) \
   (set_color green) $__prompt_dir (set_color normal) \
-  "$git"
+  "$vcs"
 end
 
 function fish_right_prompt

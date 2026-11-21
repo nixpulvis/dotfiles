@@ -1,0 +1,35 @@
+{{- /*
+The `jj log` arguments the fish, bash and zsh prompts read a jj workspace's
+state with, after `jj --no-integrate-operation status` has snapshotted it.
+Include after `jj log`, with --at-op set to that snapshot's operation when it
+made one (--at-op implies --ignore-working-copy, which is here for when not):
+
+  command jj --at-op=<op> log {{ includeTemplate "jj-prompt" }} </dev/null 2>/dev/null
+
+The lines end in a backslash and the words are single-quoted with a backslash
+inside only before " and n, all of which fish and sh read the same way, so jj
+sees the same text from either.
+
+It prints one line per fact, from whichever commits they're about:
+
+  w <change id> <flags>  @: * changes but no description, ! conflict,
+                         ? divergent
+  b <bookmark>...        the nearest commits at or below @ with bookmarks
+  t = or t >             the tip, @ unless it's empty and undescribed, then @-:
+                         = on a remote bookmark, > not (one line per parent)
+  r                      a remote bookmark exists, so pushing means something
+*/ -}}
+--ignore-working-copy --no-graph --color=never \
+-r '@ | heads(::@ & bookmarks()) | coalesce(@ ~ (empty() & description(exact:"")), @-) | latest(remote_bookmarks())' \
+-T 'concat(
+  if(current_working_copy, "w " ++ change_id.shortest() ++ " " ++ concat(
+    if(!empty && description == "", "*"),
+    if(conflict, "!"),
+    if(divergent, "?"),
+  ) ++ "\n"),
+  if(self.contained_in("heads(::@ & bookmarks())"),
+    "b " ++ local_bookmarks.map(|b| b.name()).join(" ") ++ "\n"),
+  if(self.contained_in("coalesce(@ ~ (empty() & description(exact:\"\")), @-)"),
+    "t " ++ if(self.contained_in("::remote_bookmarks()"), "=", ">") ++ "\n"),
+  if(self.contained_in("remote_bookmarks()"), "r\n"),
+)'

@@ -20,19 +20,19 @@ if [[ -n ${HOMEBREW_PREFIX-} ]]; then
 fi
 autoload -Uz compinit && compinit
 
-# Aliases, fzf, rbenv and git prompt helpers, shared with bash.
+# Aliases, fzf, rbenv and jj/git prompt helpers, shared with bash.
 [[ -f ~/.config/sh/rc.sh ]] && . ~/.config/sh/rc.sh
 
 # Prompt: port of the nixpulvis fish_prompt / fish_right_prompt.
-# Left : red user @ blue host : green abbreviated pwd (git) $
+# Left : red user @ blue host : green abbreviated pwd (jj or git) $
 # Right: "(exit-code) YYYY-MM-DD HH:MM:SS+ZZZZ", dimmed date.
 __prompt_precmd() {
 	# Window title, like the bash prompt's.
 	print -Pn '\e]0;%~\a'
 	__prompt_pwd
-	# __git_ps1 sets PS1 to pre + git segment + post. % in a directory name
-	# would be read as a prompt escape, so double it.
-	__prompt_git_ps1 "%F{red}%n%f@%F{blue}%m%f:%F{green}${__prompt_dir//\%/%%}%f" " %(!.#.$) "
+	# __prompt_vcs_ps1 sets PS1 to pre + jj or git segment + post. % in a
+	# directory name would be read as a prompt escape, so double it.
+	__prompt_vcs_ps1 "%F{red}%n%f@%F{blue}%m%f:%F{green}${__prompt_dir//\%/%%}%f" " %(!.#.$) "
 }
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd __prompt_precmd
