@@ -52,8 +52,16 @@ l = ["log"]
 o = ["git", "remote"]
 p = ["git", "push"]
 r = ["rebase"]
-s = ["status"]
+# Short status like `git status -s`: changed files, then untracked ones (`? path`) pulled out of `jj status`.
+s = ["util", "exec", "--", "sh", "-c", 'c=never; [ -t 1 ] && c=always; jj diff --summary --no-pager --color=$c "$@" && jj status --no-pager --color=$c "$@" | awk "/^Untracked paths:/ {u=1; next} /^[A-Z]/ {u=0} u"', "jj-s"]
 t = ["tag"]
 x = ["new"]
 w = ["log", "--summary"]
 cp = ["duplicate"]
+
+[colors]
+"diff added" = "green"
+"diff removed" = "red"
+"diff modified" = "yellow"
+"diff renamed" = "yellow"
+"diff untracked" = "red"
