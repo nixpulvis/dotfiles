@@ -10,6 +10,11 @@ pager = "delta"
 diff-formatter = ":git"
 {{- end }}
 
+[snapshot]
+# Track no new file until `jj file track <path>` adds it. By default anything
+# .gitignore misses goes into the working-copy commit, local data included.
+auto-track = "none()"
+
 [revsets]
 # Hide other workspaces' empty working-copy commits (one per wt worktree); keep @ and any with changes.
 log = "builtin_log() ~ ((working_copies() ~ @) & empty())"
