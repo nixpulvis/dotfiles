@@ -44,6 +44,13 @@
     # n/N jump between files in a diff. Light/dark is detected from the
     # terminal.
     navigate = true
+    # Show the file path in each hunk header, not just the file header.
+    hunk-header-style = file line-number
+    # Drop the Δ and • markers navigate adds; n/N then stops on the
+    # file:line: hunk headers instead.
+    file-modified-label = ""
+    hunk-label = ""
+    navigate-regex = "^(commit|added:|removed:|renamed:|.+:[0-9]+: │)"
 {{- end }}
 
 [init]
