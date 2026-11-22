@@ -27,7 +27,7 @@ auto-track-bookmarks = "*"
 
 [aliases]
 # The one-letter aliases from ~/.gitconfig, where jj has a counterpart (b is
-# built in). None for add, reset, stash (no index or stash in jj), merge (jj
+# built in). None for reset, stash (no index or stash in jj), merge (jj
 # new <a> <b>), pull (jj git fetch, then rebase) or init (jj repos here are set
 # up by hand with a .jj-store; see ~/.config/worktrunk/jj-adopt). x is the
 # git checkout <commit> sense: a new change on top; jj edit amends in place.
@@ -58,6 +58,8 @@ t = ["tag"]
 x = ["new"]
 w = ["log", "--summary"]
 cp = ["duplicate"]
+# With auto-track off, new files need an explicit track, like git add.
+add = ["file", "track"]
 
 [colors]
 "diff added" = "green"
