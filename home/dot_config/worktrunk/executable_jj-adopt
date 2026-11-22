@@ -6,13 +6,19 @@
 set -eu
 dir=${1%/} name=$2 store=$(dirname "$3")/.jj-store
 [ -d "$store/.jj" ] && [ ! -e "$dir/.jj" ] || exit 0
-jj -R "$store" git import --quiet
+# The store is only storage, so forget the 'default' workspace jj git init put
+# there; its working-copy commit otherwise lingers in every workspace's log.
+# Without a workspace, -R "$store" has no @, which the default short-prefixes
+# revset needs, so every printed commit id would warn.
+store_jj() { jj -R "$store" --config='revsets.short-prefixes=none()' "$@"; }
+store_jj workspace forget default 2>/dev/null || true
+store_jj git import --quiet
 rev=$(git -C "$dir" rev-parse HEAD)
 old=$(mktemp -d "$dir.jj-adopt.XXXXXX")
 # If anything below fails, put the original worktree back where it was.
 trap '[ -d "$old/wt" ] && { rm -rf "$dir"; mv "$old/wt" "$dir"; rmdir "$old"; }' EXIT
 mv "$dir" "$old/wt"
-jj -R "$store" workspace add --quiet --no-colocate --sparse-patterns full --name "$name" -r "$rev" "$dir"
+store_jj workspace add --quiet --no-colocate --sparse-patterns full --name "$name" -r "$rev" "$dir"
 rsync -a --delete --exclude=/.jj "$old/wt/" "$dir/"
 rm -rf "$old"
 printf '/*\n' > "$dir/.jj/.gitignore"

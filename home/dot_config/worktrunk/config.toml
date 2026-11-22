@@ -122,6 +122,7 @@ template = '{{ git.branch.remote }}/{{ git.branch.merge | replace("refs/heads/",
 jj = "a=~/.config/worktrunk/jj-adopt; test ! -x $a || $a {{ worktree_path }} {{ worktree_name }} {{ repo_path }}"
 
 # After wt removes the worktree. workspace forget leaves the disk alone, so it
-# only drops jj's record of the workspace.
+# only drops jj's record of the workspace. The store has no workspace of its
+# own (jj-adopt forgets 'default'), so short ids can't use @; skip that lookup.
 [post-remove]
-jj = "test ! -d {{ repo_path }}/../.jj-store || jj -R {{ repo_path }}/../.jj-store workspace forget {{ worktree_name }}"
+jj = "test ! -d {{ repo_path }}/../.jj-store || jj -R {{ repo_path }}/../.jj-store --config='revsets.short-prefixes=none()' workspace forget {{ worktree_name }}"
