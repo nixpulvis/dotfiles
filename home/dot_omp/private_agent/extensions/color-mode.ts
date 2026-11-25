@@ -1,7 +1,7 @@
 import { type FSWatcher, readlinkSync, watch } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { type ExtensionAPI, onTerminalAppearanceChange } from "@oh-my-pi/pi-coding-agent";
+import { type ExtensionAPI, setTerminalAppearance } from "@oh-my-pi/pi-coding-agent";
 
 // Switches between theme.dark and theme.light when the macOS appearance changes.
 //
@@ -32,7 +32,7 @@ export default function (pi: ExtensionAPI) {
 
 	const sync = () => {
 		const mode = currentMode();
-		if (mode) onTerminalAppearanceChange(mode);
+		if (mode) void setTerminalAppearance(mode);
 	};
 
 	pi.on("session_start", () => {
