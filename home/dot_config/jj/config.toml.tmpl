@@ -17,9 +17,27 @@ diff-formatter = ":git"
 # .gitignore misses goes into the working-copy commit, local data included.
 auto-track = "none()"
 
+[revset-aliases]
+# Other workspaces' empty working-copy commits (one per wt worktree) sitting
+# right on a bookmark. Ones further ahead aren't idle and stay in the log.
+"idle_working_copies()" = "(working_copies() ~ @) & empty() & children(bookmarks())"
+
 [revsets]
-# Hide other workspaces' empty working-copy commits (one per wt worktree); keep @ and any with changes.
-log = "builtin_log() ~ ((working_copies() ~ @) & empty())"
+# Hide idle_working_copies(); the commit under each shows it as name@- instead (see below).
+log = "builtin_log() ~ idle_working_copies()"
+
+[template-aliases]
+# A commit's own workspaces as name@, plus name@- for each idle working copy on
+# top of it. The labels stay next to their bookmark instead of floating to
+# wherever the graph places the empty child, and each one is a revset that
+# resolves to the commit it's on.
+"format_commit_working_copies(commit)" = '''
+separate(" ",
+  commit.working_copies(),
+  revset("children(" ++ commit.commit_id() ++ ") & idle_working_copies()")
+    .map(|c| c.working_copies().map(|w| label("working_copies", w.name() ++ "@-"))),
+)
+'''
 
 [remotes.origin]
 # Track every bookmark fetched from origin, so they get local bookmarks and show in jj log.
