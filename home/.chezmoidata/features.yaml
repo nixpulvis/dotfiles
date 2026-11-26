@@ -173,6 +173,14 @@ features:
     requires: [omp]
     targets: [.bin/inkling, .omp/agent/models.yml]
 
+  # `omp-od PROMPT`: omp with Apple's on-device model, no tools and an empty
+  # system prompt, for quick local questions. macOS only, like the model.
+  ompOnDevice:
+    enabled: true
+    os: [darwin]
+    requires: [omp]
+    targets: [.bin/omp-od]
+
   # One ssh-agent per login: a systemd user service on Linux, a shared agent
   # started by the first Git Bash shell on Windows. macOS's launchd has one.
   sshAgent:

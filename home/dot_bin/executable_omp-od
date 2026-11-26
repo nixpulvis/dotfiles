@@ -1,0 +1,7 @@
+#!/bin/sh
+# One-shot prompt to Apple's on-device model through omp, with no tools and no
+# system prompt. omp treats `--system-prompt ""` as unset and sends its full
+# coding-agent prompt plus AGENTS.md; NULL_PROMPT=true is what drops it all.
+# All arguments join into the prompt, so `omp-od what is a monad` needs no
+# quotes.
+NULL_PROMPT=true exec omp --model apple/on-device --no-tools -p "$*"
